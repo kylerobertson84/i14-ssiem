@@ -40,6 +40,8 @@ Before you begin, ensure you have the following installed on your system:
    ```
 
 2. Set up the development environment:
+> [!IMPORTANT]
+> Make sure your [Docker Hub](https://docs.docker.com/get-docker/) is running in the background.
    ```
    ./scripts/setup_dev_environment.sh
    ```
