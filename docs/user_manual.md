@@ -1,6 +1,6 @@
 # SIEM Project User Manual
-
-Just some mock manual
+> [!NOTE]
+> Just some mock User Manual
 
 ## Table of Contents
 1. [Introduction](#introduction)

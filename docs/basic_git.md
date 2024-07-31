@@ -1,4 +1,4 @@
-#### Overview
+# Basic Git Workflow Commands and Notes
 
 This document outlines the Git workflow and branching strategy for our I14 - SIEMS. The workflow is designed to ensure smooth collaboration, organised code management, and stable production releases.
 #### Branches
@@ -62,7 +62,10 @@ This document outlines the Git workflow and branching strategy for our I14 - SIE
    - **Step 4:** Create a pull request (PR) or merge request (MR) from `feature/your-feature-name` into `develop`.
    - **Step 5:** Review the PR/MR and have it approved by a team member or lead before merging.
 
-5. **Merging `develop` into `main`:**  **<ins>**DO NOT PROCEED WITHOUT TEAM MEETING**</ins>
+5. **Merging `develop` into `main`:**  
+> [!CAUTION]
+> <ins>**DO NOT PROCEED WITHOUT TEAM MEETING**</ins>
+
    - **Step 1:** Ensure `develop` is up to date and stable.
      ```bash
      git checkout develop
