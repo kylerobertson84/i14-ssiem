@@ -11,14 +11,14 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
-    - name: Deploy to Ubuntu server
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
-          # Waitting for Production ENV
-          # cd /path/to/i14-ssiem
-          # git pull origin main
-          # docker-compose -f docker-compose.prod.yml up -d --build
+    # - name: Deploy to Ubuntu server
+    #   uses: appleboy/ssh-action@master
+    #   with:
+    #     host: ${{ secrets.HOST }}
+    #     username: ${{ secrets.USERNAME }}
+    #     key: ${{ secrets.SSH_PRIVATE_KEY }}
+    #     script: |
+    #       Waitting for Production ENV
+    #       cd /path/to/i14-ssiem
+    #       git pull origin main
+    #       docker-compose -f docker-compose.prod.yml up -d --build
