@@ -23,8 +23,9 @@ Key features include:
 - Detailed reporting capabilities
 
 ## Prerequisites
+> [!IMPORTANT]
+> Before you begin, ensure you have the following installed on your system:
 
-Before you begin, ensure you have the following installed on your system:
 - [Git](https://git-scm.com/downloads)
 - [Docker](https://docs.docker.com/get-docker/)
 - Docker Compose (this will be installed with above)
