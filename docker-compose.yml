@@ -2,7 +2,6 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile.dev
     volumes:
       - ./frontend:/frontend
       - /frontend/node_modules
@@ -10,12 +9,12 @@ services:
       - "${DOCKER_FRONTEND_PORT:-3000}:3000"
     environment:
       - REACT_APP_API_URL=${REACT_APP_API_URL:-http://localhost:3000/api}
+      - CHOKIDAR_USEPOLLING=true
     command: npm start
 
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile.dev
     volumes:
       - ./backend:/backend
     ports:
