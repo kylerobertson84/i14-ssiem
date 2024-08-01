@@ -27,11 +27,8 @@ if [ ! -d ".git" ]; then
     git clone https://github.com/kylerobertson84/i14-ssiem.git .
 fi
 
-# Pull the latest changes
-git pull origin develop
-
 # Build and start the Docker containers
-docker-compose up -d --build
+docker-compose up -d
 
 # Install backend dependencies
 docker-compose exec backend pip install -r requirements.txt
@@ -42,8 +39,17 @@ docker-compose exec backend python manage.py migrate
 # Install frontend dependencies
 docker-compose exec frontend npm install
 
-# Create a superuser for Django admin
-docker-compose exec backend python manage.py createsuperuser
+# Function to check if the superuser exists
+superuser_exists() {
+    docker-compose exec backend python manage.py shell -c "from django.contrib.auth import get_user_model; User = get_user_model(); print(User.objects.filter(is_superuser=True).exists())"
+}
+
+# Create a superuser for Django admin if it doesn't exist
+if [ "$(superuser_exists)" = "False" ]; then
+    docker-compose exec backend python manage.py createsuperuser
+else
+    echo "Superuser already exists. Skipping creation."
+fi
 
 # Print success message
 echo "Development environment setup complete!"

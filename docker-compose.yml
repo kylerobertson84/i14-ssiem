@@ -1,20 +1,46 @@
 services:
-  backend:
-    build: ./backend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./frontend:/frontend
+      - /frontend/node_modules
     ports:
-      - "8000:8000"
+      - "${DOCKER_FRONTEND_PORT:-3000}:3000"
+    environment:
+      - REACT_APP_API_URL=${REACT_APP_API_URL:-http://localhost:3000/api}
+    command: npm start
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./backend:/backend
+    ports:
+      - "${DOCKER_BACKEND_PORT:-8000}:8000"
+    environment:
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+      - DJANGO_DEBUG=${DJANGO_DEBUG:-True}
+      - DB_NAME=${DB_NAME:-siem_db}
+      - DB_USER=${DB_USER:-siem_user}
+      - DB_PASSWORD=${DB_PASSWORD:-siem_password}
+    command: python manage.py runserver 0.0.0.0:8000
     depends_on:
       - db
 
-  frontend:
-    build: ./frontend
-    ports:
-      - "3000:3000"
-
   db:
-    build: ./database
+    image: mariadb:10.5
+    volumes:
+      - mariadb_data:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: siem_db
-      MYSQL_USER: siem_user
-      MYSQL_PASSWORD: siem_password
+      - MYSQL_DATABASE=${DB_NAME:-siem_db}
+      - MYSQL_USER=${DB_USER:-siem_user}
+      - MYSQL_PASSWORD=${DB_PASSWORD:-siem_password}
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD:-root_password}
+    ports:
+      - "${DOCKER_DB_PORT:-3306}:3306"
+
+volumes:
+  mariadb_data:
