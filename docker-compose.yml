@@ -39,7 +39,7 @@ services:
       - MYSQL_PASSWORD=${DB_PASSWORD:-siem_password}
       - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD:-root_password}
     ports:
-      - "${DOCKER_DB_PORT:-3306}:3306"
+      - "${DOCKER_DB_PORT:-3307}:3306"
 
 volumes:
   mariadb_data:
