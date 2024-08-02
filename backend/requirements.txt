@@ -6,6 +6,5 @@ django-extensions
 watchdog
 Werkzeug
 gunicorn
-django-cors-headers
 djoser
 djangorestframework-simplejwt
