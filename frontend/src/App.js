@@ -7,27 +7,11 @@ import Dashboard from './pages/dashboard';
 import Investigations from './pages/investigations';
 import Queries from './pages/queries';
 import Reports from './pages/reports';
+import AlertsPage from './pages/alerts';
 
 const App = () => {
   return (
-<<<<<<< HEAD
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edite <code>src/App.js</code> and save to reload!ab
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-=======
+
     <Router>
       <NavBar />
       <Routes>
@@ -36,9 +20,9 @@ const App = () => {
         <Route path="/investigations" element={<Investigations />} />
         <Route path="/queries" element={<Queries />} />
         <Route path="/reports" element={<Reports />} />
+        <Route path="/alerts" element={<AlertsPage />} />
       </Routes>
     </Router>
->>>>>>> origin/develop
   );
 };
 
