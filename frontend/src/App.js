@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import NavBar from './components/NavBar';
@@ -10,24 +9,6 @@ import Reports from './pages/reports';
 
 const App = () => {
   return (
-<<<<<<< HEAD
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edite <code>src/App.js</code> and save to reload!ab
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-=======
     <Router>
       <NavBar />
       <Routes>
@@ -38,8 +19,8 @@ const App = () => {
         <Route path="/reports" element={<Reports />} />
       </Routes>
     </Router>
->>>>>>> origin/develop
   );
 };
 
 export default App;
+
