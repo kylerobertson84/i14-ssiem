@@ -1,11 +1,15 @@
-CREATE TABLE Bronze_Event_Data
-(
+
+CREATE DATABASE IF NOT EXISTS siem_db;
+
+USE siem_db;
+
+-- CREATE TABLE Bronze_Event_Data
+-- (
     
-)
+-- )
 
 
-
-CREATE TABLE Alert
+CREATE TABLE IF NOT EXISTS Alert
 (
     'Alert_Id' INT AUTO_INCREMENT PRIMARY KEY,
     'Timestamp' TIMESTAMP,
@@ -15,7 +19,7 @@ CREATE TABLE Alert
     FOREIGN KEY (Event_Id) REFFERENCES Event_Data(Event_Id),
 ); 
 
-CREATE TABLE Assigned_Alert
+CREATE TABLE IF NOT EXISTS Assigned_Alert
 (
     'User_Name' VARCHAR(15) NOT NULL,
     'Alert_Id' INT NOT NULL,
@@ -23,7 +27,7 @@ CREATE TABLE Assigned_Alert
     FOREIGN KEY (Alert_Id) REFFERENCES Alert(Alert_Id),
 ); 
 
-CREATE TABLE Employee
+CREATE TABLE IF NOT EXISTS Employee
 (
     'Employee_Id' VARCHAR(10) NOT NULL PRIMARY KEY,
     'First_Name' VARCHAR(20) NOT NULL,
@@ -31,7 +35,7 @@ CREATE TABLE Employee
     'email' VARCHAR(80),
 );
 
-CREATE TABLE Event_Data
+CREATE TABLE IF NOT EXISTS Event_Data
 (
     'Event_Id' INT AUTO_INCREMENT Primary Key,
     'Timestamp' TIMESTAMP,
@@ -41,7 +45,7 @@ CREATE TABLE Event_Data
     FOREIGN KEY (Rule_Id) REFFERENCES Rules(Rule_Id), 
 );
 
-CREATE TABLE Incident_Report
+CREATE TABLE IF NOT EXISTS Incident_Report
 (
     'Delivery_id' INT AUTO_INCREMENT PRIMARY KEY,
     'Type' VARCHAR(20) NOT NULL,
@@ -52,20 +56,20 @@ CREATE TABLE Incident_Report
     'Description' TEXT,
 );
 
-CREATE TABLE Role
+CREATE TABLE IF NOT EXISTS Role
 (
     'Role_Id' VARCHAR(10) PRIMARY KEY,
     "Name" VARCHAR(20)
 );
 
-CREATE TABLE Role_Permission
+CREATE TABLE IF NOT EXISTS Role_Permission
 (
     'Role_Permission_Id' VARCHAR(10) PRIMARY KEY,
     'Permission_Id' VARCHAR(10),
     FOREIGN KEY (Permission_Id) REFFERENCES Permission(Permission_Id),
 );
 
-CREATE TABLE Rules
+CREATE TABLE IF NOT EXISTS Rules
 (
     'Rule_Id' INT AUTO_INCREMENT PRIMARY KEY,
     'Rule_Name' VARCHAR(30),
@@ -73,13 +77,13 @@ CREATE TABLE Rules
     'Conditions' TEXT,
 )
 
-CREATE TABLE Permission
+CREATE TABLE IF NOT EXISTS Permission
 (
     'Permission_Id' VARCHAR(10) PRIMARY KEY,
     'Name' VARCHAR(20),
 );
 
-CREATE TABLE User
+CREATE TABLE IF NOT EXISTS User
 (
     'User_Id' VARCHAR(15) Primary Key,
     'User_Name' VARCHAR(15),
