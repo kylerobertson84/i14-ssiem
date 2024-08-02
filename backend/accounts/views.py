@@ -5,12 +5,6 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import UserSerializer, RegisterSerializer
 from rest_framework.response import Response
 
-<<<<<<< HEAD
-@api_view(['GET'])
-def getData(request):
-    person = {'name': 'SIEM', 'age': 123}
-    return Response(person)
-=======
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     permission_classes = (permissions.AllowAny,)
@@ -24,4 +18,3 @@ class UserView(generics.RetrieveAPIView):
     def get(self, request, *args, **kwargs):
         serializer = self.get_serializer(request.user)
         return Response(serializer.data)
->>>>>>> origin/develop
