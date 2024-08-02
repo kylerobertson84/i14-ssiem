@@ -1,13 +1,11 @@
 django
 djangorestframework
 mysqlclient
-<<<<<<< HEAD
 django-cors-headers
 django-extensions
 watchdog
 Werkzeug
-=======
 gunicorn
 django-cors-headers
 djoser
->>>>>>> origin/develop
+djangorestframework-simplejwt
