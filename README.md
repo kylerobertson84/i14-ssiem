@@ -68,6 +68,11 @@ This will start all services defined in the `docker-compose.yml` file.
 
 To stop the application, press `Ctrl+C` in the terminal where docker-compose is running.
 
+## Developing
+
+Please checkout and revise these Git commands, it will provide tremendous help on how to navigate around in Git.
+[Git Commands 101](Git-101.md).
+
 ## Running Tests
 
 To run backend tests:
