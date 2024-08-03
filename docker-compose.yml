@@ -32,7 +32,8 @@ services:
   db:
     image: mariadb:10.5
     volumes:
-      - mariadb_data:/var/lib/mysql
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      
     environment:
       - MYSQL_DATABASE=${DB_NAME:-siem_db}
       - MYSQL_USER=${DB_USER:-siem_user}
