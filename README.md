@@ -32,6 +32,11 @@ Key features include:
 - [Python](https://www.python.org/downloads/) (version 3.9 or later)
 - [Node.js](https://nodejs.org/en/download/prebuilt-installer/current) (get LTS ones)
 
+## Developing
+
+Please checkout and revise these Git commands, it will provide tremendous help on how to navigate around in Git.
+[Git Commands 101](Git-101.md).
+
 ## Installation
 
 1. Clone the repository:
@@ -67,11 +72,6 @@ This will start all services defined in the `docker-compose.yml` file.
 - The database will be running on its default port
 
 To stop the application, press `Ctrl+C` in the terminal where docker-compose is running.
-
-## Developing
-
-Please checkout and revise these Git commands, it will provide tremendous help on how to navigate around in Git.
-[Git Commands 101](Git-101.md).
 
 ## Running Tests
 
