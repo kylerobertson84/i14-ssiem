@@ -1,5 +1,7 @@
 from django.db import models
 from utils.models import BaseModel
+from core.models import Rule
+from django.conf import settings
 
 class BronzeEventData(BaseModel):
     event_time = models.CharField(max_length=255)
@@ -32,9 +34,10 @@ class BronzeEventData(BaseModel):
         return f"Event {self.event_id} - {self.event_time}"
 
 class EventData(BaseModel):
+    event_id = models.AutoField(primary_key=True)
     timestamp = models.DateTimeField()
     source = models.ForeignKey(BronzeEventData, on_delete=models.CASCADE)
-    rule = models.ForeignKey('alerts.Rule', on_delete=models.CASCADE)
+    rule = models.ForeignKey(Rule, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"Event {self.id} - {self.timestamp}"

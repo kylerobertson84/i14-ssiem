@@ -23,29 +23,29 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-5oyfzuv-2yln#b-v8#tm@5&l4b3--@9jx6-#gnwap)jij+q183'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-5oyfzuv-2yln#b-v8#tm@5&l4b3--@9jx6-#gnwap)jij+q183')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True' # Set to False in production
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = [
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.admin',
     # Third party apps
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
     'django_extensions',
     # Local apps
+    'core',
     'accounts',
     'alerts',
     'logs',
@@ -112,7 +112,7 @@ DATABASES = {
     'ENGINE': 'django.db.backends.mysql',
     'NAME': os.getenv('DB_NAME', 'siem_db'),
     'USER': os.getenv('DB_USER', 'siem_user'),
-    'PASSWORD': os.getenv('DB_PASSWORD', 'siem_password'),
+    'PASSWORD': os.getenv('DB_PASSWORD', 'random_password'),
     'HOST': os.getenv('DB_HOST', 'db'),
     'PORT': os.getenv('DB_PORT', '3306'),
   }
