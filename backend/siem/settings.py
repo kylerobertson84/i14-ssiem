@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_extensions',
     # Local apps
-    'api',
     'accounts',
     'alerts',
     'logs',
@@ -114,7 +113,7 @@ DATABASES = {
         'NAME': 'siem_db',
         'USER': 'siem_user',
         'PASSWORD': 'siem_password',
-        'HOST': 'mariadb',
+        'HOST': 'siem_db',
         'PORT': '3306',
     }
 }

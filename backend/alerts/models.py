@@ -1,6 +1,15 @@
 from django.db import models
 from utils.models import BaseModel
-from django.conf import settings
+from accounts.models import User
+
+class Rule(BaseModel):
+    rule_id = models.AutoField(primary_key=True)
+    rule_name = models.CharField(max_length=30)
+    description = models.CharField(max_length=255)
+    conditions = models.TextField()
+
+    def __str__(self):
+        return self.rule_name
 
 class AlertSeverity(models.TextChoices):
     LOW = 'LOW', 'Low'
@@ -15,22 +24,27 @@ class AlertStatus(models.TextChoices):
     CLOSED = 'CLOSED', 'Closed'
 
 class Alert(BaseModel):
-    title = models.CharField(max_length=255)
-    description = models.TextField()
-    severity = models.CharField(max_length=20, choices=AlertSeverity.choices, default=AlertSeverity.MEDIUM)
-    status = models.CharField(max_length=20, choices=AlertStatus.choices, default=AlertStatus.NEW)
-    assigned_to = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
-    resolved_at = models.DateTimeField(null=True, blank=True)
+    alert_id = models.AutoField(primary_key=True)
+    timestamp = models.DateTimeField()
+    event = models.ForeignKey('logs.EventData', on_delete=models.CASCADE)
+    status = models.CharField(
+        max_length=20, 
+        choices=AlertStatus.choices, 
+        default=AlertStatus.NEW
+    )
+    severity = models.CharField(
+        max_length=20, 
+        choices=AlertSeverity.choices, 
+        default=AlertSeverity.MEDIUM
+    )
+    rule = models.ForeignKey(Rule, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.title} - {self.severity}"
+        return f"Alert {self.alert_id} - {self.timestamp} - {self.severity}"
 
-class AlertRule(BaseModel):
-    name = models.CharField(max_length=255)
-    description = models.TextField()
-    condition = models.TextField()
-    severity = models.CharField(max_length=20, choices=AlertSeverity.choices, default=AlertSeverity.MEDIUM)
-    is_active = models.BooleanField(default=True)
+class AssignedAlert(BaseModel):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    alert = models.ForeignKey(Alert, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.name
+        return f"Alert {self.alert.alert_id} assigned to {self.user.username}"
