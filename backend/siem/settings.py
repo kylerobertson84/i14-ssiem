@@ -108,7 +108,6 @@ WSGI_APPLICATION = 'siem.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-<<<<<<< HEAD
   'default': {
     'ENGINE': 'django.db.backends.mysql',
     'NAME': os.getenv('DB_NAME', 'siem_db'),
@@ -117,16 +116,6 @@ DATABASES = {
     'HOST': os.getenv('DB_HOST', 'db'),
     'PORT': os.getenv('DB_PORT', '3306'),
   }
-=======
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'siem_db',
-        'USER': 'siem_user',
-        'PASSWORD': 'siem_password',
-        'HOST': 'siem_db',
-        'PORT': '3306',
-    }
->>>>>>> 11a0dd759e4d99783784dba18154240471e9382d
 }
 
 
