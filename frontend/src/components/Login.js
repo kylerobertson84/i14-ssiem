@@ -3,6 +3,9 @@
 
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
+
 import AuthService from '../services/AuthService';
 
 import Button from '@mui/material/Button';
@@ -20,17 +23,17 @@ const Login = () => {
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-
-
-    
+    const [message, setMessage] = useState('');
+    const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
             await AuthService.login(username, password);
-            window.location.reload();
+            navigate('/dashboard'); 
+            
         } catch (error) {
-            console.error(error);
+            setMessage('Login failed. Please check your credentials.');
         }
     };
    
@@ -87,6 +90,7 @@ const Login = () => {
                         >
                             Login
                         </Button>
+                        {message && <p>{message}</p>}
 
                     </Box>
                 </Box>

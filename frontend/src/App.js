@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import NavBar from './components/NavBar';
 import Login from './components/Login';
 import Dashboard from './pages/dashboard';
@@ -7,20 +7,8 @@ import Investigations from './pages/investigations';
 import Queries from './pages/queries';
 import Reports from './pages/reports';
 
-import AuthService from './services/AuthService';
+import PrivateRoute from './components/PrivateRoute';
 
-const PrivateRoute = ({ component: Component, ...rest }) => (
-  <Route
-      {...rest}
-      render={props =>
-          AuthService.getCurrentUser() ? (
-              <Component {...props} />
-          ) : (
-              <Redirect to="/login" />
-          )
-      }
-  />
-);
 
 
 const App = () => {
@@ -28,11 +16,12 @@ const App = () => {
     <Router>
       <NavBar />
       <Routes>
-        <Route path="/" element={<Dashboard />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/investigations" element={<Investigations />} />
+        <Route path="/dashboard" element={<PrivateRoute component={Dashboard} />} />
+        <Route path="*" element={<Navigate to="/dashboard" />} />
+        {/* <Route path="/investigations" element={<Investigations />} />
         <Route path="/queries" element={<Queries />} />
-        <Route path="/reports" element={<Reports />} />
+        <Route path="/reports" element={<Reports />} /> */}
       </Routes>
     </Router>
   );

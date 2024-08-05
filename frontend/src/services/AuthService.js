@@ -1,7 +1,8 @@
 
+// src/services/AuthService.js
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8000/api/';
+const API_URL = 'http://127.0.0.1:8000/api/';
 
 class AuthService {
     login(username, password) {
@@ -24,6 +25,19 @@ class AuthService {
 
     getCurrentUser() {
         return JSON.parse(localStorage.getItem('user'));
+    }
+
+    refreshToken(refreshToken) {
+        return axios.post(API_URL + 'token/refresh/', {
+            refresh: refreshToken,
+        }).then(response => {
+            if (response.data.access) {
+                let user = JSON.parse(localStorage.getItem('user'));
+                user.access = response.data.access;
+                localStorage.setItem('user', JSON.stringify(user));
+            }
+            return response.data;
+        });
     }
 }
 

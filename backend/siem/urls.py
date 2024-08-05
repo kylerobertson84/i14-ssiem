@@ -22,13 +22,9 @@ from siem.views import health_check, home
 
 
 urlpatterns = [
-    path('', home, name='home'),
+    # path('', home, name='home'),
     path('admin/', admin.site.urls),
     path('api/health', health_check, name='health_check'),
-    # path('api/accounts/', include('accounts.urls')),
-    # path('api/alerts/', include('alerts.urls')),
-    # path('api/logs/', include('logs.urls')),
-    # path('api/reports/', include('reports.urls')),
-    # path('api/auth/', include('djoser.urls')),
-    # path('api/auth/', include('djoser.urls.jwt')),
+    path('api/', include('accounts.urls')),
+    
 ]
