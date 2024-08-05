@@ -7,6 +7,22 @@ import Investigations from './pages/investigations';
 import Queries from './pages/queries';
 import Reports from './pages/reports';
 
+import AuthService from './services/AuthService';
+
+const PrivateRoute = ({ component: Component, ...rest }) => (
+  <Route
+      {...rest}
+      render={props =>
+          AuthService.getCurrentUser() ? (
+              <Component {...props} />
+          ) : (
+              <Redirect to="/login" />
+          )
+      }
+  />
+);
+
+
 const App = () => {
   return (
     <Router>
