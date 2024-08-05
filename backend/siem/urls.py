@@ -17,10 +17,12 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
-from siem.views import health_check
+from siem.views import health_check, home
+
 
 
 urlpatterns = [
+    path('', home, name='home'),
     path('admin/', admin.site.urls),
     path('api/health', health_check, name='health_check'),
     # path('api/accounts/', include('accounts.urls')),

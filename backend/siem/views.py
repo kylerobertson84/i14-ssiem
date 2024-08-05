@@ -1,5 +1,8 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.db import connection
+
+def home(request):
+    return HttpResponse("Welcome to the home page!")
 
 def health_check(request):
     try:
