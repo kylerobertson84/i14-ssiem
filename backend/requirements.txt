@@ -3,6 +3,7 @@ djangorestframework
 mysqlclient
 django-cors-headers
 django-extensions
+python-dotenv
 watchdog
 Werkzeug
 gunicorn

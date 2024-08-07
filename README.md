@@ -32,6 +32,11 @@ Key features include:
 - [Python](https://www.python.org/downloads/) (version 3.9 or later)
 - [Node.js](https://nodejs.org/en/download/prebuilt-installer/current) (get LTS ones)
 
+## Developing
+
+Please checkout and revise these Git commands, it will provide tremendous help on how to navigate around in Git.
+[Git Commands 101](Git-101.md).
+
 ## Installation
 
 1. Clone the repository:
