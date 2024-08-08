@@ -7,47 +7,11 @@ import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/styles';
 import { Grid, Paper, Typography, Box, IconButton } from '@mui/material';
-
-
-const themes = createTheme();
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-    padding: themes.spacing(3),
-  },
-  paper: {
-    padding: themes.spacing(2),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-  },
-  title: {
-    marginBottom: theme.spacing(3),
-  },
-  infoCard: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  alertBox: {
-    backgroundColor: theme.palette.error.light,
-    color: theme.palette.error.contrastText,
-    padding: theme.spacing(1),
-    marginBottom: themes.spacing(2),
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  systemStats: {
-    padding: themes.spacing(2),
-    backgroundColor: theme.palette.background.paper,
-  },
-}));
+import Navbar from '../components/NavBar.js';
 
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
-  const classes = useStyles();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -71,77 +35,150 @@ const Dashboard = () => {
 
   return (
     <div>
-      <Typography variant="h4" className={classes.title}>
-        Dashboard
-      </Typography>
-      {user ? <p>Welcome, {user.username}!</p> : <p>Please log in.</p>}
-      </div>,
-    <Content>
-      <Title/>
-      <Container>
-        <InfoCards
-          value ="200K" 
-          icon ="test"
-          title ="Logs"
-        />
-        <InfoCards
-          value ="20" 
-          icon ="test"
-          title ="Active Alerts"
-        />
-        <InfoCards
-          value ="12" 
-          icon ="test"
-          title ="closed alerts"
-        />
-        <InfoCards
-          value ="184"
-          icon ="test"
-          title ="Total Devices"
-        />
-        <InfoCards
-          value ="10,435"
-          icon ="test"
-          title ="Events per Day"
-        />
-        <InfoCards
-          value ="13" 
-          icon ="test"
-          title ="New Devices (24hr)"
-        />
-      </Container>
-      <Container>
-        <Alerts 
-        hostname="WDT-01"
-        message="failed login"
-        />
-        <Alerts 
-        hostname="WDT-02"
-        message="Anti-Virus Alert"
-        />
-        <Alerts 
-        hostname="WDT-03"
-        message="Some other alert thing"
-        />
-      </Container>
-      <SystemStats />
-      <Container>
-        <Graphs />
-        <Graphs />
-      </Container>
-    </Content>
+      <Navbar />
+      <Box
+      sx={{
+        marginBottom: 5,
+        marginLeft: 5,
+        marginRight: 5,
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+      >
+
+      {/* Dashboard text, possibly make this a component that dynamically gets the page name?? */}
+      <Title />
+      
+      
+      {/* Alerts, database stats and graph grids */}
+      <Grid container spacing={3}>
+        
+        {/* Info cards and two graph grid */}
+        <Grid item xs={12} md={8}>
+          
+          {/* Info cards and two graph spacing */}
+          <Grid container spacing={3} >
+            
+        
+            
+              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3}}>
+                <Paper sx={{ padding: 2 }}>
+
+                  <InfoCard title="Logs" value="321k" />
+
+                </Paper>
+              </Grid>
+
+
+              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3}}>
+                <Paper sx={{ padding: 2 }}>
+
+                  <InfoCard title="Active Alerts" value="20" />
+
+                </Paper>
+              </Grid>
+
+
+              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3}}>
+                <Paper sx={{ padding: 2 }}>
+
+                  <InfoCard title="Closed Alerts" value="32" />
+
+                </Paper>
+              </Grid>
+
+
+              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3}}>
+                <Paper sx={{ padding: 2 }}>
+
+                  <InfoCard title="Total Devices" value="301" />
+
+                </Paper>
+              </Grid>
+
+
+              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3}}>
+                <Paper sx={{ padding: 2 }}>
+
+                  <InfoCard title="Events per Day" value="10,556" />
+              
+                </Paper>
+              </Grid>
+            
+            
+              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3}}>
+                <Paper sx={{ padding: 2 }}>
+                
+                  <InfoCard title="New Devices (24hr)" value="6" />
+              
+                </Paper>
+              </Grid>
+
+            
+
+            {/* Graphs Section */}
+            <Grid item xs={12} md={6}>
+              <Paper sx={{ padding: 2 }}>
+                
+                <Typography variant="h6">Graph 1</Typography>
+                {/* todo make graph serise */}
+              
+              </Paper>
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              <Paper sx={{ padding: 2 }}>
+                
+                <Typography variant="h6">Graph 2</Typography>
+                {/* todo make graph serise */}
+              
+              </Paper>
+            </Grid>
+          </Grid>
+          
+        </Grid>
+
+        {/* Alerts Section */}
+        <Grid item xs={12} md={4}>
+
+          <Paper sx={{ padding: 2, marginBottom: 3 }}>
+
+            <Typography variant="h6" gutterBottom>
+              Latest Alerts
+            </Typography>
+
+            <Alert hostname="WDT-01" message="Failed login attempt" />
+            <Alert hostname="WDT-02" message="New User Account Created" />
+            <Alert hostname="WDT-03" message="Failed login attempt" />
+            <Alert hostname="WDT-04" message="Windows Defender Detected Malware" />
+
+            <Typography sx={{ textAlign: 'right' }} variant="body2">
+              View more &gt;
+            </Typography>
+
+          </Paper>
+
+          {/* System Stats */}
+          <Paper sx={{ padding: 2 }}>
+
+            <Typography variant="h6">SIEM Database Server Status</Typography>
+            <SystemStat />
+
+          </Paper>
+
+        </Grid>
+
+      </Grid>
+
+      </Box>
+    
+    </div>
   );
 };
 
 export default Dashboard;
 
-function Content( {children} ) {
-  return (
-    <div className='content'>
-      {children}
-    </div>
-  );
-}
+
 
 function Title() {
   return (
@@ -151,15 +188,8 @@ function Title() {
   );
 }
 
-function InfoCardContainer({children}) {
-  return (
-    <div className='infoCardContainer'>
-      {children}
-    </div>
-  );
-}
 
-function InfoCards(
+function InfoCard(
   {
     icon,
     value,
@@ -167,13 +197,37 @@ function InfoCards(
   }
 ){
   return (
-    <div className='infoCard'>
-      <p>{title}</p>
-      <p><b>{value}</b></p>
-      <div className='infoCardIcons'>
-        <img src={'../resources/' + icon + ".svg"} alt={icon} /*todo size of icon*//> 
-      </div>
-    </div>
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 2,
+      }}
+    >
+      <Box>
+        <Typography variant="subtitle1">{title}</Typography>
+        <Typography variant="h6">
+          <b>{value}</b>
+        </Typography>
+      </Box>
+      <Box
+        sx={{
+          backgroundColor: 'rgba(0, 0, 0, 0.1)',
+          borderRadius: '50%',
+          padding: 1,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minWidth: '2.5rem', // Minimum size
+          minHeight: '2.5rem', // Minimum size
+          width: 'auto', // Responsive width
+          height: 'auto', // Responsive height
+        }}
+      >
+        <Search />
+      </Box>
+    </Box>
   );
 
 }
@@ -188,14 +242,14 @@ function AlertContainer({children}) {
   );
 }
 
-function Alerts(
+function Alert(
   {
     hostname,
     message,
   }
 ) {
   return (
-    <div className='alert'>
+    <div>
       <p>Device: {hostname}</p>
       <p>{message}</p>
       <div className='alerticon'>
@@ -226,7 +280,7 @@ function Graphs({}) {
 
 }
 
-function SystemStats() {
+function SystemStat() {
   return (
     <div className='systemStats'>
       <p>SIEM DB Server Status</p>
