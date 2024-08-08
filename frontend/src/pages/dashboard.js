@@ -1,10 +1,53 @@
 import React, { Children, useEffect, useState } from 'react';
 import axios from 'axios';
-//import { Search } from '@mui/icons-material';
+import { Search } from '@mui/icons-material';
+import Button from '@mui/material/Button';
+import CssBaseline from '@mui/material/CssBaseline';
+import TextField from '@mui/material/TextField';
+import Container from '@mui/material/Container';
+import { createTheme, ThemeProvider } from '@mui/styles';
+import { Grid, Paper, Typography, Box, IconButton } from '@mui/material';
+
+
+const themes = createTheme();
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+    padding: themes.spacing(3),
+  },
+  paper: {
+    padding: themes.spacing(2),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+  },
+  title: {
+    marginBottom: theme.spacing(3),
+  },
+  infoCard: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  alertBox: {
+    backgroundColor: theme.palette.error.light,
+    color: theme.palette.error.contrastText,
+    padding: theme.spacing(1),
+    marginBottom: themes.spacing(2),
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  systemStats: {
+    padding: themes.spacing(2),
+    backgroundColor: theme.palette.background.paper,
+  },
+}));
 
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
+  const classes = useStyles();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -28,12 +71,14 @@ const Dashboard = () => {
 
   return (
     <div>
-      <h1>Dashboard</h1>
+      <Typography variant="h4" className={classes.title}>
+        Dashboard
+      </Typography>
       {user ? <p>Welcome, {user.username}!</p> : <p>Please log in.</p>}
-    </div>,
+      </div>,
     <Content>
       <Title/>
-      <InfoCardContainer>
+      <Container>
         <InfoCards
           value ="200K" 
           icon ="test"
@@ -64,8 +109,8 @@ const Dashboard = () => {
           icon ="test"
           title ="New Devices (24hr)"
         />
-      </InfoCardContainer>
-      <AlertContainer>
+      </Container>
+      <Container>
         <Alerts 
         hostname="WDT-01"
         message="failed login"
@@ -78,7 +123,12 @@ const Dashboard = () => {
         hostname="WDT-03"
         message="Some other alert thing"
         />
-      </AlertContainer>
+      </Container>
+      <SystemStats />
+      <Container>
+        <Graphs />
+        <Graphs />
+      </Container>
     </Content>
   );
 };
@@ -149,7 +199,7 @@ function Alerts(
       <p>Device: {hostname}</p>
       <p>{message}</p>
       <div className='alerticon'>
-        {/*<Search />*/}
+        {<Search />}
       </div>
     </div>
   );
@@ -160,6 +210,17 @@ function GraphContainer({children}) {
   return (
     <div className='graphContainer'>
       {children}
+    </div>
+  );
+
+}
+
+function Graphs({}) {
+  return (
+    <div >
+      <p>
+        Here are some graphs they are very pretty and show important information from the backend stuff
+      </p>
     </div>
   );
 
