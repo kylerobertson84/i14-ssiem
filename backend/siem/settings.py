@@ -140,7 +140,7 @@ DATABASES = {
     'USER': os.getenv('DB_USER', 'siem_user'),
     'PASSWORD': os.getenv('DB_PASSWORD', 'random_password'),
     'HOST': os.getenv('DB_HOST', 'db'),
-    'PORT': os.getenv('DB_PORT', '3306'),
+    'PORT': os.getenv('DB_PORT', '3307'),
   }
 }
 
