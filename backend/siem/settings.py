@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'alerts',
     'logs',
     'reports',
+    'testapp',
 ]
 
 MIDDLEWARE = [
