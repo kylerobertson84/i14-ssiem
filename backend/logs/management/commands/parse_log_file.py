@@ -88,6 +88,10 @@ def parse_line(line):
                 source_module_type=data['source_module_type'],
                 message=data['message'],
             )
+
+        else:
+            print(f"Line did not match: {line.strip()}")
+            
     except Exception as e:
         print(f"Error processing line: {line}\nError: {e}")
 
@@ -105,6 +109,8 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS('Successfully parsed the log file'))
         except FileNotFoundError:
             self.stdout.write(self.style.ERROR(f'File not found: {logfile}'))
+        except Exception as e:
+            self.stdout.write(self.style.ERROR(f'Error processing log file: {e}'))
 
 
     
