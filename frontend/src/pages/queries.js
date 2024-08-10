@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import SearchBar from './Components/SearchBar'
-import SearchTable from './Components/SearchTable'
+import SearchBar from '../components/SearchBar'
+import SearchTable from '../components/SearchTable'
 
 const Queries = () => {
  const [searchResults, setSearchResults] = useState([]);
