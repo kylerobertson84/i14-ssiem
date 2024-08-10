@@ -1,3 +1,6 @@
+
+version: '1.2'
+
 services:
   frontend:
     build:
@@ -26,7 +29,8 @@ services:
       - DB_USER=${DB_USER:-siem_user}
       - DB_PASSWORD=${DB_PASSWORD:-random_password}
       - DB_HOST=db
-    command: sh -c "python manage.py runserver_plus --print-sql 0.0.0.0:8000"
+      - DB_PORT=3306
+    command: sh -c "while ! nc -z db 3306; do sleep 1; done; python manage.py runserver_plus --print-sql 0.0.0.0:8000"
     depends_on:
       - db
 
@@ -34,7 +38,7 @@ services:
     image: mariadb:10.5
     volumes:
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
-       - mariadb_data:/var/lib/mysql
+      - mariadb_data:/var/lib/mysql
     environment:
       - MYSQL_DATABASE=${DB_NAME:-siem_db}
       - MYSQL_USER=${DB_USER:-siem_user}
