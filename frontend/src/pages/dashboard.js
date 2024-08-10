@@ -1,14 +1,10 @@
 import React, { Children, useEffect, useState } from 'react';
 import axios from 'axios';
-import { Search } from '@mui/icons-material';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/styles';
-import { Grid, Paper, Typography, Box, IconButton } from '@mui/material';
+import { EditCalendar, Search, Notes, Devices, AddToQueue, AssignmentTurnedInOutlined } from '@mui/icons-material';
+import { Link } from 'react-router-dom';
+import { Grid, Paper, Typography, Box } from '@mui/material';
 import Navbar from '../components/NavBar.js';
-
+import { LogsPerDayChart, LogsByDeviceChart } from '../components/dashboardGraphs.js';
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
@@ -56,15 +52,35 @@ const Dashboard = () => {
         {/* Info cards and two graph grid */}
         <Grid item xs={12} md={8}>
           
-          {/* Info cards and two graph spacing */}
+          {/* Info cards and graph spacing */}
           <Grid container spacing={3} >
             
         
-            
+                {/* Info cards styling padding and grid items*/}
+              
               <Grid item xs={12} sm={6} md={4} sx={{ padding: 3}}>
                 <Paper sx={{ padding: 2 }}>
 
-                  <InfoCard title="Logs" value="321k" />
+                  <InfoCard title="Total Devices" value="301" icon={Devices}/>
+
+                </Paper>
+              </Grid>
+              
+              
+              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3}}>
+                <Paper sx={{ padding: 2 }}>
+
+                  <InfoCard title="Logs" value="321k" icon={Notes}/>
+
+                </Paper>
+              </Grid>
+
+
+
+              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3}}>
+                <Paper sx={{ padding: 2 }}>
+
+                  <InfoCard title="New Devices (24hr)" value="7" icon={AddToQueue}/>
 
                 </Paper>
               </Grid>
@@ -73,7 +89,7 @@ const Dashboard = () => {
               <Grid item xs={12} sm={6} md={4} sx={{ padding: 3}}>
                 <Paper sx={{ padding: 2 }}>
 
-                  <InfoCard title="Active Alerts" value="20" />
+                  <InfoCard title="Open Investigation" value="23" icon={Search}/>
 
                 </Paper>
               </Grid>
@@ -82,25 +98,7 @@ const Dashboard = () => {
               <Grid item xs={12} sm={6} md={4} sx={{ padding: 3}}>
                 <Paper sx={{ padding: 2 }}>
 
-                  <InfoCard title="Closed Alerts" value="32" />
-
-                </Paper>
-              </Grid>
-
-
-              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3}}>
-                <Paper sx={{ padding: 2 }}>
-
-                  <InfoCard title="Total Devices" value="301" />
-
-                </Paper>
-              </Grid>
-
-
-              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3}}>
-                <Paper sx={{ padding: 2 }}>
-
-                  <InfoCard title="Events per Day" value="10,556" />
+                  <InfoCard title="Events per Day" value="10,556" icon={EditCalendar}/>
               
                 </Paper>
               </Grid>
@@ -109,7 +107,7 @@ const Dashboard = () => {
               <Grid item xs={12} sm={6} md={4} sx={{ padding: 3}}>
                 <Paper sx={{ padding: 2 }}>
                 
-                  <InfoCard title="New Devices (24hr)" value="6" />
+                  <InfoCard title="Closed Investigations" value="142" icon={AssignmentTurnedInOutlined}/>
               
                 </Paper>
               </Grid>
@@ -120,8 +118,8 @@ const Dashboard = () => {
             <Grid item xs={12} md={6}>
               <Paper sx={{ padding: 2 }}>
                 
-                <Typography variant="h6">Graph 1</Typography>
-                {/* todo make graph serise */}
+                <LogsPerDayChart />
+               
               
               </Paper>
             </Grid>
@@ -129,8 +127,7 @@ const Dashboard = () => {
             <Grid item xs={12} md={6}>
               <Paper sx={{ padding: 2 }}>
                 
-                <Typography variant="h6">Graph 2</Typography>
-                {/* todo make graph serise */}
+                <LogsByDeviceChart />
               
               </Paper>
             </Grid>
@@ -152,8 +149,10 @@ const Dashboard = () => {
             <Alert hostname="WDT-03" message="Failed login attempt" />
             <Alert hostname="WDT-04" message="Windows Defender Detected Malware" />
 
-            <Typography sx={{ textAlign: 'right' }} variant="body2">
-              View more &gt;
+            <Typography variant="body2">
+              <Link style={{ width: "100%", display: 'flex', justifyContent: 'right', textDecoration: 'none', color: 'black'}} to="/alerts">
+                View more &gt;
+              </Link>
             </Typography>
 
           </Paper>
@@ -189,9 +188,11 @@ function Title() {
 }
 
 
+
+
 function InfoCard(
   {
-    icon,
+    icon: IconComponent,
     value,
     title,
   }
@@ -213,7 +214,7 @@ function InfoCard(
       </Box>
       <Box
         sx={{
-          backgroundColor: 'rgba(0, 0, 0, 0.1)',
+          backgroundColor: 'rgba(0,88,255,0.102)',
           borderRadius: '50%',
           padding: 1,
           display: 'flex',
@@ -225,22 +226,16 @@ function InfoCard(
           height: 'auto', // Responsive height
         }}
       >
-        <Search />
+        <IconComponent style={{ fontSize: 30, color: '#0058ff' }} />
       </Box>
     </Box>
   );
 
 }
 
-function AlertContainer({children}) {
-  return (
-    <div className='alertContainer'>
-      <h3 className='alertTitle'>Latest Alerts</h3>
-      {children}
-      <p>view more &gt;</p> {/* to do link this to the alerts page */}
-    </div>
-  );
-}
+
+
+
 
 function Alert(
   {
@@ -249,16 +244,54 @@ function Alert(
   }
 ) {
   return (
-    <div>
-      <p>Device: {hostname}</p>
-      <p>{message}</p>
-      <div className='alerticon'>
-        {<Search />}
-      </div>
-    </div>
+    <Paper sx={{ 
+      padding: 0, 
+      margin: 1.5,
+      borderRadius: 5,
+      backgroundColor: 'rgba(240,20,47,1)'
+      }}>
+    
+      <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 0,
+      }}>
+    
+        <Box 
+          sx={{
+            paddingLeft: 2.5,
+            paddingTop: .25,
+            paddingBottom: .25,
+          }}>
+        
+            <p>Device: {hostname}</p>
+            <p>{message}</p>
+        
+        </Box>
+
+        <Box
+          sx={{
+            padding: 2,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+        
+          <Search />
+        
+        </Box>
+
+      </Box>
+    
+    </Paper>
   );
 
 }
+
+
+
 
 function GraphContainer({children}) {
   return (
@@ -268,6 +301,10 @@ function GraphContainer({children}) {
   );
 
 }
+
+
+
+
 
 function Graphs({}) {
   return (
@@ -279,6 +316,10 @@ function Graphs({}) {
   );
 
 }
+
+
+
+
 
 function SystemStat() {
   return (
