@@ -1,6 +1,4 @@
 
-version: '1.2'
-
 services:
   frontend:
     build:
@@ -20,6 +18,7 @@ services:
       context: ./backend
     volumes:
       - ./backend:/backend
+      - ./log_files:/log_files
     ports:
       - "${DOCKER_BACKEND_PORT:-8000}:8000"
     environment:
