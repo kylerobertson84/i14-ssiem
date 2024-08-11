@@ -41,8 +41,17 @@ def insert_data(data):
             message=data.get('message', '')
         )
 
-def parse_header_fields(string):
-    pass
+def parse_header_fields(header):
+    
+
+    split_pri_from_headers = re.split(r'(?<=\>)', header)
+    pri_str = split_pri_from_headers[0]
+    pri = pri_str.replace('<', '').replace('>', '')
+    # print(pri)
+
+    print(split_pri_from_headers[1])
+
+    
 
 def parse_body_fields(string):
     pass
@@ -62,13 +71,27 @@ def parse_line(line):
         # if " - " in line:
         if re.search(r'(?<!\S)-(?!\S)', line):
 
-
             split_header_from_body_message = line.split(" - ")
 
             split_body_from_message = re.split(r'(?<=\])', split_header_from_body_message[1])
+            
+            header_str = split_header_from_body_message[0]
+            body_str = split_body_from_message[0]
+            message_str = split_body_from_message[1]
 
-            print(split_body_from_message[0])
-            print(" ")
+            parse_header_fields(header_str)
+
+
+            # print(header_str)
+            # print(body_str)
+            # print(message_str)
+            # print(" ")
+
+            
+
+            # print(split_body_from_message[0])
+            # print(" ")
+            # print(message_str)
 
             # print(split_header_from_body_message[0])
             # print(split_header_from_body_message[1])
