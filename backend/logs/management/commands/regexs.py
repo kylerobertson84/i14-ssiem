@@ -1,10 +1,56 @@
 
 import re
 
+LOG_PATTERN_GENERAL = re.compile(
+    r'<(?P<priority>\d+)>'                     
+    r'(?P<version>\d)?\s*'                     
+    r'(?P<timestamp>[\d\-T:\.\+]+)?\s*'        
+    r'(?P<hostname>[^\s]+)?\s*'                
+    r'(?P<app_name>[^\s]+)?\s*'                
+    r'(?P<process_id>\d+)?\s*-?\s*'            
+    r'(?:\[NXLOG@14506\s*)?'                   
+    r'(?:Keywords="(?P<nxlog_keywords>[^"]+)")?\s*'
+    r'(?:EventType="(?P<event_type>[^"]+)")?\s*'
+    r'(?:EventID="(?P<event_id>\d+)")?\s*'
+    r'(?:ProviderGuid="(?P<provider_guid>{[^}]+})")?\s*'
+    r'(?:Version="(?P<version_inner>\d+)")?\s*'
+    r'(?:Task="(?P<task>[^"]+)")?\s*'
+    r'(?:OpcodeValue="(?P<opcode_value>\d+)")?\s*'
+    r'(?:RecordNumber="(?P<record_number>\d+)")?\s*'
+    r'(?:ThreadID="(?P<thread_id>\d+)")?\s*'
+    r'(?:Channel="(?P<channel>[^"]+)")?\s*'
+    r'(?:Domain="(?P<domain>[^"]+)")?\s*'
+    r'(?:AccountName="(?P<account_name>[^"]+)")?\s*'
+    r'(?:UserID="(?P<user_id>[^"]+)")?\s*'
+    r'(?:AccountType="(?P<account_type>[^"]+)")?\s*'
+    r'(?:Category="(?P<category>[^"]+)")?\s*'
+    r'(?:Opcode="(?P<opcode>[^"]+)")?\s*'
+    r'(?:Function="(?P<function>[^"]+)")?\s*'
+    r'(?:Source="(?P<source>[^"]+)")?\s*'
+    r'(?:Line_Number="(?P<line_number>\d+)")?\s*'
+    r'(?:OperationName="(?P<operation_name>[^"]+)")?\s*'
+    r'(?:OperationType="(?P<operation_type>\d+)")?\s*'
+    r'(?:OperationId="(?P<operation_id>\d+)")?\s*'
+    r'(?:ExecutionTimeMS="(?P<execution_time_ms>\d+)")?\s*'
+    r'(?:QueuedTimeMS="(?P<queued_time_ms>\d+)")?\s*'
+    r'(?:SLAThresholdMS="(?P<sla_threshold_ms>\d+)")?\s*'
+    r'(?:ContextType1="(?P<context_type1>\d+)")?\s*'
+    r'(?:ContextInfo1="(?P<context_info1>[^"]+)")?\s*'
+    r'(?:ContextType2="(?P<context_type2>\d+)")?\s*'
+    r'(?:ContextInfo2="(?P<context_info2>[^"]+)")?\s*'
+    r'(?:ContextType3="(?P<context_type3>\d+)")?\s*'
+    r'(?:ContextInfo3="(?P<context_info3>[^"]*)")?\s*'
+    r'(?:EventReceivedTime="(?P<event_received_time>[^"]+)")?\s*'
+    r'(?:SourceModuleName="(?P<source_module_name>[^"]+)")?\s*'
+    r'(?:SourceModuleType="(?P<source_module_type>[^"]+)")?\s*'
+    r'\]?\s*'  
+    r'(?P<message>.+)?$'
+)
+
 # regex for 
 # Microsoft-Windows-Hyper-V-VmSwitch
 
-LOG_PATTERN_1 = re.compile(
+MS_HYPER = re.compile(
     r'<(?P<priority>\d+)>'                     
     r'(?P<version>\d)\s+'                      
     r'(?P<timestamp>[\d\-T:\.\+]+)\s+'         
@@ -41,7 +87,10 @@ LOG_PATTERN_1 = re.compile(
     r'(?P<message>.+)$'
 )
 
-LOG_PATTERN_2 = re.compile(
+# regex for 
+# Microsoft-Windows-Store
+
+MS_STORE = re.compile(
     r'<(?P<priority>\d+)>'                     
     r'(?P<version>\d)\s+'                      
     r'(?P<timestamp>[\d\-T:\.\+]+)\s+'         
@@ -68,6 +117,45 @@ LOG_PATTERN_2 = re.compile(
     r'Function="(?P<function>[^"]+)"\s+'       
     r'Source="(?P<source>[^"]+)"\s+'           
     r'Line_Number="(?P<line_number>\d+)"\s+'   
+    r'EventReceivedTime="(?P<event_received_time>[^"]+)"\s+'  
+    r'SourceModuleName="(?P<source_module_name>[^"]+)"\s+'     
+    r'SourceModuleType="(?P<source_module_type>[^"]+)"\]\s+'   
+    r'(?P<message>.+)$'
+)
+
+# regex for 
+# Microsoft-Windows-Security-Auditing
+
+MS_SECURITY_AUDITING = re.compile(
+    r'<(?P<priority>\d+)>'                     
+    r'(?P<version>\d)\s+'                      
+    r'(?P<timestamp>[\d\-T:\.\+]+)\s+'         
+    r'(?P<hostname>[^\s]+)\s+'                 
+    r'(?P<app_name>[^\s]+)\s+'                 
+    r'(?P<process_id>\d+)\s+-\s+'              
+    r'\[NXLOG@14506\s+'                        
+    r'Keywords="(?P<nxlog_keywords>[^"]+)"\s+' 
+    r'EventType="(?P<event_type>[^"]+)"\s+'    
+    r'EventID="(?P<event_id>\d+)"\s+'          
+    r'ProviderGuid="(?P<provider_guid>{[^}]+})"\s+'  
+    r'Version="(?P<version_inner>\d+)"\s+'     
+    r'Task="(?P<task>\d+)"\s+'               
+    r'OpcodeValue="(?P<opcode_value>\d+)"\s+'  
+    r'RecordNumber="(?P<record_number>\d+)"\s+'
+    r'ActivityID="(?P<activity_id>{[^}]+})"\s+'  
+    r'ThreadID="(?P<thread_id>\d+)"\s+'        
+    r'Channel="(?P<channel>[^"]+)"\s+'         
+    r'Category="(?P<category>[^"]+)"\s+'       
+    r'Opcode="(?P<opcode>[^"]+)"\s+'           
+    r'TargetUserName="(?P<target_username>[^"]+)"\s+'
+    r'TargetDomainName="(?P<target_domainname>[^"]+)"\s+'
+    r'TargetSid="(?P<target_sid>[^"]+)"\s+'     
+    r'SubjectUserSid="(?P<subject_user_sid>[^"]+)"\s+'
+    r'SubjectUserName="(?P<subject_username>[^"]+)"\s+'
+    r'SubjectDomainName="(?P<subject_domainname>[^"]+)"\s+'
+    r'SubjectLogonId="(?P<subject_logon_id>[^"]+)"\s+' 
+    r'CallerProcessId="(?P<caller_process_id>[^"]+)"\s+'
+    r'CallerProcessName="(?P<caller_process_name>[^"]+)"\s+'   
     r'EventReceivedTime="(?P<event_received_time>[^"]+)"\s+'  
     r'SourceModuleName="(?P<source_module_name>[^"]+)"\s+'     
     r'SourceModuleType="(?P<source_module_type>[^"]+)"\]\s+'   
