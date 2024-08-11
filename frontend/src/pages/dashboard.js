@@ -1,10 +1,25 @@
 import React, { Children, useEffect, useState } from 'react';
 import axios from 'axios';
-import { EditCalendar, Search, Notes, Devices, AddToQueue, AssignmentTurnedInOutlined } from '@mui/icons-material';
+
+/* Icons */
+import { 
+  EditCalendar, 
+  Search, 
+  Notes, 
+  Devices, 
+  AddToQueue, 
+  AssignmentTurnedInOutlined, 
+  MonitorHeartOutlined, 
+  MemoryOutlined, 
+  DeveloperBoardOutlined,
+  SaveOutlined } 
+from '@mui/icons-material';
+
+
 import { Link } from 'react-router-dom';
 import { Grid, Paper, Typography, Box } from '@mui/material';
 import Navbar from '../components/NavBar.js';
-import { LogsPerDayChart, LogsByDeviceChart } from '../components/dashboardGraphs.js';
+import { LogsPerDayChart, LogsByDeviceChart, CpuLoadChart, RamUsageChart, DiskUsageChart } from '../components/dashboardGraphs.js';
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
@@ -159,9 +174,14 @@ const Dashboard = () => {
 
           {/* System Stats */}
           <Paper sx={{ padding: 2 }}>
-
-            <Typography variant="h6">SIEM Database Server Status</Typography>
-            <SystemStat />
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Typography variant="h6">
+                SIEM Database Server Status
+              </Typography>
+              <MonitorHeartOutlined sx={{ fontSize: 40, color: '#6c757d' }}/>
+            </Box>
+            <SystemStat diskUsage='75%' ramUsage='34%' CpuLoad='7%' />
+            
 
           </Paper>
 
@@ -293,42 +313,49 @@ function Alert(
 
 
 
-function GraphContainer({children}) {
+
+function SystemStat({
+  diskUsage,
+  ramUsage,
+  CpuLoad
+}) {
   return (
-    <div className='graphContainer'>
-      {children}
-    </div>
-  );
+    <Box sx={{ padding: 2 }}>
+      {/* Disk Usage */}
+      <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2 }}>
+        <SaveOutlined sx={{ fontSize: 40, color: '#6c757d', marginRight: 2 }} />
+        <Box sx={{ flexGrow: 1 }}>
+          <Typography variant="body1" >
+            Disk Used: {diskUsage}
+          </Typography>
+        </Box>
 
-}
+        <DiskUsageChart />
+      </Box>
 
+      {/* RAM Usage */}
+      <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2 }}>
+        <MemoryOutlined sx={{ fontSize: 40, color: '#6c757d', marginRight: 2 }} />
+        <Box sx={{ flexGrow: 1 }}>
+          <Typography variant="body1" >
+            RAM Load: {ramUsage}
+          </Typography>
+        </Box>
+        <RamUsageChart />
+      </Box>
 
+      {/* CPU Load */}
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <DeveloperBoardOutlined sx={{ fontSize: 40, color: '#6c757d', marginRight: 2 }} />
+        <Box sx={{ flexGrow: 1 }}>
+          <Typography variant="body1" >
+            CPU Load: {CpuLoad}
+          </Typography>
+        </Box>
+        <CpuLoadChart />
 
-
-
-function Graphs({}) {
-  return (
-    <div >
-      <p>
-        Here are some graphs they are very pretty and show important information from the backend stuff
-      </p>
-    </div>
-  );
-
-}
-
-
-
-
-
-function SystemStat() {
-  return (
-    <div className='systemStats'>
-      <p>SIEM DB Server Status</p>
-      <p>Disk Used</p>
-      <p>RAM Usage</p>
-      <p>CPU Load</p>
-    </div>
+      </Box>
+    </Box>
   );
 
 }

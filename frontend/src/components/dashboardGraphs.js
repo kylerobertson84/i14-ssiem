@@ -1,5 +1,5 @@
 import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { PieChart, Pie, Cell } from 'recharts';
 import { Typography, Box } from '@mui/material';
 
@@ -20,6 +20,34 @@ const dataPie = [
   { name: 'Linux OS', value: 15, color: '#FFBB28' },
   { name: 'MacOS', value: 10, color: '#FF8042' },
 ];
+
+const diskData = [
+    { name: '5h ago', value: 60 },
+    { name: '4h ago', value: 62 },
+    { name: '3h ago', value: 65 },
+    { name: '2h ago', value: 68 },
+    { name: '1h ago', value: 70 },
+    { name: 'Now', value: 75 },
+  ];
+  
+  const ramData = [
+    { name: '5h ago', value: 65 },
+    { name: '4h ago', value: 40 },
+    { name: '3h ago', value: 24 },
+    { name: '2h ago', value: 55 },
+    { name: '1h ago', value: 60 },
+    { name: 'Now', value: 34 },
+  ];
+  
+  const cpuData = [
+    { name: '5h ago', value: 15 },
+    { name: '4h ago', value: 50 },
+    { name: '3h ago', value: 20 },
+    { name: '2h ago', value: 25 },
+    { name: '1h ago', value: 30 },
+    { name: 'Now', value: 7 },
+  ];
+  
 
 const COLORSBAR = ['#0088FE', '#00C49F'];
 
@@ -54,7 +82,7 @@ export const LogsByDeviceChart = () => (
           data={dataPie}
           cx="50%"
           cy="50%"  
-          outerRadius={90}
+          outerRadius={80}
           fill="#8884d8"
           dataKey="value"
           label
@@ -70,3 +98,55 @@ export const LogsByDeviceChart = () => (
     
     </div>
 );
+
+export const CpuLoadChart = () => (
+    <ResponsiveContainer width="50%" height={80}>
+      <AreaChart data={cpuData} margin={{ top: 10, right: 0, left: 0, bottom: 0 }}>
+        <defs>
+          <linearGradient id="colorCpu" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="#ffc658" stopOpacity={0.8} />
+            <stop offset="95%" stopColor="#ffc658" stopOpacity={0} />
+          </linearGradient>
+        </defs>
+        <XAxis dataKey="name" hide />
+        <YAxis hide />
+        <Tooltip />
+        <Area type="monotone" dataKey="value" stroke="#ffc658" fillOpacity={1} fill="url(#colorCpu)" />
+      </AreaChart>
+    </ResponsiveContainer>
+  );
+  
+
+  export const RamUsageChart = () => (
+    <ResponsiveContainer width="50%" height={80}>
+      <AreaChart data={ramData} margin={{ top: 10, right: 0, left: 0, bottom: 0 }}>
+        <defs>
+          <linearGradient id="colorRam" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8} />
+            <stop offset="95%" stopColor="#82ca9d" stopOpacity={0} />
+          </linearGradient>
+        </defs>
+        <XAxis dataKey="name" hide />
+        <YAxis hide />
+        <Tooltip />
+        <Area type="monotone" dataKey="value" stroke="#82ca9d" fillOpacity={1} fill="url(#colorRam)" />
+      </AreaChart>
+    </ResponsiveContainer>
+  );
+
+  export const DiskUsageChart = () => (
+    <ResponsiveContainer width="50%" height={80}>
+      <AreaChart data={diskData} margin={{ top: 10, right: 0, left: 0, bottom: 0 }}>
+        <defs>
+          <linearGradient id="colorDisk" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
+            <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
+          </linearGradient>
+        </defs>
+        <XAxis dataKey="name" hide/>
+        <YAxis hide />
+        <Tooltip />
+        <Area type="monotone" dataKey="value" stroke="#8884d8" fillOpacity={1} fill="url(#colorDisk)" />
+      </AreaChart>
+    </ResponsiveContainer>
+  );
