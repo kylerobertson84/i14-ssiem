@@ -50,6 +50,8 @@ def parse_line(line):
         ms_match = MS_STORE.match(line)
         ms_security_auditing_match = MS_SECURITY_AUDITING.match(line)
         ms_push_notifications_match = MS_PUSH_NOTIFICATIONS.match(line)
+        ms_wmi_activity = MS_WMI_ACTIVITY.match(line)
+        general_match = LOG_PATTERN_GENERAL.match(line)
 
 
         if ms_hyper_match:
@@ -66,6 +68,14 @@ def parse_line(line):
 
         elif ms_push_notifications_match:
             data = ms_push_notifications_match.groupdict()
+            insert_data(data)
+        
+        elif ms_wmi_activity:
+            data = ms_wmi_activity.groupdict()
+            insert_data(data)
+
+        elif general_match:
+            data = general_match.groupdict()
             insert_data(data)
 
         else:
