@@ -42,16 +42,29 @@ def insert_data(data):
         )
 
 def parse_header_fields(header):
+
+    header_dict = dict()
     
+    # to get the priority value from header
 
     split_pri_from_headers = re.split(r'(?<=\>)', header)
     pri_str = split_pri_from_headers[0]
     pri = pri_str.replace('<', '').replace('>', '')
-    # print(pri)
 
-    print(split_pri_from_headers[1])
+    # to place the rest of the header fields in a list
 
-    
+    headers_list = split_pri_from_headers[1].split(" ")
+
+    #store all header fields in a dict
+
+    header_dict["priority"] = int(pri)
+    header_dict["version"] = int(headers_list[0])
+    header_dict["iso_timestamp"] = headers_list[1]
+    header_dict["hostname"] = headers_list[2]
+    header_dict["app_name"] = headers_list[3]
+    header_dict["process_id"] = headers_list[4]
+
+    return header_dict
 
 def parse_body_fields(string):
     pass
