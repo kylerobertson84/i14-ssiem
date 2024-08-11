@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_extensions',
     'django_filters',
+    'drf_spectacular',
     # Local apps
     'core',
     'accounts',
@@ -75,9 +76,14 @@ REST_FRAMEWORK = {
     # 'DEFAULT_AUTHENTICATION_CLASSES': (
     #     'rest_framework_simplejwt.authentication.JWTAuthentication',
     # ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
+    # COMMENT TO TEST APIs
+    # 'DEFAULT_PERMISSION_CLASSES': (
+    #     'rest_framework.permissions.IsAuthenticated',
+    # ),
+    # ALLOW ALL EASY FOR TESTING
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
     # API THROTTLING to prevent abuse
     'DEFAULT_THROTTLE_CLASSES': (
         'rest_framework.throttling.AnonRateThrottle',
@@ -94,6 +100,15 @@ REST_FRAMEWORK = {
     'DEFAULT_VERSION': '1.0',
     'ALLOWED_VERSIONS': ['1.0'],
     'VERSION_PARAM': 'version',
+    # API Documentation
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+# API Documentation settings
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'SIEM API',
+    'DESCRIPTION': 'API for SIEM application',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
 }
 
 from datetime import timedelta

@@ -1,5 +1,6 @@
 django
 django-filter
+drf-spectacular
 djangorestframework
 mysqlclient
 django-cors-headers

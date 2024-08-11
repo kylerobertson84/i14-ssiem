@@ -17,6 +17,7 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 
 from siem.views import health_check, home
 
@@ -34,7 +35,7 @@ router.register(r'incident-reports', IncidentReportViewSet)
 
 
 urlpatterns = [
-    # path('', home, name='home'),
+    path('', home, name='home'),
     path('admin/', admin.site.urls),
     path('api/health', health_check, name='health_check'),
     path('api/v1/', include(router.urls)),
@@ -45,5 +46,9 @@ urlpatterns = [
     #/api/v1/alerts/
     #/api/v1/assigned-alerts/
     #/api/v1/incident-reports/
+    
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
     
 ]
