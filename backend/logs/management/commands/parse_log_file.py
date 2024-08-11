@@ -49,6 +49,7 @@ def parse_line(line):
         ms_hyper_match = MS_HYPER.match(line)
         ms_match = MS_STORE.match(line)
         ms_security_auditing_match = MS_SECURITY_AUDITING.match(line)
+        ms_push_notifications_match = MS_PUSH_NOTIFICATIONS.match(line)
 
 
         if ms_hyper_match:
@@ -63,6 +64,9 @@ def parse_line(line):
             data = ms_security_auditing_match.groupdict()
             insert_data(data)
 
+        elif ms_push_notifications_match:
+            data = ms_push_notifications_match.groupdict()
+            insert_data(data)
 
         else:
             print(f"Line did not match: {line.strip()}")

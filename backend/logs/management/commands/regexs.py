@@ -161,3 +161,43 @@ MS_SECURITY_AUDITING = re.compile(
     r'SourceModuleType="(?P<source_module_type>[^"]+)"\]\s+'   
     r'(?P<message>.+)$'
 )
+
+# regex for
+# Microsoft-Windows-PushNotifications-Platform
+
+MS_PUSH_NOTIFICATIONS = re.compile(
+    r'<(?P<priority>\d+)>'                     
+    r'(?P<version>\d)\s+'                      
+    r'(?P<timestamp>[\d\-T:\.\+]+)\s+'         
+    r'(?P<hostname>[^\s]+)\s+'                 
+    r'(?P<app_name>[^\s]+)\s+'                 
+    r'(?P<process_id>\d+)\s+-\s+'              
+    r'\[NXLOG@14506\s+'                        
+    r'Keywords="(?P<nxlog_keywords>[^"]+)"\s+' 
+    r'EventType="(?P<event_type>[^"]+)"\s+'    
+    r'EventID="(?P<event_id>\d+)"\s+'          
+    r'ProviderGuid="(?P<provider_guid>{[^}]+})"\s+'  
+    r'Version="(?P<version_inner>\d+)"\s+'     
+    r'Task="(?P<task>\d+)"\s+'               
+    r'OpcodeValue="(?P<opcode_value>\d+)"\s+'  
+    r'RecordNumber="(?P<record_number>\d+)"\s+'
+    r'ThreadID="(?P<thread_id>\d+)"\s+'        
+    r'Channel="(?P<channel>[^"]+)"\s+'         
+    r'Domain="(?P<domain>[^"]+)"\s+'           
+    r'AccountName="(?P<account_name>[^"]+)"\s+'
+    r'UserID="(?P<user_id>[^"]+)"\s+'          
+    r'AccountType="(?P<account_type>[^"]+)"\s+'
+    r'Opcode="(?P<opcode>[^"]+)"\s+'           
+    r'Verb="(?P<verb>[^"]+)"\s+'               
+    r'TrID="(?P<tr_id>\d+)"\s+'               
+    r'Namespace="(?P<namespace>[^"]+)"\s+'     
+    r'CorrelationVector="(?P<correlation_vector>[^"]+)"\s+' 
+    r'Bytes="(?P<bytes>\d+)"\s+'               
+    r'Payload="(?P<payload>[^"]+)"\s+'         
+    r'ConnectionType="(?P<connection_type>\d+)"\s+' 
+    r'EventReceivedTime="(?P<event_received_time>[^"]+)"\s+'  
+    r'SourceModuleName="(?P<source_module_name>[^"]+)"\s+'     
+    r'SourceModuleType="(?P<source_module_type>[^"]+)"\]\s+'   
+    r'(?P<message>.+)$'
+)
+
