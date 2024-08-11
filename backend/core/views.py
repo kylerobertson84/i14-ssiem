@@ -1,3 +1,8 @@
-from django.shortcuts import render
+from utils.baseViewThrottle import BaseViewThrottleSet
 
-# Create your views here.
+from .models import Rule
+from .serializers import RuleSerializer
+
+class RuleViewSet(BaseViewThrottleSet):
+    queryset = Rule.objects.all()
+    serializer_class = RuleSerializer
