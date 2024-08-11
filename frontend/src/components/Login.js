@@ -3,6 +3,10 @@
 
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
+
+import AuthService from '../services/AuthService';
 
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -19,16 +23,20 @@ const Login = () => {
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [message, setMessage] = useState('');
+    const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:8000/api/token/', { username, password });
-            localStorage.setItem('token', response.data.access);
+            await AuthService.login(username, password);
+            navigate('/dashboard'); 
+            
         } catch (error) {
-            console.error('Error logging in', error);
+            setMessage('Login failed. Please check your credentials.');
         }
     };
+   
 
 
     return (
@@ -47,7 +55,7 @@ const Login = () => {
                     <Typography component="h1" variant="h2">
                         Simple SIEM
                     </Typography>
-                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                    <Box component="form" onSubmit={handleLogin} noValidate sx={{ mt: 1 }}>
                         <TextField
                             margin="normal"
                             required
@@ -82,6 +90,7 @@ const Login = () => {
                         >
                             Login
                         </Button>
+                        {message && <p>{message}</p>}
 
                     </Box>
                 </Box>

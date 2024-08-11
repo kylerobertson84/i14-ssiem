@@ -29,7 +29,7 @@ const Dashboard = () => {
   return (
     <div>
       <h1>Dashboard</h1>
-      {user ? <p>Welcome, {user.username}!</p> : <p>Please log in.</p>}
+      {user ? <p>Welcome, {user.username}!</p> : <p>{}</p>}
     </div>
   );
 };

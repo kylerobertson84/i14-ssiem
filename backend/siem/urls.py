@@ -34,7 +34,7 @@ router.register(r'incident-reports', IncidentReportViewSet)
 
 
 urlpatterns = [
-    path('', home, name='home'),
+    # path('', home, name='home'),
     path('admin/', admin.site.urls),
     path('api/health', health_check, name='health_check'),
     path('api/v1/', include(router.urls)),
