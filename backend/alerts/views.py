@@ -2,11 +2,13 @@ from rest_framework import viewsets, filters, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
+
+from utils.baseViewThrottle import BaseViewThrottleSet
 from .models import Alert, AssignedAlert
 from .serializers import AlertSerializer, AssignedAlertSerializer
 from utils.pagination import StandardResultsSetPagination
 
-class AlertViewSet(viewsets.ModelViewSet):
+class AlertViewSet(BaseViewThrottleSet):
     queryset = Alert.objects.all()
     serializer_class = AlertSerializer
     pagination_class = StandardResultsSetPagination

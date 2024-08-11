@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'django_extensions',
+    'django_filters',
     # Local apps
     'core',
     'accounts',
@@ -85,6 +86,8 @@ REST_FRAMEWORK = {
         'anon': '100/day',
         'user': '1000/day',
     },
+    # Django Filter settings
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     # API VERSIONING to allow for future changes
     'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.NamespaceVersioning',
     'DEFAULT_VERSION': '1.0',

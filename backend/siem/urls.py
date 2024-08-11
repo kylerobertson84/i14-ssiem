@@ -17,18 +17,33 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
+
 from siem.views import health_check, home
 
+from rest_framework.routers import DefaultRouter
+from logs.views import BronzeEventDataViewSet, EventDataViewSet
+from alerts.views import AlertViewSet, AssignedAlertViewSet
+from reports.views import IncidentReportViewSet
+
+router = DefaultRouter()
+router.register(r'bronze-events', BronzeEventDataViewSet)
+router.register(r'events', EventDataViewSet)
+router.register(r'alerts', AlertViewSet)
+router.register(r'assigned-alerts', AssignedAlertViewSet)
+router.register(r'incident-reports', IncidentReportViewSet)
 
 
 urlpatterns = [
     path('', home, name='home'),
     path('admin/', admin.site.urls),
     path('api/health', health_check, name='health_check'),
-    # path('api/accounts/', include('accounts.urls')),
-    # path('api/alerts/', include('alerts.urls')),
-    # path('api/logs/', include('logs.urls')),
-    # path('api/reports/', include('reports.urls')),
-    # path('api/auth/', include('djoser.urls')),
-    # path('api/auth/', include('djoser.urls.jwt')),
+    path('api/v1/', include(router.urls)),
+
+    # API paths 
+    #/api/v1/bronze-events/
+    #/api/v1/events/
+    #/api/v1/alerts/
+    #/api/v1/assigned-alerts/
+    #/api/v1/incident-reports/
+    
 ]
