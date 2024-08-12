@@ -138,7 +138,7 @@ def parse_header_fields(header):
     #store all header fields in a dict
 
     header_dict["priority"] = int(pri)
-    header_dict["version"] = int(headers_list[0])
+    header_dict["h_version"] = int(headers_list[0])
     header_dict["iso_timestamp"] = headers_list[1]
     header_dict["hostname"] = headers_list[2]
     header_dict["app_name"] = headers_list[3]
@@ -166,8 +166,8 @@ def parse_body_fields(body):
             # print(key)
     # print(" ")
 
-    print(body_dict)
-    print(" ")
+    # print(body_dict)
+    # print(" ")
     
 
 
@@ -205,6 +205,21 @@ def parse_line(line):
 
             header_dict = parse_header_fields(header_str)
             body_dict = parse_body_fields(body_str)
+
+            # merge the 2 dictionary's
+
+            log_dict = dict()
+            log_dict.update(header_dict)
+            log_dict.update(body_dict)
+            
+            # add message to dict
+
+            log_dict["message"] = message_str
+
+            print(log_dict)
+            print(" ")
+
+
             # strip_list()
 
 
