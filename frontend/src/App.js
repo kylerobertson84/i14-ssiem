@@ -5,7 +5,7 @@ import Login from './components/Login';
 import Dashboard from './pages/dashboard';
 import Investigations from './pages/investigations';
 import Queries from './pages/queries';
-import Reports from './pages/reports';
+import ReportsPage from './pages/reports';
 
 const App = () => {
   return (
@@ -16,7 +16,7 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/investigations" element={<Investigations />} />
         <Route path="/queries" element={<Queries />} />
-        <Route path="/reports" element={<Reports />} />
+        <Route path="/reports" element={<ReportsPage />} />
       </Routes>
     </Router>
   );
