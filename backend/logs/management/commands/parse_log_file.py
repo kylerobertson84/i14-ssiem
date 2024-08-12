@@ -5,93 +5,16 @@ import re
 from datetime import datetime
 from django.utils import timezone
 
-from logs.management.commands.regexs import *
+from logs.management.commands.constants import *
 import re
 
-DICT_KEY_LIST_BODY = [
-# body
-    # 'message_id', ?? not found in log files
-    'Keywords',
-    'EventType',
-    'EventID',
-    'ProviderGuid',
-    'Version',
-    'Task',
-    'OpcodeValue',
-    'RecordNumber',
-    'ActivityID',
-    'ThreadID',
-    'Channel',
-    'Domain',
-    'AccountName',
-    'UserID',
-    'AccountType',
-    'Opcode',
-    'PackageName',
-    'ContainerId',
-    'EventReceivedTime',
-    'SourceModuleName',
-    'SourceModuleType',
-    'Keywords',
-    'EventType',
-    'EventID',
-    'ProviderGuid',
-    'Version',
-    'Task',
-    'OpcodeValue',
-    'RecordNumber',
-    'ThreadID',
-    'Channel',
-    'Domain',
-    'AccountName',
-    'UserID',
-    'AccountType',
-    'Opcode',
-    'RuleId',
-    'RuleName',
-    'Origin',
-    'ApplicationPath',
-    'Direction',
-    'Protocol',
-    'LocalPorts',
-    'RemotePorts',
-    'Action',
-    'Profiles',
-    'LocalAddresses',
-    'RemoteAddresses',
-    'Flags',
-    'Active',
-    'EdgeTraversal',
-    'LooseSourceMapped',
-    'SecurityOptions',
-    'ModifyingUser',
-    'ModifyingApplication',
-    'SchemaVersion',
-    'RuleStatus',
-    'LocalOnlyMapped',
-    'ErrorCode',
-    'EventReceivedTime',
-    'SourceModuleName',
-    'SourceModuleType'
-
-]
-
-BODY_KEY_SET = set(DICT_KEY_LIST_BODY)
-print(len(BODY_KEY_SET))
-
-def strip_list():
-    a_list = list(set(DICT_KEY_LIST_BODY))
-    for e in a_list:
-        print(a_list)
-
-
 def insert_data(data):
-    
 
     # timestamp = datetime.strptime(data['iso_timestamp'], '%Y-%m-%dT%H:%M:%S.%f%z')
     # event_received_time = datetime.strptime(data['event_received_time'], '%Y-%m-%d %H:%M:%S')
     # if event_received_time:
     #         event_received_time = timezone.make_aware(event_received_time, timezone.get_current_timezone())
+
     try:
         BronzeEventData.objects.create(
             # headers
@@ -127,7 +50,7 @@ def insert_data(data):
                 
             # message
                 message=data.get('message', ''),
-                
+
             # extra fields
                 extra_fields = data.get('extra_fields',''),
             )
@@ -173,6 +96,7 @@ def parse_body_fields(body):
     temp_body_dict = {key: value for key, value in matches}
 
     # create a new dict with required fields and filter out unneeded fields
+    # filtered out fields placed in extra_fields_dict
 
     for key, value in temp_body_dict.items():
         if key in BODY_KEY_SET:
@@ -180,35 +104,12 @@ def parse_body_fields(body):
         else:
             extra_fields_dict[key] = value 
 
-            # print(key)
-    # print(" ")
-
-    # print(extra_fields_dict)
-    # print(" ")
-    
-
-
-
-    
-
-    # body_list = body.split(" ")
-    # print(body_list)
-    # print(" ")
-
-
     return body_dict, extra_fields_dict
 
 
 def parse_line(line):
 
     try:
-        # TODO
-
-        """
-        1. Place text line into header, body, message strings
-        2. Parse the header into fields
-        3. Parse the body into fields
-        """
         
         if re.search(r'(?<!\S)-(?!\S)', line):
 
@@ -227,32 +128,13 @@ def parse_line(line):
 
             extra_fields_str = str(extra_fields_dict)
 
-
-
-            # merge the 2 dictionary's
+            # merge the 2 dictionary's into log_dict
 
             log_dict = dict()
-            # log_dict.update(header_dict)
-            # log_dict.update(body_dict)
-            
-            # add message to dict
-
-            # log_dict["message"] = message_str
-
             log_dict = {**header_dict, **body_dict, "message": message_str.strip(), "extra_fields": extra_fields_str}
 
-            # print(log_dict)
-            # print(" ")
-
+         
             insert_data(log_dict)
-
-            # print(log_dict)
-            # print(" ")
-
-
-            # strip_list()
-
-
 
     except Exception as e:
         print(f"Error processing line: {line}\nError: {e}")
