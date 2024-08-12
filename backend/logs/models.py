@@ -26,7 +26,7 @@ class BronzeEventData(BaseModel):
     AccountName = models.CharField(max_length=255,null=True, blank=True)
     UserID = models.CharField(max_length=50,null=True, blank=True)
     AccountType = models.CharField(max_length=50,null=True, blank=True)
-    Opcode = models.CharField(max_length=50,null=True, blank=True)
+    Opcode = models.CharField(max_length=100,null=True, blank=True)
     PackageName = models.CharField(max_length=255,null=True, blank=True)
     ContainerId = models.CharField(max_length=255,null=True, blank=True)
     # EventReceivedTime = models.DateTimeField(null=True, blank=True)
