@@ -32,11 +32,61 @@ DICT_KEY_LIST_BODY = [
     'EventReceivedTime',
     'SourceModuleName',
     'SourceModuleType',
+    'Keywords',
+    'EventType',
+    'EventID',
+    'ProviderGuid',
+    'Version',
+    'Task',
+    'OpcodeValue',
+    'RecordNumber',
+    'ThreadID',
+    'Channel',
+    'Domain',
+    'AccountName',
+    'UserID',
+    'AccountType',
+    'Opcode',
+    'RuleId',
+    'RuleName',
+    'Origin',
+    'ApplicationPath',
+    'Direction',
+    'Protocol',
+    'LocalPorts',
+    'RemotePorts',
+    'Action',
+    'Profiles',
+    'LocalAddresses',
+    'RemoteAddresses',
+    'Flags',
+    'Active',
+    'EdgeTraversal',
+    'LooseSourceMapped',
+    'SecurityOptions',
+    'ModifyingUser',
+    'ModifyingApplication',
+    'SchemaVersion',
+    'RuleStatus',
+    'LocalOnlyMapped',
+    'ErrorCode',
+    'EventReceivedTime',
+    'SourceModuleName',
+    'SourceModuleType'
 
 ]
 
+BODY_KEY_SET = set(DICT_KEY_LIST_BODY)
+print(BODY_KEY_SET)
+
+def strip_list():
+    a_list = list(set(DICT_KEY_LIST_BODY))
+    for e in a_list:
+        print(a_list)
+
 
 def insert_data(data):
+    
 
     timestamp = datetime.strptime(data['timestamp'], '%Y-%m-%dT%H:%M:%S.%f%z')
     event_received_time = datetime.strptime(data['event_received_time'], '%Y-%m-%d %H:%M:%S')
@@ -98,19 +148,28 @@ def parse_header_fields(header):
 
 def parse_body_fields(body):
 
+    temp_body_dict = dict()
+
     body_dict = dict()
 
     # place body fields into a dict
 
     pattern = r'(\w+)="([^"]*)"'
     matches = re.findall(pattern, body)
-    body_dict = {key: value for key, value in matches}
+    temp_body_dict = {key: value for key, value in matches}
 
-    for key in body_dict.keys():
-        print(key)
+    # create a new dict with required fields and filter out unneeded fields
 
-    # print(body_dict)
+    for key, value in temp_body_dict.items():
+        if key in BODY_KEY_SET:
+            body_dict[key] = value
+            # print(key)
+    # print(" ")
+
+    print(body_dict)
     print(" ")
+    
+
 
 
     
@@ -146,6 +205,7 @@ def parse_line(line):
 
             header_dict = parse_header_fields(header_str)
             body_dict = parse_body_fields(body_str)
+            # strip_list()
 
 
 
