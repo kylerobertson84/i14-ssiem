@@ -8,7 +8,32 @@ from django.utils import timezone
 from logs.management.commands.regexs import *
 import re
 
+DICT_KEY_LIST_BODY = [
+# body
+    # 'message_id', ?? not found in log files
+    'Keywords',
+    'EventType',
+    'EventID',
+    'ProviderGuid',
+    'Version',
+    'Task',
+    'OpcodeValue',
+    'RecordNumber',
+    'ActivityID',
+    'ThreadID',
+    'Channel',
+    'Domain',
+    'AccountName',
+    'UserID',
+    'AccountType',
+    'Opcode',
+    'PackageName',
+    'ContainerId',
+    'EventReceivedTime',
+    'SourceModuleName',
+    'SourceModuleType',
 
+]
 
 
 def insert_data(data):
@@ -19,12 +44,15 @@ def insert_data(data):
             event_received_time = timezone.make_aware(event_received_time, timezone.get_current_timezone())
 
     BronzeEventData.objects.create(
+        # headers
             priority=int(data.get('priority', 0)),
             version=int(data.get('version', 0)),
             timestamp=timestamp,
             hostname=data.get('hostname', ''),
             app_name=data.get('app_name', ''),
             process_id=int(data.get('process_id', 0)),
+        
+        # body
             nxlog_keywords=data.get('nxlog_keywords', ''),
             event_type=data.get('event_type', ''),
             event_id=int(data.get('event_id', 0)),
@@ -38,6 +66,8 @@ def insert_data(data):
             event_received_time=event_received_time,
             source_module_name=data.get('source_module_name', ''),
             source_module_type=data.get('source_module_type', ''),
+        
+        # message
             message=data.get('message', '')
         )
 
@@ -66,8 +96,32 @@ def parse_header_fields(header):
 
     return header_dict
 
-def parse_body_fields(string):
-    pass
+def parse_body_fields(body):
+
+    body_dict = dict()
+
+    # place body fields into a dict
+
+    pattern = r'(\w+)="([^"]*)"'
+    matches = re.findall(pattern, body)
+    body_dict = {key: value for key, value in matches}
+
+    for key in body_dict.keys():
+        print(key)
+
+    # print(body_dict)
+    print(" ")
+
+
+    
+
+    # body_list = body.split(" ")
+    # print(body_list)
+    # print(" ")
+
+
+    return body_dict
+
 
 def parse_line(line):
 
@@ -80,8 +134,6 @@ def parse_line(line):
         3. Parse the body into fields
         """
         
-
-        # if " - " in line:
         if re.search(r'(?<!\S)-(?!\S)', line):
 
             split_header_from_body_message = line.split(" - ")
@@ -92,64 +144,10 @@ def parse_line(line):
             body_str = split_body_from_message[0]
             message_str = split_body_from_message[1]
 
-            parse_header_fields(header_str)
+            header_dict = parse_header_fields(header_str)
+            body_dict = parse_body_fields(body_str)
 
 
-            # print(header_str)
-            # print(body_str)
-            # print(message_str)
-            # print(" ")
-
-            
-
-            # print(split_body_from_message[0])
-            # print(" ")
-            # print(message_str)
-
-            # print(split_header_from_body_message[0])
-            # print(split_header_from_body_message[1])
-            
-        
-        
-
-
-
-        
-        # ms_hyper_match = MS_HYPER.match(line)
-        # ms_match = MS_STORE.match(line)
-        # ms_security_auditing_match = MS_SECURITY_AUDITING.match(line)
-        # ms_push_notifications_match = MS_PUSH_NOTIFICATIONS.match(line)
-        # ms_wmi_activity = MS_WMI_ACTIVITY.match(line)
-        # general_match = LOG_PATTERN_GENERAL.match(line)
-
-
-        # if ms_hyper_match:
-        #     data = ms_hyper_match.groupdict()
-        #     insert_data(data)
-
-        # elif ms_match:
-        #     data = ms_match.groupdict()
-        #     insert_data(data)
-        
-        # elif ms_security_auditing_match:
-        #     data = ms_security_auditing_match.groupdict()
-        #     insert_data(data)
-
-        # elif ms_push_notifications_match:
-        #     data = ms_push_notifications_match.groupdict()
-        #     insert_data(data)
-        
-        # elif ms_wmi_activity:
-        #     data = ms_wmi_activity.groupdict()
-        #     insert_data(data)
-
-        # elif general_match:
-        #     data = general_match.groupdict()
-        #     insert_data(data)
-
-        # else:
-        #     print(f"Line did not match: {line.strip()}")
-        #     exit()
 
     except Exception as e:
         print(f"Error processing line: {line}\nError: {e}")
