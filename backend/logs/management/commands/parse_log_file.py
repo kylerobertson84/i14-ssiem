@@ -77,7 +77,7 @@ DICT_KEY_LIST_BODY = [
 ]
 
 BODY_KEY_SET = set(DICT_KEY_LIST_BODY)
-print(BODY_KEY_SET)
+print(len(BODY_KEY_SET))
 
 def strip_list():
     a_list = list(set(DICT_KEY_LIST_BODY))
@@ -88,38 +88,48 @@ def strip_list():
 def insert_data(data):
     
 
-    timestamp = datetime.strptime(data['timestamp'], '%Y-%m-%dT%H:%M:%S.%f%z')
-    event_received_time = datetime.strptime(data['event_received_time'], '%Y-%m-%d %H:%M:%S')
-    if event_received_time:
-            event_received_time = timezone.make_aware(event_received_time, timezone.get_current_timezone())
-
-    BronzeEventData.objects.create(
-        # headers
-            priority=int(data.get('priority', 0)),
-            version=int(data.get('version', 0)),
-            timestamp=timestamp,
-            hostname=data.get('hostname', ''),
-            app_name=data.get('app_name', ''),
-            process_id=int(data.get('process_id', 0)),
-        
-        # body
-            nxlog_keywords=data.get('nxlog_keywords', ''),
-            event_type=data.get('event_type', ''),
-            event_id=int(data.get('event_id', 0)),
-            provider_guid=data.get('provider_guid', ''),
-            task=data.get('task', ''),
-            opcode_value=int(data.get('opcode_value', 0)),
-            record_number=int(data.get('record_number', 0)),
-            thread_id=int(data.get('thread_id', 0)),
-            channel=data.get('channel', ''),
-            opcode=data.get('opcode', ''),
-            event_received_time=event_received_time,
-            source_module_name=data.get('source_module_name', ''),
-            source_module_type=data.get('source_module_type', ''),
-        
-        # message
-            message=data.get('message', '')
-        )
+    # timestamp = datetime.strptime(data['iso_timestamp'], '%Y-%m-%dT%H:%M:%S.%f%z')
+    # event_received_time = datetime.strptime(data['event_received_time'], '%Y-%m-%d %H:%M:%S')
+    # if event_received_time:
+    #         event_received_time = timezone.make_aware(event_received_time, timezone.get_current_timezone())
+    try:
+        BronzeEventData.objects.create(
+            # headers
+                priority=int(data.get('priority', 0)),
+                h_version=int(data.get('h_version', 0)),
+                iso_timestamp= data.get('iso_timestamp',''),
+                hostname=data.get('hostname', ''),
+                app_name=data.get('app_name', ''),
+                process_id= data.get('process_id', ''),
+            
+            # body
+                Keywords = data.get('Keywords', ''),
+                EventType = data.get('EventType', ''),
+                EventID = data.get('EventID', ''),
+                ProviderGuid = data.get('ProviderGuid', ''),
+                Version = data.get('Version', ''),
+                Task = data.get('Task', ''),
+                OpcodeValue = data.get('OpcodeValue', ''),
+                RecordNumber = data.get('RecordNumber', ''),
+                ActivityID = data.get('ActivityID', ''),
+                ThreadID = data.get('ThreadID', ''),
+                Channel = data.get('Channel', ''),
+                Domain = data.get('Domain', ''),
+                AccountName = data.get('AccountName', ''),
+                UserID = data.get('UserID', ''),
+                AccountType = data.get('AccountType', ''),
+                Opcode = data.get('Opcode', ''),
+                PackageName = data.get('PackageName', ''),
+                ContainerId = data.get('ContainerId', ''),
+                EventReceivedTime = data.get('EventReceivedTime', ''),
+                SourceModuleName = data.get('SourceModuleName', ''),
+                SourceModuleType = data.get('SourceModuleType', ''),
+                
+            # message
+                message=data.get('message', '')
+            )
+    except Exception as e:
+        print(f"Error inserting data: {data}\nError: {e}")
 
 def parse_header_fields(header):
 
@@ -209,15 +219,22 @@ def parse_line(line):
             # merge the 2 dictionary's
 
             log_dict = dict()
-            log_dict.update(header_dict)
-            log_dict.update(body_dict)
+            # log_dict.update(header_dict)
+            # log_dict.update(body_dict)
             
             # add message to dict
 
-            log_dict["message"] = message_str
+            # log_dict["message"] = message_str
 
-            print(log_dict)
-            print(" ")
+            log_dict = {**header_dict, **body_dict, "message": message_str.strip()}
+
+            # print(log_dict)
+            # print(" ")
+
+            insert_data(log_dict)
+
+            # print(log_dict)
+            # print(" ")
 
 
             # strip_list()
