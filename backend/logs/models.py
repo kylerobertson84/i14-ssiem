@@ -34,6 +34,7 @@ class BronzeEventData(BaseModel):
     SourceModuleName = models.CharField(max_length=50,null=True, blank=True)
     SourceModuleType = models.CharField(max_length=50,null=True, blank=True)
     message = models.TextField(null=True, blank=True)
+    extra_fields = models.TextField(null=True, blank=True)
     
 
     def __str__(self):

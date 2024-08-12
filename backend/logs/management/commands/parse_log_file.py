@@ -126,7 +126,10 @@ def insert_data(data):
                 SourceModuleType = data.get('SourceModuleType', ''),
                 
             # message
-                message=data.get('message', '')
+                message=data.get('message', ''),
+                
+            # extra fields
+                extra_fields = data.get('extra_fields',''),
             )
     except Exception as e:
         print(f"Error inserting data: {data}\nError: {e}")
@@ -161,6 +164,7 @@ def parse_body_fields(body):
     temp_body_dict = dict()
 
     body_dict = dict()
+    extra_fields_dict = dict()
 
     # place body fields into a dict
 
@@ -173,10 +177,13 @@ def parse_body_fields(body):
     for key, value in temp_body_dict.items():
         if key in BODY_KEY_SET:
             body_dict[key] = value
+        else:
+            extra_fields_dict[key] = value 
+
             # print(key)
     # print(" ")
 
-    # print(body_dict)
+    # print(extra_fields_dict)
     # print(" ")
     
 
@@ -189,7 +196,7 @@ def parse_body_fields(body):
     # print(" ")
 
 
-    return body_dict
+    return body_dict, extra_fields_dict
 
 
 def parse_line(line):
@@ -214,7 +221,13 @@ def parse_line(line):
             message_str = split_body_from_message[1]
 
             header_dict = parse_header_fields(header_str)
-            body_dict = parse_body_fields(body_str)
+            body_dict, extra_fields_dict = parse_body_fields(body_str)
+
+            # to store the extra fields in a string
+
+            extra_fields_str = str(extra_fields_dict)
+
+
 
             # merge the 2 dictionary's
 
@@ -226,7 +239,7 @@ def parse_line(line):
 
             # log_dict["message"] = message_str
 
-            log_dict = {**header_dict, **body_dict, "message": message_str.strip()}
+            log_dict = {**header_dict, **body_dict, "message": message_str.strip(), "extra_fields": extra_fields_str}
 
             # print(log_dict)
             # print(" ")
