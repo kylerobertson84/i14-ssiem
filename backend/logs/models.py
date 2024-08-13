@@ -38,7 +38,7 @@ class BronzeEventData(BaseModel):
     
 
     def __str__(self):
-        return f"{self.timestamp} - {self.app_name} - {self.event_type}"
+        return f"{self.timestamp} - {self.app_name} - {self.EventType}"
     
 
 class EventData(BaseModel):

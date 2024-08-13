@@ -10,3 +10,4 @@ Werkzeug
 gunicorn
 djoser
 djangorestframework-simplejwt
+drf-spectacular

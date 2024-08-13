@@ -1,0 +1,1167 @@
+openapi: 3.0.3
+info:
+  title: SIEM API
+  version: 1.0.0
+  description: API for SIEM application
+paths:
+  /api/v1/alerts/:
+    get:
+      operationId: v1_alerts_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: rule__rule_name
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: severity
+        schema:
+          type: string
+          enum:
+          - CRITICAL
+          - HIGH
+          - LOW
+          - MEDIUM
+        description: |-
+          * `LOW` - Low
+          * `MEDIUM` - Medium
+          * `HIGH` - High
+          * `CRITICAL` - Critical
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - CLOSED
+          - IN_PROGRESS
+          - NEW
+          - RESOLVED
+        description: |-
+          * `NEW` - New
+          * `IN_PROGRESS` - In Progress
+          * `RESOLVED` - Resolved
+          * `CLOSED` - Closed
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAlertList'
+          description: ''
+    post:
+      operationId: v1_alerts_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Alert'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Alert'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Alert'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alert'
+          description: ''
+  /api/v1/alerts/{alert_id}/:
+    get:
+      operationId: v1_alerts_retrieve
+      parameters:
+      - in: path
+        name: alert_id
+        schema:
+          type: integer
+        description: A unique integer value identifying this alert.
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alert'
+          description: ''
+    put:
+      operationId: v1_alerts_update
+      parameters:
+      - in: path
+        name: alert_id
+        schema:
+          type: integer
+        description: A unique integer value identifying this alert.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Alert'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Alert'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Alert'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alert'
+          description: ''
+    patch:
+      operationId: v1_alerts_partial_update
+      parameters:
+      - in: path
+        name: alert_id
+        schema:
+          type: integer
+        description: A unique integer value identifying this alert.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAlert'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAlert'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAlert'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alert'
+          description: ''
+    delete:
+      operationId: v1_alerts_destroy
+      parameters:
+      - in: path
+        name: alert_id
+        schema:
+          type: integer
+        description: A unique integer value identifying this alert.
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/alerts/{alert_id}/assign/:
+    post:
+      operationId: v1_alerts_assign_create
+      parameters:
+      - in: path
+        name: alert_id
+        schema:
+          type: integer
+        description: A unique integer value identifying this alert.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Alert'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Alert'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Alert'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alert'
+          description: ''
+  /api/v1/assigned-alerts/:
+    get:
+      operationId: v1_assigned_alerts_list
+      parameters:
+      - in: query
+        name: alert__severity
+        schema:
+          type: string
+          enum:
+          - CRITICAL
+          - HIGH
+          - LOW
+          - MEDIUM
+        description: |-
+          * `LOW` - Low
+          * `MEDIUM` - Medium
+          * `HIGH` - High
+          * `CRITICAL` - Critical
+      - in: query
+        name: alert__status
+        schema:
+          type: string
+          enum:
+          - CLOSED
+          - IN_PROGRESS
+          - NEW
+          - RESOLVED
+        description: |-
+          * `NEW` - New
+          * `IN_PROGRESS` - In Progress
+          * `RESOLVED` - Resolved
+          * `CLOSED` - Closed
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: user__username
+        schema:
+          type: string
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAssignedAlertList'
+          description: ''
+  /api/v1/assigned-alerts/{id}/:
+    get:
+      operationId: v1_assigned_alerts_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this assigned alert.
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssignedAlert'
+          description: ''
+  /api/v1/bronze-events/:
+    get:
+      operationId: v1_bronze_events_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedBronzeEventDataList'
+          description: ''
+  /api/v1/bronze-events/{id}/:
+    get:
+      operationId: v1_bronze_events_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this bronze event data.
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BronzeEventData'
+          description: ''
+  /api/v1/events/:
+    get:
+      operationId: v1_events_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEventDataList'
+          description: ''
+  /api/v1/events/{event_id}/:
+    get:
+      operationId: v1_events_retrieve
+      parameters:
+      - in: path
+        name: event_id
+        schema:
+          type: integer
+        description: A unique integer value identifying this event data.
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventData'
+          description: ''
+  /api/v1/incident-reports/:
+    get:
+      operationId: v1_incident_reports_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - closed
+          - ongoing
+        description: |-
+          * `ongoing` - Ongoing
+          * `closed` - Closed
+      - in: query
+        name: type
+        schema:
+          type: string
+      - in: query
+        name: user__username
+        schema:
+          type: string
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedIncidentReportList'
+          description: ''
+    post:
+      operationId: v1_incident_reports_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IncidentReport'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/IncidentReport'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/IncidentReport'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IncidentReport'
+          description: ''
+  /api/v1/incident-reports/{id}/:
+    get:
+      operationId: v1_incident_reports_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this incident report.
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IncidentReport'
+          description: ''
+    put:
+      operationId: v1_incident_reports_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this incident report.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IncidentReport'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/IncidentReport'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/IncidentReport'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IncidentReport'
+          description: ''
+    patch:
+      operationId: v1_incident_reports_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this incident report.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedIncidentReport'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedIncidentReport'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedIncidentReport'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IncidentReport'
+          description: ''
+    delete:
+      operationId: v1_incident_reports_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this incident report.
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '204':
+          description: No response body
+components:
+  schemas:
+    Alert:
+      type: object
+      properties:
+        alert_id:
+          type: integer
+          readOnly: true
+        event:
+          allOf:
+          - $ref: '#/components/schemas/EventData'
+          readOnly: true
+        rule:
+          allOf:
+          - $ref: '#/components/schemas/Rule'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/AlertStatusEnum'
+        severity:
+          $ref: '#/components/schemas/SeverityEnum'
+      required:
+      - alert_id
+      - created_at
+      - event
+      - rule
+      - timestamp
+      - updated_at
+    AlertStatusEnum:
+      enum:
+      - NEW
+      - IN_PROGRESS
+      - RESOLVED
+      - CLOSED
+      type: string
+      description: |-
+        * `NEW` - New
+        * `IN_PROGRESS` - In Progress
+        * `RESOLVED` - Resolved
+        * `CLOSED` - Closed
+    AssignedAlert:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        alert:
+          allOf:
+          - $ref: '#/components/schemas/Alert'
+          readOnly: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - alert
+      - created_at
+      - id
+      - updated_at
+      - user
+    BronzeEventData:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        priority:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        h_version:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        iso_timestamp:
+          type: string
+          nullable: true
+          maxLength: 100
+        hostname:
+          type: string
+          nullable: true
+          maxLength: 255
+        app_name:
+          type: string
+          nullable: true
+          maxLength: 255
+        process_id:
+          type: string
+          nullable: true
+          maxLength: 50
+        Keywords:
+          type: string
+          nullable: true
+          maxLength: 50
+        EventType:
+          type: string
+          nullable: true
+          maxLength: 50
+        EventID:
+          type: string
+          nullable: true
+          maxLength: 50
+        ProviderGuid:
+          type: string
+          nullable: true
+          maxLength: 255
+        Version:
+          type: string
+          nullable: true
+          maxLength: 10
+        Task:
+          type: string
+          nullable: true
+          maxLength: 10
+        OpcodeValue:
+          type: string
+          nullable: true
+          maxLength: 10
+        RecordNumber:
+          type: string
+          nullable: true
+          maxLength: 50
+        ActivityID:
+          type: string
+          nullable: true
+          maxLength: 255
+        ThreadID:
+          type: string
+          nullable: true
+          maxLength: 50
+        Channel:
+          type: string
+          nullable: true
+          maxLength: 255
+        Domain:
+          type: string
+          nullable: true
+          maxLength: 255
+        AccountName:
+          type: string
+          nullable: true
+          maxLength: 255
+        UserID:
+          type: string
+          nullable: true
+          maxLength: 50
+        AccountType:
+          type: string
+          nullable: true
+          maxLength: 50
+        Opcode:
+          type: string
+          nullable: true
+          maxLength: 100
+        PackageName:
+          type: string
+          nullable: true
+          maxLength: 255
+        ContainerId:
+          type: string
+          nullable: true
+          maxLength: 255
+        EventReceivedTime:
+          type: string
+          nullable: true
+          maxLength: 100
+        SourceModuleName:
+          type: string
+          nullable: true
+          maxLength: 50
+        SourceModuleType:
+          type: string
+          nullable: true
+          maxLength: 50
+        message:
+          type: string
+          nullable: true
+        extra_fields:
+          type: string
+          nullable: true
+      required:
+      - created_at
+      - id
+      - updated_at
+    EventData:
+      type: object
+      properties:
+        event_id:
+          type: integer
+          readOnly: true
+        source:
+          allOf:
+          - $ref: '#/components/schemas/BronzeEventData'
+          readOnly: true
+        rule:
+          allOf:
+          - $ref: '#/components/schemas/Rule'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        timestamp:
+          type: string
+          format: date-time
+      required:
+      - created_at
+      - event_id
+      - rule
+      - source
+      - timestamp
+      - updated_at
+    IncidentReport:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        source:
+          allOf:
+          - $ref: '#/components/schemas/BronzeEventData'
+          readOnly: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        type:
+          type: string
+          maxLength: 20
+        status:
+          $ref: '#/components/schemas/IncidentReportStatusEnum'
+        rules:
+          type: string
+        description:
+          type: string
+      required:
+      - created_at
+      - description
+      - id
+      - rules
+      - source
+      - status
+      - type
+      - updated_at
+      - user
+    IncidentReportStatusEnum:
+      enum:
+      - ongoing
+      - closed
+      type: string
+      description: |-
+        * `ongoing` - Ongoing
+        * `closed` - Closed
+    PaginatedAlertList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Alert'
+    PaginatedAssignedAlertList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssignedAlert'
+    PaginatedBronzeEventDataList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/BronzeEventData'
+    PaginatedEventDataList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventData'
+    PaginatedIncidentReportList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/IncidentReport'
+    PatchedAlert:
+      type: object
+      properties:
+        alert_id:
+          type: integer
+          readOnly: true
+        event:
+          allOf:
+          - $ref: '#/components/schemas/EventData'
+          readOnly: true
+        rule:
+          allOf:
+          - $ref: '#/components/schemas/Rule'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/AlertStatusEnum'
+        severity:
+          $ref: '#/components/schemas/SeverityEnum'
+    PatchedIncidentReport:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        source:
+          allOf:
+          - $ref: '#/components/schemas/BronzeEventData'
+          readOnly: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        type:
+          type: string
+          maxLength: 20
+        status:
+          $ref: '#/components/schemas/IncidentReportStatusEnum'
+        rules:
+          type: string
+        description:
+          type: string
+    Rule:
+      type: object
+      properties:
+        rule_id:
+          type: integer
+          readOnly: true
+        rule_name:
+          type: string
+          maxLength: 30
+        description:
+          type: string
+          maxLength: 255
+        conditions:
+          type: string
+      required:
+      - conditions
+      - description
+      - rule_id
+      - rule_name
+    SeverityEnum:
+      enum:
+      - LOW
+      - MEDIUM
+      - HIGH
+      - CRITICAL
+      type: string
+      description: |-
+        * `LOW` - Low
+        * `MEDIUM` - Medium
+        * `HIGH` - High
+        * `CRITICAL` - Critical
+    User:
+      type: object
+      properties:
+        user_id:
+          type: string
+          format: uuid
+          readOnly: true
+        username:
+          type: string
+          maxLength: 15
+        email:
+          type: string
+          format: email
+          nullable: true
+          maxLength: 80
+      required:
+      - user_id
+      - username
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
