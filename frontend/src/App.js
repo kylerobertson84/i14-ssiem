@@ -16,15 +16,11 @@ import ProtectedLayout from './components/ProtectedLayout';
 const App = () => (
   <Router>
       <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route element={<PrivateRoute />}>
-              <Route element={<ProtectedLayout />}>
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/investigations" element={<Investigations />} />
-                  <Route path="/queries" element={<Queries />} />
-                  <Route path="/reports" element={<Reports />} />
-              </Route>
-          </Route>
+            <Route path="/login" element={<Login />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/investigations" element={<Investigations />} />
+            <Route path="/queries" element={<Queries />} />
+            <Route path="/reports" element={<Reports />} />
       </Routes>
   </Router>
 );

@@ -1,7 +1,25 @@
-
-
-import React, { useEffect, useState } from 'react';
+import React, { Children, useEffect, useState } from 'react';
 import axios from 'axios';
+
+/* Icons */
+import { 
+  EditCalendar, 
+  Search, 
+  Notes, 
+  Devices, 
+  AddToQueue, 
+  AssignmentTurnedInOutlined, 
+  MonitorHeartOutlined, 
+  MemoryOutlined, 
+  DeveloperBoardOutlined,
+  SaveOutlined } 
+from '@mui/icons-material';
+
+
+import { Link } from 'react-router-dom';
+import { Grid, Paper, Typography, Box } from '@mui/material';
+import Navbar from '../components/NavBar.js';
+import { LogsPerDayChart, LogsByDeviceChart, CpuLoadChart, RamUsageChart, DiskUsageChart } from '../components/dashboardGraphs.js';
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
@@ -28,10 +46,316 @@ const Dashboard = () => {
 
   return (
     <div>
-      <h1>Dashboard</h1>
-      {user ? <p>Welcome, {user.username}!</p> : <p>{}</p>}
+      <Navbar />
+      <Box
+      sx={{
+        marginBottom: 5,
+        marginLeft: 5,
+        marginRight: 5,
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+      >
+
+      {/* Dashboard text, possibly make this a component that dynamically gets the page name?? */}
+      <Title />
+      
+      
+      {/* Alerts, database stats and graph grids */}
+      <Grid container spacing={3}>
+        
+        {/* Info cards and two graph grid */}
+        <Grid item xs={12} md={8}>
+          
+          {/* Info cards and graph spacing */}
+          <Grid container spacing={3} >
+            
+        
+                {/* Info cards styling padding and grid items*/}
+              
+              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3}}>
+                <Paper sx={{ padding: 2 }}>
+
+                  <InfoCard title="Total Devices" value="301" icon={Devices}/>
+
+                </Paper>
+              </Grid>
+              
+              
+              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3}}>
+                <Paper sx={{ padding: 2 }}>
+
+                  <InfoCard title="Logs" value="321k" icon={Notes}/>
+
+                </Paper>
+              </Grid>
+
+
+
+              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3}}>
+                <Paper sx={{ padding: 2 }}>
+
+                  <InfoCard title="New Devices (24hr)" value="7" icon={AddToQueue}/>
+
+                </Paper>
+              </Grid>
+
+
+              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3}}>
+                <Paper sx={{ padding: 2 }}>
+
+                  <InfoCard title="Open Investigation" value="23" icon={Search}/>
+
+                </Paper>
+              </Grid>
+
+
+              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3}}>
+                <Paper sx={{ padding: 2 }}>
+
+                  <InfoCard title="Events per Day" value="10,556" icon={EditCalendar}/>
+              
+                </Paper>
+              </Grid>
+            
+            
+              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3}}>
+                <Paper sx={{ padding: 2 }}>
+                
+                  <InfoCard title="Closed Investigations" value="142" icon={AssignmentTurnedInOutlined}/>
+              
+                </Paper>
+              </Grid>
+
+            
+
+            {/* Graphs Section */}
+            <Grid item xs={12} md={6}>
+              <Paper sx={{ padding: 2 }}>
+                
+                <LogsPerDayChart />
+               
+              
+              </Paper>
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              <Paper sx={{ padding: 2 }}>
+                
+                <LogsByDeviceChart />
+              
+              </Paper>
+            </Grid>
+          </Grid>
+          
+        </Grid>
+
+        {/* Alerts Section */}
+        <Grid item xs={12} md={4}>
+
+          <Paper sx={{ padding: 2, marginBottom: 3 }}>
+
+            <Typography variant="h6" gutterBottom>
+              Latest Alerts
+            </Typography>
+
+            <Alert hostname="WDT-01" message="Failed login attempt" />
+            <Alert hostname="WDT-02" message="New User Account Created" />
+            <Alert hostname="WDT-03" message="Failed login attempt" />
+            <Alert hostname="WDT-04" message="Windows Defender Detected Malware" />
+
+            <Typography variant="body2">
+              <Link style={{ width: "100%", display: 'flex', justifyContent: 'right', textDecoration: 'none', color: 'black'}} to="/alerts">
+                View more &gt;
+              </Link>
+            </Typography>
+
+          </Paper>
+
+          {/* System Stats */}
+          <Paper sx={{ padding: 2 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Typography variant="h6">
+                SIEM Database Server Status
+              </Typography>
+              <MonitorHeartOutlined sx={{ fontSize: 40, color: '#6c757d' }}/>
+            </Box>
+            <SystemStat diskUsage='75%' ramUsage='34%' CpuLoad='7%' />
+            
+
+          </Paper>
+
+        </Grid>
+
+      </Grid>
+
+      </Box>
+    
     </div>
   );
 };
 
 export default Dashboard;
+
+
+
+function Title() {
+  return (
+  <div className='title'>
+    <h1>Dashboard</h1>
+  </div>
+  );
+}
+
+
+
+
+function InfoCard(
+  {
+    icon: IconComponent,
+    value,
+    title,
+  }
+){
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 2,
+      }}
+    >
+      <Box>
+        <Typography variant="subtitle1">{title}</Typography>
+        <Typography variant="h6">
+          <b>{value}</b>
+        </Typography>
+      </Box>
+      <Box
+        sx={{
+          backgroundColor: 'rgba(0,88,255,0.102)',
+          borderRadius: '50%',
+          padding: 1,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minWidth: '2.5rem', // Minimum size
+          minHeight: '2.5rem', // Minimum size
+          width: 'auto', // Responsive width
+          height: 'auto', // Responsive height
+        }}
+      >
+        <IconComponent style={{ fontSize: 30, color: '#0058ff' }} />
+      </Box>
+    </Box>
+  );
+
+}
+
+
+
+
+
+function Alert(
+  {
+    hostname,
+    message,
+  }
+) {
+  return (
+    <Paper sx={{ 
+      padding: 0, 
+      margin: 1.5,
+      borderRadius: 5,
+      backgroundColor: 'rgba(240,20,47,1)'
+      }}>
+    
+      <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 0,
+      }}>
+    
+        <Box 
+          sx={{
+            paddingLeft: 2.5,
+            paddingTop: .25,
+            paddingBottom: .25,
+          }}>
+        
+            <p>Device: {hostname}</p>
+            <p>{message}</p>
+        
+        </Box>
+
+        <Box
+          sx={{
+            padding: 2,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+        
+          <Search />
+        
+        </Box>
+
+      </Box>
+    
+    </Paper>
+  );
+
+}
+
+
+
+
+
+function SystemStat({
+  diskUsage,
+  ramUsage,
+  CpuLoad
+}) {
+  return (
+    <Box sx={{ padding: 2 }}>
+      {/* Disk Usage */}
+      <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2 }}>
+        <SaveOutlined sx={{ fontSize: 40, color: '#6c757d', marginRight: 2 }} />
+        <Box sx={{ flexGrow: 1 }}>
+          <Typography variant="body1" >
+            Disk Used: {diskUsage}
+          </Typography>
+        </Box>
+
+        <DiskUsageChart />
+      </Box>
+
+      {/* RAM Usage */}
+      <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2 }}>
+        <MemoryOutlined sx={{ fontSize: 40, color: '#6c757d', marginRight: 2 }} />
+        <Box sx={{ flexGrow: 1 }}>
+          <Typography variant="body1" >
+            RAM Load: {ramUsage}
+          </Typography>
+        </Box>
+        <RamUsageChart />
+      </Box>
+
+      {/* CPU Load */}
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <DeveloperBoardOutlined sx={{ fontSize: 40, color: '#6c757d', marginRight: 2 }} />
+        <Box sx={{ flexGrow: 1 }}>
+          <Typography variant="body1" >
+            CPU Load: {CpuLoad}
+          </Typography>
+        </Box>
+        <CpuLoadChart />
+
+      </Box>
+    </Box>
+  );
+
+}
