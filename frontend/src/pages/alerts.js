@@ -1,10 +1,13 @@
 
 import React from 'react';
+import Navbar from '../components/NavBar';
+
 
 const Alerts = () => {
   return (
     <div>
-      <h1>Alerts</h1>
+        <Navbar/>
+        <h1>Alerts</h1>
       
     </div>
   );
