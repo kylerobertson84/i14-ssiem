@@ -10,6 +10,20 @@ import re
 SEVERITY_RE = r'(?<=\>)'
 DATE_TIME_RE = r'(\w{3}\s+\d{1,2}\s+\d{2}:\d{2}:\d{2})'
 
+def insert_data(a_dict):
+
+    try:
+        RouterData.objects.create(
+            severity = a_dict.get('severity', 0),
+            date_time = a_dict.get('date_time', ''),
+            hostname = a_dict.get('hostname', ''),
+            process = a_dict.get('process', ''),
+            message = a_dict.get('message', ''),
+        )
+    
+    except Exception as e:
+        print(f"Error inserting data: {a_dict}\nError: {e}")
+
 
 
 def parse_line(line):
@@ -35,8 +49,8 @@ def parse_line(line):
 
         strip_str = split_date_from_header[2].strip()
         split_host_from_header = strip_str.split()
-        host_name = split_host_from_header[0]
-        # print(host_name)
+        hostname = split_host_from_header[0]
+        # print(hostname)
 
         # to get process
 
@@ -78,16 +92,12 @@ def parse_line(line):
 
         log_dict["severity"] = int(severity)
         log_dict["date_time"] = date_time
-        log_dict["host_name"] = host_name
+        log_dict["hostname"] = hostname
         log_dict["process"] = process
         log_dict["message"] = message
 
-        print(log_dict)
+        insert_data(log_dict)
             
-
-
-
-        
 
 
     except Exception as e:
