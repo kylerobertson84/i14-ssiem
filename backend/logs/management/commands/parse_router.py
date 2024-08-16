@@ -54,6 +54,7 @@ def parse_line(line):
            
         
         # to get the message
+
         # check if element contains a comma and remove it if it does
 
         if "," in split_host_from_header[1]: 
@@ -70,8 +71,18 @@ def parse_line(line):
             
             slice_list = split_host_from_header[2:]
             message = " ".join(slice_list)
+
+        # place router fields into a dictionary
         
-        print(message)
+        log_dict = dict()
+
+        log_dict["severity"] = int(severity)
+        log_dict["date_time"] = date_time
+        log_dict["host_name"] = host_name
+        log_dict["process"] = process
+        log_dict["message"] = message
+
+        print(log_dict)
             
 
 
