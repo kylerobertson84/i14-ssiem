@@ -7,7 +7,7 @@ COPY webpack.config.js ./
 
 RUN npm install
 
-RUN npm install @mui/material @emotion/react @emotion/styled
+
 
 COPY . .
 
