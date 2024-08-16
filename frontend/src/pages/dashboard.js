@@ -1,6 +1,7 @@
 import React, { Children, useEffect, useState } from 'react';
 import axios from 'axios';
 
+
 /* Icons */
 import { 
   EditCalendar, 
@@ -23,7 +24,11 @@ import { LogsPerDayChart, LogsByDeviceChart, CpuLoadChart, RamUsageChart, DiskUs
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
+
+ 
   useEffect(() => {
     const fetchUser = async () => {
       const token = localStorage.getItem('token');
@@ -44,153 +49,130 @@ const Dashboard = () => {
     fetchUser();
   }, []);
 
+  useEffect(() => {
+    fetch('/data.json')
+      .then(response => response.json())
+      .then(json => {
+        setData(json);
+        setLoading(false); // Data is now loaded
+      })
+      .catch(error => {
+        console.error('Error loading data:', error);
+        setLoading(false); // Even if there's an error, stop the loading state
+      });
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!data) {
+    return <div>Error loading data.</div>;
+  }
+
+
   return (
     <div>
       <Navbar />
       <Box
-      sx={{
-        marginBottom: 5,
-        marginLeft: 5,
-        marginRight: 5,
-        display: 'flex',
-        flexDirection: 'column',
-      }}
+        sx={{
+          marginBottom: 5,
+          marginLeft: 5,
+          marginRight: 5,
+          display: 'flex',
+          flexDirection: 'column',
+        }}
       >
-
-      {/* Dashboard text, possibly make this a component that dynamically gets the page name?? */}
-      <Title />
-      
-      
-      {/* Alerts, database stats and graph grids */}
-      <Grid container spacing={3}>
+        <Title />
         
-        {/* Info cards and two graph grid */}
-        <Grid item xs={12} md={8}>
+        {/* Alerts, database stats and graph grids */}
+        <Grid container spacing={3}>
           
-          {/* Info cards and graph spacing */}
-          <Grid container spacing={3} >
+          {/* Info cards and two graph grid */}
+          <Grid item xs={12} md={8}>
             
-        
-                {/* Info cards styling padding and grid items*/}
+            {/* Info cards and graph spacing */}
+            <Grid container spacing={3} >
               
-              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3}}>
+              {/* Info cards styling padding and grid items */}
+              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3 }}>
                 <Paper sx={{ padding: 2 }}>
-
-                  <InfoCard title="Total Devices" value="301" icon={Devices}/>
-
+                  <InfoCard title="Total Devices" value={data.infoCards.values[0]} icon={Devices}/>
                 </Paper>
               </Grid>
               
-              
-              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3}}>
+              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3 }}>
                 <Paper sx={{ padding: 2 }}>
-
-                  <InfoCard title="Logs" value="321k" icon={Notes}/>
-
+                  <InfoCard title="Logs" value={data.infoCards.values[1]} icon={Notes}/>
                 </Paper>
               </Grid>
 
-
-
-              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3}}>
+              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3 }}>
                 <Paper sx={{ padding: 2 }}>
-
-                  <InfoCard title="New Devices (24hr)" value="7" icon={AddToQueue}/>
-
+                  <InfoCard title="New Devices (24hr)" value={data.infoCards.values[2]} icon={AddToQueue}/>
                 </Paper>
               </Grid>
 
-
-              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3}}>
+              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3 }}>
                 <Paper sx={{ padding: 2 }}>
-
-                  <InfoCard title="Open Investigation" value="23" icon={Search}/>
-
+                  <InfoCard title="Open Investigations" value={data.infoCards.values[3]} icon={Search}/>
                 </Paper>
               </Grid>
 
-
-              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3}}>
+              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3 }}>
                 <Paper sx={{ padding: 2 }}>
-
-                  <InfoCard title="Events per Day" value="10,556" icon={EditCalendar}/>
-              
-                </Paper>
-              </Grid>
-            
-            
-              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3}}>
-                <Paper sx={{ padding: 2 }}>
-                
-                  <InfoCard title="Closed Investigations" value="142" icon={AssignmentTurnedInOutlined}/>
-              
+                  <InfoCard title="Events per Day" value={data.infoCards.values[4]} icon={EditCalendar}/>
                 </Paper>
               </Grid>
 
-            
+              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3 }}>
+                <Paper sx={{ padding: 2 }}>
+                  <InfoCard title="Closed Investigations" value={data.infoCards.values[5]} icon={AssignmentTurnedInOutlined}/>
+                </Paper>
+              </Grid>
 
-            {/* Graphs Section */}
-            <Grid item xs={12} md={6}>
-              <Paper sx={{ padding: 2 }}>
-                
-                <LogsPerDayChart />
-               
-              
-              </Paper>
-            </Grid>
+              {/* Graphs Section */}
+              <Grid item xs={12} md={6}>
+                <Paper sx={{ padding: 2 }}>
+                  <LogsPerDayChart />
+                </Paper>
+              </Grid>
 
-            <Grid item xs={12} md={6}>
-              <Paper sx={{ padding: 2 }}>
-                
-                <LogsByDeviceChart />
-              
-              </Paper>
+              <Grid item xs={12} md={6}>
+                <Paper sx={{ padding: 2 }}>
+                  <LogsByDeviceChart />
+                </Paper>
+              </Grid>
             </Grid>
           </Grid>
-          
-        </Grid>
 
-        {/* Alerts Section */}
-        <Grid item xs={12} md={4}>
+          {/* Alerts Section */}
+          <Grid item xs={12} md={4}>
+            <Paper sx={{ padding: 2, marginBottom: 3 }}>
+              <Typography variant="h6" gutterBottom>Latest Alerts</Typography>
+              <Alert hostname="WDT-01" message="Failed login attempt" />
+              <Alert hostname="WDT-02" message="New User Account Created" />
+              <Alert hostname="WDT-03" message="Failed login attempt" />
+              <Alert hostname="WDT-04" message="Windows Defender Detected Malware" />
 
-          <Paper sx={{ padding: 2, marginBottom: 3 }}>
-
-            <Typography variant="h6" gutterBottom>
-              Latest Alerts
-            </Typography>
-
-            <Alert hostname="WDT-01" message="Failed login attempt" />
-            <Alert hostname="WDT-02" message="New User Account Created" />
-            <Alert hostname="WDT-03" message="Failed login attempt" />
-            <Alert hostname="WDT-04" message="Windows Defender Detected Malware" />
-
-            <Typography variant="body2">
-              <Link style={{ width: "100%", display: 'flex', justifyContent: 'right', textDecoration: 'none', color: 'black'}} to="/alerts">
-                View more &gt;
-              </Link>
-            </Typography>
-
-          </Paper>
-
-          {/* System Stats */}
-          <Paper sx={{ padding: 2 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Typography variant="h6">
-                SIEM Database Server Status
+              <Typography variant="body2">
+                <Link style={{ width: "100%", display: 'flex', justifyContent: 'right', textDecoration: 'none', color: 'black' }} to="/alerts">
+                  View more &gt;
+                </Link>
               </Typography>
-              <MonitorHeartOutlined sx={{ fontSize: 40, color: '#6c757d' }}/>
-            </Box>
-            <SystemStat diskUsage='75%' ramUsage='34%' CpuLoad='7%' />
-            
+            </Paper>
 
-          </Paper>
-
+            {/* System Stats */}
+            <Paper sx={{ padding: 2 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Typography variant="h6">SIEM Database Server Status</Typography>
+                <MonitorHeartOutlined sx={{ fontSize: 40, color: '#6c757d' }}/>
+              </Box>
+              <SystemStat diskUsage='75%' ramUsage='34%' CpuLoad='7%' />
+            </Paper>
+          </Grid>
         </Grid>
-
-      </Grid>
-
       </Box>
-    
     </div>
   );
 };
