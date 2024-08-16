@@ -6,7 +6,7 @@ from datetime import datetime
 from django.utils import timezone
 
 from logs.management.commands.constants import *
-import re
+
 
 def insert_data(data):
 
