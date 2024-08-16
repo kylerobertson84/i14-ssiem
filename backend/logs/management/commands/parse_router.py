@@ -41,7 +41,7 @@ def parse_line(line):
         # to get process
 
         check_process = split_host_from_header[1]
-        # print(check_process)
+        # print(split_host_from_header)
 
         # check if process contains a comma:
 
@@ -53,7 +53,27 @@ def parse_line(line):
             process = check_process.replace(":","")
            
         
-        print(process)
+        # to get the message
+        # check if element contains a comma and remove it if it does
+
+        if "," in split_host_from_header[1]: 
+            split_host_from_header[1] = split_host_from_header[1].replace(",", " ", 1)
+            list_to_string = " ".join(split_host_from_header)
+            split_string = list_to_string.split()
+
+            # remove the first 2 elements from the list
+
+            slice_list = split_string[2:]
+            message = " ".join(slice_list)
+        
+        else:
+            
+            slice_list = split_host_from_header[2:]
+            message = " ".join(slice_list)
+        
+        print(message)
+            
+
 
 
         
