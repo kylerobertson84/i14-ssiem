@@ -3,8 +3,28 @@ from django.core.management.base import BaseCommand
 from logs.models import *
 import re
 
-def parse_line():
-    pass
+# def parse_fields():
+
+#     field_dict = dict()
+
+    
+
+
+def parse_line(line):
+
+    try:
+
+        split_sev_from_header = re.split(r'(?<=\>)', line)
+        sev_str = split_sev_from_header[0]
+        severity = sev_str.replace('<', '').replace('>', '')
+
+        print(severity[0])
+
+        
+
+
+    except Exception as e:
+        print(f"Error processing line: {line}\nError: {e}")
 
 
 class Command(BaseCommand):
