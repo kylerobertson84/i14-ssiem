@@ -38,7 +38,7 @@ class BronzeEventData(BaseModel):
     
 
     def __str__(self):
-        return f"{self.timestamp} - {self.app_name} - {self.EventType}"
+        return f"{self.iso_timestamp} - {self.app_name} - {self.EventType}"
     
 
 class EventData(BaseModel):
@@ -49,3 +49,16 @@ class EventData(BaseModel):
 
     def __str__(self):
         return f"Event {self.id} - {self.timestamp}"
+
+class RouterData(BaseModel):
+    severity = models.IntegerField(null = True, blank = True)
+    # timestamp = models.DateTimeField(null = True, blank = True)
+    date_time = models.CharField(max_length=100,null=True,blank=True)
+    hostname = models.CharField(max_length=100,null=True,blank=True)
+    process = models.CharField(max_length=100,null=True,blank=True)
+    message = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.date_time} - {self.hostname} - {self.process}"
+
+
