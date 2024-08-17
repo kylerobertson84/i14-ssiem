@@ -17,6 +17,9 @@
       "142"
     ]
 },
+
+
+
   "comment for below because no comments allowed in json":[
     "Could use /api/v1/alerts/ which should return then i could theortetically use event.source.hostname and rule.description",
     "The only problem is that i will need the last 4 returned and i need to do it in a way in which the results are returned in an array",
@@ -37,6 +40,8 @@
       "Windows Defender Detected Malware"
     ]
   },
+
+
   "graphs": {
     "comment for below because no comments allowed in json":[
     "Need this to be returned as i have it below, the graph stuff i do not understand how it works fully and this array type stuff seems to be how",
@@ -53,6 +58,8 @@
       { "name": "Jan 6", "Computer": 239, "Networking": 400 },
       { "name": "Jan 7", "Computer": 349, "Networking": 300 }
     ],
+
+
     "comment for below because no comments allowed in json1":[
     "again this is similar to the above but it just needs the device type (we can just go with network and computer) ",
     "and then the percentage of the total logs which that device has generated, we could just do it over the last day or 2 instead of querying the db",
@@ -64,6 +71,9 @@
       { "name": "Linux OS", "value": 15 },
       { "name": "MacOS", "value": 10 }
     ],
+
+
+
     "comment for below because no comments allowed in json2":[
     "pretty self explainitory i just need disk usage percentage for the last 5 hours and then the present value",
     "Again like the graphs above i do need the name as thats the thing that the recharts looks for to lable the graph"
@@ -76,6 +86,9 @@
       { "name": "1h ago", "value": 70 },
       { "name": "Now", "value": 75 }
     ],
+
+
+
     "comment for below because no comments allowed in json3":[
     "pretty self explainitory i just need ram usage percentage for the last 5 hours and then the present value",
     "Again like the graphs above i do need the name as thats the thing that the recharts looks for to lable the graph"
@@ -88,6 +101,9 @@
       { "name": "1h ago", "value": 60 },
       { "name": "Now", "value": 34 }
     ],
+
+
+    
     "comment for below because no comments allowed in json4":[
     "pretty self explainitory i just need cpu usage percentage for the last 5 hours and then the present value",
     "Again like the graphs above i do need the name as thats the thing that the recharts looks for to lable the graph"
