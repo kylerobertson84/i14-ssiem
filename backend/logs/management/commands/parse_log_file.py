@@ -21,6 +21,7 @@ def insert_data(data):
                 priority=int(data.get('priority', 0)),
                 h_version=int(data.get('h_version', 0)),
                 iso_timestamp= data.get('iso_timestamp',''),
+                processed = data.get('processed', False),
                 hostname=data.get('hostname', ''),
                 app_name=data.get('app_name', ''),
                 process_id= data.get('process_id', ''),
