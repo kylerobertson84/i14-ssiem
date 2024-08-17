@@ -1,31 +1,53 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Alert from '../components/Alerts';
 import '../pages/Design.css';
+import alertsData from '../data/alerts.json';  // Importing pre-saved alerts data
 
 const AlertsPage = () => {
-    const alerts = [
-        //This is currently using fixed data but next iteration will gather the data from the backend and then use that. This is currently only being used to help with the designing
-        {
-            id: 126,
-            hostname: 'WDT-01',
-            event_id: 4740,
-            severity: 'info',
-            event_time: '2024-03-12 16:05:16',
-            message: 'A user account was locked out',
-            ip_address: '192.168.0.196',
-            user_id: 'S-1-5-18',
-            rule_triggered: 'Account lockout',
-            comments: ''
-        },
-        // Add more alert objects here as needed
-    ];
+    const [alerts, setAlerts] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const alertsPerPage = 6;
+    const [searchTerm, setSearchTerm] = useState('');
+
+    useEffect(() => {
+        // Load alerts from a pre-saved file
+        setAlerts(alertsData);
+    }, []);
+
+    // Handle Search
+    const filteredAlerts = alerts.filter(
+        (alert) =>
+            alert.hostname.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            alert.severity.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    // Pagination Logic
+    const indexOfLastAlert = currentPage * alertsPerPage;
+    const indexOfFirstAlert = indexOfLastAlert - alertsPerPage;
+    const currentAlerts = filteredAlerts.slice(indexOfFirstAlert, indexOfLastAlert);
+
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     return (
         <div>
             <h1>Alerts</h1>
-            <div className="alerts-container">
-                {alerts.map(alert => (
+            <div className="search-container">
+                <input
+                    type="text"
+                    placeholder="Search..."
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
+            </div>
+            <div className="alerts-grid">
+                {currentAlerts.map(alert => (
                     <Alert key={alert.id} alert={alert} />
+                ))}
+            </div>
+            <div className="pagination">
+                {[...Array(Math.ceil(filteredAlerts.length / alertsPerPage)).keys()].map(i => (
+                    <button key={i + 1} onClick={() => paginate(i + 1)}>
+                        {i + 1}
+                    </button>
                 ))}
             </div>
         </div>

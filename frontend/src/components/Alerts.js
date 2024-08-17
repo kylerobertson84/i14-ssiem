@@ -1,6 +1,11 @@
 import React from 'react';
 import '../pages/Design.css';
 
+///This is for future use when i want to connect to open investigation
+///const handleInvestigationClick = () => {
+/// alert(`Investigating alert ID: ${alert.id}`);
+///}
+
 const Alert = ({ alert }) => (
     <div className="alert-card">
         <h3>Alert #{alert.id}</h3>

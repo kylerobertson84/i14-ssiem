@@ -1,38 +1,79 @@
-/*Alerts  - Manas*/
-.alerts-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
+body {
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.search-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.search-container input {
+    padding: 8px;
+    width: 50%;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.alerts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 0 20px;
+    justify-content: center;
 }
 
 .alert-card {
     border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 16px;
-    margin: 8px;
-    width: 300px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 20px;
     background-color: #f9f9f9;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: left;
 }
 
 .alert-card h3 {
     margin-top: 0;
-    font-size: 1.2em;
 }
 
 .alert-card p {
-    margin: 4px 0;
+    margin: 5px 0;
 }
 
 .alert-card button {
+    margin-top: 10px;
+    padding: 10px;
     background-color: #007bff;
     color: white;
     border: none;
-    border-radius: 4px;
-    padding: 10px 15px;
+    border-radius: 5px;
     cursor: pointer;
 }
 
 .alert-card button:hover {
+    background-color: #0056b3;
+}
+
+.pagination {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.pagination button {
+    margin: 0 5px;
+    padding: 10px 15px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.pagination button:hover {
     background-color: #0056b3;
 }
