@@ -134,13 +134,13 @@ const Dashboard = () => {
               {/* Graphs Section */}
               <Grid item xs={12} md={6}>
                 <Paper sx={{ padding: 2 }}>
-                  <LogsPerDayChart />
+                  <LogsPerDayChart data={data.graphs.dataBar} />
                 </Paper>
               </Grid>
 
               <Grid item xs={12} md={6}>
                 <Paper sx={{ padding: 2 }}>
-                  <LogsByDeviceChart />
+                  <LogsByDeviceChart data={data.graphs.dataPie}/>
                 </Paper>
               </Grid>
             </Grid>
@@ -150,10 +150,10 @@ const Dashboard = () => {
           <Grid item xs={12} md={4}>
             <Paper sx={{ padding: 2, marginBottom: 3 }}>
               <Typography variant="h6" gutterBottom>Latest Alerts</Typography>
-              <Alert hostname="WDT-01" message="Failed login attempt" />
-              <Alert hostname="WDT-02" message="New User Account Created" />
-              <Alert hostname="WDT-03" message="Failed login attempt" />
-              <Alert hostname="WDT-04" message="Windows Defender Detected Malware" />
+              <Alert hostname={data.alerts.hostName[0]} message={data.alerts.message[0]} />
+              <Alert hostname={data.alerts.hostName[1]} message={data.alerts.message[1]} />
+              <Alert hostname={data.alerts.hostName[2]} message={data.alerts.message[2]} />
+              <Alert hostname={data.alerts.hostName[3]} message={data.alerts.message[3]} />
 
               <Typography variant="body2">
                 <Link style={{ width: "100%", display: 'flex', justifyContent: 'right', textDecoration: 'none', color: 'black' }} to="/alerts">
@@ -168,7 +168,11 @@ const Dashboard = () => {
                 <Typography variant="h6">SIEM Database Server Status</Typography>
                 <MonitorHeartOutlined sx={{ fontSize: 40, color: '#6c757d' }}/>
               </Box>
-              <SystemStat diskUsage='75%' ramUsage='34%' CpuLoad='7%' />
+              <SystemStat 
+                dataDisk={data.graphs.diskData} 
+                dataRam={data.graphs.ramData} 
+                dataCpu={data.graphs.cpuData}      
+              />
             </Paper>
           </Grid>
         </Grid>
@@ -297,9 +301,9 @@ function Alert(
 
 
 function SystemStat({
-  diskUsage,
-  ramUsage,
-  CpuLoad
+  dataCpu,
+  dataDisk,
+  dataRam
 }) {
   return (
     <Box sx={{ padding: 2 }}>
@@ -308,11 +312,11 @@ function SystemStat({
         <SaveOutlined sx={{ fontSize: 40, color: '#6c757d', marginRight: 2 }} />
         <Box sx={{ flexGrow: 1 }}>
           <Typography variant="body1" >
-            Disk Used: {diskUsage}
+            Disk Used: {dataDisk[5].value}%
           </Typography>
         </Box>
 
-        <DiskUsageChart />
+        <DiskUsageChart data={dataDisk}/>
       </Box>
 
       {/* RAM Usage */}
@@ -320,10 +324,10 @@ function SystemStat({
         <MemoryOutlined sx={{ fontSize: 40, color: '#6c757d', marginRight: 2 }} />
         <Box sx={{ flexGrow: 1 }}>
           <Typography variant="body1" >
-            RAM Load: {ramUsage}
+            RAM Load: {dataRam[5].value}%
           </Typography>
         </Box>
-        <RamUsageChart />
+        <RamUsageChart data={dataRam}/>
       </Box>
 
       {/* CPU Load */}
@@ -331,10 +335,10 @@ function SystemStat({
         <DeveloperBoardOutlined sx={{ fontSize: 40, color: '#6c757d', marginRight: 2 }} />
         <Box sx={{ flexGrow: 1 }}>
           <Typography variant="body1" >
-            CPU Load: {CpuLoad}
+            CPU Load: {dataCpu[5].value}%
           </Typography>
         </Box>
-        <CpuLoadChart />
+        <CpuLoadChart data={dataCpu}/>
 
       </Box>
     </Box>
