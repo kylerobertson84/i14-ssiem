@@ -20,14 +20,17 @@ import { Link } from 'react-router-dom';
 import { Grid, Paper, Typography, Box } from '@mui/material';
 import Navbar from '../components/NavBar.js';
 import { LogsPerDayChart, LogsByDeviceChart, CpuLoadChart, RamUsageChart, DiskUsageChart } from '../components/dashboardGraphs.js';
+import AuthService from '../services/AuthService.js';
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
+  const [recordCount, setRecordCount] = useState(0);
 
   useEffect(() => {
     const fetchUser = async () => {
       const token = localStorage.getItem('token');
       if (token) {
+        console.log('Authorization header:', `Bearer ${token}`);
         try {
           
           const response = await axios.get('http://localhost:8000/accounts/user', {
@@ -41,8 +44,33 @@ const Dashboard = () => {
         }
       }
     };
+
+    const fetchLogCount = async () => {
+      const token = AuthService.getToken();
+      if (token) {
+        console.log('Authorization header:', `Bearer ${token}`);
+        try {
+          const response = await axios.get('http://localhost:8000/api/v1/bronze-events/count/', {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          setRecordCount(response.data.count);
+        } catch (error) {
+          console.error('Error fetching record count', error);
+        }
+      } else {
+        console.error('No token found');
+        // Optionally redirect to login
+      }
+    };
+
+
     fetchUser();
+    fetchLogCount();
   }, []);
+
+
 
   return (
     <div>
@@ -85,7 +113,7 @@ const Dashboard = () => {
               <Grid item xs={12} sm={6} md={4} sx={{ padding: 3}}>
                 <Paper sx={{ padding: 2 }}>
 
-                  <InfoCard title="Logs" value="321k" icon={Notes}/>
+                  <InfoCard title="Logs" value={recordCount} icon={Notes}/>
 
                 </Paper>
               </Grid>
