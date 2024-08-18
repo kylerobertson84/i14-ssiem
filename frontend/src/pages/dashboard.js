@@ -22,6 +22,8 @@ import Navbar from '../components/NavBar.js';
 import { LogsPerDayChart, LogsByDeviceChart, CpuLoadChart, RamUsageChart, DiskUsageChart } from '../components/dashboardGraphs.js';
 import AuthService from '../services/AuthService.js';
 
+
+
 const Dashboard = () => {
   const [user, setUser] = useState(null);
   const [recordCount, setRecordCount] = useState(0);
@@ -32,8 +34,7 @@ const Dashboard = () => {
       if (token) {
         console.log('Authorization header:', `Bearer ${token}`);
         try {
-          
-          const response = await axios.get('http://localhost:8000/accounts/user', {
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/accounts/user`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -50,7 +51,7 @@ const Dashboard = () => {
       if (token) {
         console.log('Authorization header:', `Bearer ${token}`);
         try {
-          const response = await axios.get('http://localhost:8000/api/v1/bronze-events/count/', {
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/v1/bronze-events/count/`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },

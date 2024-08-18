@@ -16,6 +16,7 @@ class BronzeEventDataViewSet(viewsets.ReadOnlyModelViewSet):
     ordering_fields = ['event_time', 'event_id']
     search_fields = ['hostname', 'account_name', 'message']
 
+    # method to get the total number of rows
     @action(detail=False, methods=['get'])
     def count(self, request):
         print('Request headers:', request.headers)  # Debugging line
