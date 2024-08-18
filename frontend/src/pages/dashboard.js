@@ -35,7 +35,6 @@ const Dashboard = () => {
       if (token) {
         console.log('Authorization header:', `Bearer ${token}`);
         try {
-            // const response = await axios.get(`${process.env.REACT_APP_API_URL}/accounts/user`, {
             const response = await axios.get(API_ENDPOINTS.user, {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -53,8 +52,8 @@ const Dashboard = () => {
       if (token) {
         console.log('Authorization header:', `Bearer ${token}`);
         try {
-            // const response = await axios.get(`${process.env.REACT_APP_API_URL}/v1/bronze-events/count/`, {
-              const response = await axios.get(API_ENDPOINTS.logCount, {
+            
+            const response = await axios.get(API_ENDPOINTS.logCount, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
