@@ -21,6 +21,7 @@ import { Grid, Paper, Typography, Box } from '@mui/material';
 import Navbar from '../components/NavBar.js';
 import { LogsPerDayChart, LogsByDeviceChart, CpuLoadChart, RamUsageChart, DiskUsageChart } from '../components/dashboardGraphs.js';
 import AuthService from '../services/AuthService.js';
+import API_ENDPOINTS from '../services/apiConfig.js';
 
 
 
@@ -34,7 +35,8 @@ const Dashboard = () => {
       if (token) {
         console.log('Authorization header:', `Bearer ${token}`);
         try {
-            const response = await axios.get(`${process.env.REACT_APP_API_URL}/accounts/user`, {
+            // const response = await axios.get(`${process.env.REACT_APP_API_URL}/accounts/user`, {
+            const response = await axios.get(API_ENDPOINTS.user, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -51,7 +53,8 @@ const Dashboard = () => {
       if (token) {
         console.log('Authorization header:', `Bearer ${token}`);
         try {
-            const response = await axios.get(`${process.env.REACT_APP_API_URL}/v1/bronze-events/count/`, {
+            // const response = await axios.get(`${process.env.REACT_APP_API_URL}/v1/bronze-events/count/`, {
+              const response = await axios.get(API_ENDPOINTS.logCount, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
