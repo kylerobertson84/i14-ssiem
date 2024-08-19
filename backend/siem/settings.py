@@ -75,6 +75,7 @@ REST_FRAMEWORK = {
     ## COMMENT TO TEST APIs
     'DEFAULT_AUTHENTICATION_CLASSES': (  
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',       # for development accessing APIs with JWT
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
