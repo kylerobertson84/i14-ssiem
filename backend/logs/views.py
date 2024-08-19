@@ -7,6 +7,7 @@ from .models import BronzeEventData, EventData, RouterData
 from .serializers import BronzeEventDataSerializer, EventDataSerializer, RouterDataSerializer
 from utils.pagination import StandardResultsSetPagination
 from rest_framework.permissions import IsAuthenticated
+# from rest_framework.authentication import TokenAuthentication
 
 class BronzeEventDataViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = BronzeEventData.objects.all()
@@ -17,6 +18,7 @@ class BronzeEventDataViewSet(viewsets.ReadOnlyModelViewSet):
     ordering_fields = ['event_time', 'event_id']
     search_fields = ['hostname', 'account_name', 'message']
     permission_classes = [IsAuthenticated] 
+    # authentication_classes = [TokenAuthentication]
 
     # method to get the total number of rows
     @action(detail=False, methods=['get'])

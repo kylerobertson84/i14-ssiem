@@ -23,7 +23,7 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, Spec
 from siem.views import health_check, home
 
 from rest_framework.routers import DefaultRouter
-from logs.views import BronzeEventDataViewSet, EventDataViewSet
+from logs.views import BronzeEventDataViewSet, EventDataViewSet, RouterDataViewSet
 from alerts.views import AlertViewSet, AssignedAlertViewSet
 from reports.views import IncidentReportViewSet
 
@@ -33,6 +33,7 @@ router.register(r'events', EventDataViewSet)
 router.register(r'alerts', AlertViewSet)
 router.register(r'assigned-alerts', AssignedAlertViewSet)
 router.register(r'incident-reports', IncidentReportViewSet)
+router.register(r'router-data', RouterDataViewSet)
 
 
 urlpatterns = [

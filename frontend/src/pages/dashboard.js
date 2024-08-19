@@ -28,6 +28,7 @@ import API_ENDPOINTS from '../services/apiConfig.js';
 const Dashboard = () => {
   const [user, setUser] = useState(null);
   const [recordCount, setRecordCount] = useState(0);
+  const [routerLogCount, setRouterLogCount] = useState(0);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -68,9 +69,31 @@ const Dashboard = () => {
       }
     };
 
+    const fetchRouterLogCount = async () => {
+      const token = AuthService.getToken();
+      if (token) {
+        console.log('Authorization header:', `Bearer ${token}`);
+        try {
+            
+            const response = await axios.get(API_ENDPOINTS.routerLogCount, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          setRouterLogCount(response.data.router_log_count);
+        } catch (error) {
+          console.error('Error fetching router record count', error);
+        }
+      } else {
+        console.error('No token found');
+        // Optionally redirect to login
+      }
+    };
+
 
     fetchUser();
     fetchLogCount();
+    fetchRouterLogCount();
   }, []);
 
 
@@ -116,7 +139,7 @@ const Dashboard = () => {
               <Grid item xs={12} sm={6} md={4} sx={{ padding: 3}}>
                 <Paper sx={{ padding: 2 }}>
 
-                  <InfoCard title="Logs" value={recordCount} icon={Notes}/>
+                  <InfoCard title="Logs" value={recordCount + routerLogCount} icon={Notes}/>
 
                 </Paper>
               </Grid>
