@@ -19,7 +19,6 @@ services:
       context: ./backend
     volumes:
       - ./backend:/backend
-      - ./log_files:/log_files
     ports:
       - "${DOCKER_BACKEND_PORT:-8000}:8000"
     environment:
@@ -30,7 +29,9 @@ services:
       - DB_PASSWORD=${DB_PASSWORD:-random_password}
       - DB_HOST=db
       - DB_PORT=3306
-    command: sh -c "while ! nc -z db 3306; do sleep 1; done; python manage.py runserver_plus --print-sql 0.0.0.0:8000"
+    command:
+      echo 'Starting server...' &&
+      python manage.py runserver_plus --print-sql 0.0.0.0:8000"
     depends_on:
       - db
 
@@ -46,6 +47,63 @@ services:
       - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD:-random_password}
     ports:
       - "${DOCKER_DB_PORT:-3307}:3306"
+  
+  # Message Broker, it stores and manages the tasks that need to be executed.
+  redis:
+    image: redis:alpine
+  
+  # Celery constantly checks the Redis broker for new tasks and executes them.
+  celery:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile.celery
+    command: celery -A siem worker -l info
+    volumes:
+      - ./log_files:/app/log_files
+    depends_on:
+      - backend
+      - redis
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+
+  # Celery Beat is a scheduler that periodically runs tasks. - sneding these tasks to Redis
+  celery-beat:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile.celery
+    command: celery -A siem beat -l info
+    volumes:
+      - ./log_files:/app/log_files
+    depends_on:
+      - backend
+      - redis
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+
+  # Monitoring tool for Celery. - Not at the moment.
+  # flower:
+  #   image: mher/flower
+  #   environment:
+  #     - CELERY_BROKER_URL=redis://redis:6379/0
+  #     - FLOWER_PORT=5555
+  #   ports:
+  #     - 5555:5555
+  #   depends_on:
+  #     - redis
+  #     - celery
+  # Log watcher service to check for new log files.
+  # Not at the moment. manually insert the log files into the log_files folder.
+  # Dockerfile.watchdog ready for this container setup.
+  # log_watcher:
+  #   build: ./backend
+  #   volumes:
+  #     - ./log_files:/app/log_files
+  #   command: python manage.py watch_log_files /app/log_files
+  #   depends_on:
+  #     - db
 
 volumes:
   mariadb_data:
+  log_files:

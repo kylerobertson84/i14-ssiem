@@ -14,6 +14,8 @@ import os
 from pathlib import Path
 from datetime import timedelta
 from pathlib import Path
+# Celery beat settings
+from celery.schedules import crontab
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -231,3 +233,15 @@ LOGGING = {
 }
 
 AUTH_USER_MODEL = 'accounts.User'
+
+# Celery settings
+CELERY_BROKER_URL = 'redis://redis:6379/0'
+CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+
+
+CELERY_BEAT_SCHEDULE = {
+    'process-logs': {
+        'task': 'logs.tasks.process_logs',
+        'schedule': crontab(minute='*/1'),  # Run every minute
+    },
+}

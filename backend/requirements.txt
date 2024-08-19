@@ -12,3 +12,4 @@ djoser
 djangorestframework-simplejwt
 drf-spectacular
 celery
+redis

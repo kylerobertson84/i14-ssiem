@@ -34,7 +34,7 @@ docker-compose down -v --remove-orphans
 docker-compose up --build -d
 
 # Please do not decrease the sleep time below 5 seconds
-sleep 5
+sleep 3
 
 # Function to check if the superuser exists
 superuser_exists() {

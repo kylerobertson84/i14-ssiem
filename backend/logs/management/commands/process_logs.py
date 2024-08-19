@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from logs.models import BronzeEventData, EventData
-from alerts.models import Alert, AlertSeverity
+from alerts.models import Alert
 from utils.rule_engine import RuleEngine
 from django.utils import timezone
 

@@ -27,6 +27,12 @@ EOF
     python manage.py migrate --noinput
 fi
 
+log "Creating rules..."
+python manage.py create_rules
+
+log "Parsing data..."
+python manage.py parse_log_file ./log_files/log1.txt
+
 # Start Gunicorn - offering better performance than Django's built-in server
 log "Starting Gunicorn server..."
 exec gunicorn siem.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 120 --access-logfile '-' --error-logfile '-'
