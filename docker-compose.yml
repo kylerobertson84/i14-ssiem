@@ -51,6 +51,15 @@ services:
   # Message Broker, it stores and manages the tasks that need to be executed.
   redis:
     image: redis:alpine
+
+    deploy:
+      # Cranking up performance with replicas.
+      # replicas: 3
+      # resources:
+      #   limits:
+      #     memory: '1G'
+      restart_policy:
+        condition: on-failure
   
   # Celery constantly checks the Redis broker for new tasks and executes them.
   celery:
@@ -66,6 +75,14 @@ services:
     environment:
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    deploy:
+      # Cranking up performance with replicas.
+      # replicas: 3
+      # resources:
+      #   limits:
+      #     memory: '1G'
+      restart_policy:
+        condition: on-failure
 
   # Celery Beat is a scheduler that periodically runs tasks. - sneding these tasks to Redis
   celery-beat:
