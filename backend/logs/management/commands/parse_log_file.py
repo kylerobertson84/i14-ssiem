@@ -3,19 +3,28 @@ from django.core.management.base import BaseCommand
 from logs.models import *
 import re
 from datetime import datetime
-from django.utils import timezone
+import pytz
 
 from logs.management.commands.constants import *
 
 
 def insert_data(data):
 
-    # timestamp = datetime.strptime(data['iso_timestamp'], '%Y-%m-%dT%H:%M:%S.%f%z')
-    # event_received_time = datetime.strptime(data['event_received_time'], '%Y-%m-%d %H:%M:%S')
-    # if event_received_time:
-    #         event_received_time = timezone.make_aware(event_received_time, timezone.get_current_timezone())
-
+    
     try:
+
+        iso_timestamp_str = data.get('iso_timestamp', '')
+        iso_timestamp = None
+
+        if iso_timestamp_str:
+            iso_timestamp = datetime.fromisoformat(iso_timestamp_str)
+           
+            if iso_timestamp.tzinfo is not None:
+                iso_timestamp = iso_timestamp.astimezone(pytz.utc).replace(tzinfo=None)
+
+            else:
+                pass
+
         BronzeEventData.objects.create(
             # headers
                 priority=int(data.get('priority', 0)),
