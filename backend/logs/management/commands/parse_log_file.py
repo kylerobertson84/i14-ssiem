@@ -147,8 +147,37 @@ def separate_head_body_msg(line, char):
     
     insert_data(log_dict)
 
+def separate_head_body_msg_when_bug_in_log(line, char):
+    
+    split_head_from_body_msg = line.split(char, 1)
+    split_hex_from_head = split_head_from_body_msg[0].split('{')
+
+    split_body_from_message = re.split(r'(?<=\])', split_head_from_body_msg[1])
+
+    # print(split_body_from_message[0])
+
+    header_str = split_hex_from_head[0]
+    body_str = split_body_from_message[0]
+    message_str = split_body_from_message[1]
+
+    header_dict = parse_header_fields(header_str)
+    body_dict, extra_fields_dict = parse_body_fields(body_str)
+
+    # to store the extra fields in a string
+
+    extra_fields_str = str(extra_fields_dict)
+
+    # merge the 2 dictionary's into log_dict
+
+    log_dict = dict()
+    log_dict = {**header_dict, **body_dict, "message": message_str.strip(), "extra_fields": extra_fields_str}
+
+    insert_data(log_dict)
+
 
 def parse_line(line):
+
+    
 
     
 
@@ -186,8 +215,7 @@ def parse_line(line):
             
             # split where first } is found
 
-            split_head_from_body = line.split('} ', 1)
-            print(split_head_from_body[0])
+            separate_head_body_msg_when_bug_in_log(line, '} ')
             
 
     except Exception as e:
