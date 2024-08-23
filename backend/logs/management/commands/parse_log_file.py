@@ -122,10 +122,14 @@ def parse_body_fields(body):
 
     return body_dict, extra_fields_dict
 
+def separate_head_body_msg():
+    pass
+
 
 def parse_line(line):
 
     try:
+        
         
         if re.search(r'(?<!\S)-(?!\S)', line):
 
@@ -151,6 +155,14 @@ def parse_line(line):
 
          
             insert_data(log_dict)
+        
+        else:
+            
+            # split where first } is found
+
+            split_head_from_body = line.split('} ', 1)
+            print(split_head_from_body[0])
+            
 
     except Exception as e:
         print(f"Error processing line: {line}\nError: {e}")
