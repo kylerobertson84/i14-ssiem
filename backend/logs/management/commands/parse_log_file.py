@@ -13,20 +13,6 @@ def insert_data(data):
     
     try:
 
-        # iso_timestamp_str = data.get('iso_timestamp', '')
-        # iso_timestamp = None
-
-        # if iso_timestamp_str:
-        #     iso_timestamp = datetime.fromisoformat(iso_timestamp_str)
-           
-        #     if iso_timestamp.tzinfo is not None:
-        #         iso_timestamp = iso_timestamp.astimezone(pytz.utc).replace(tzinfo=None)
-
-        #     else:
-        #         pass
-
-        # iso_timestamp = parse_timestamp_utc(data, 'iso_timestamp')
-
         iso_ts = parse_timestamp_utc(data, 'iso_timestamp')
         event_ts = parse_timestamp_utc(data, 'EventReceivedTime')
 
@@ -34,7 +20,6 @@ def insert_data(data):
             # headers
                 priority=int(data.get('priority', 0)),
                 h_version=int(data.get('h_version', 0)),
-                # iso_timestamp= data.get('iso_timestamp',''),
                 iso_timestamp = iso_ts,
                 hostname=data.get('hostname', ''),
                 app_name=data.get('app_name', ''),
@@ -59,7 +44,6 @@ def insert_data(data):
                 Opcode = data.get('Opcode', ''),
                 PackageName = data.get('PackageName', ''),
                 ContainerId = data.get('ContainerId', ''),
-                # EventReceivedTime = data.get('EventReceivedTime', ''),
                 EventReceivedTime = event_ts,
                 SourceModuleName = data.get('SourceModuleName', ''),
                 SourceModuleType = data.get('SourceModuleType', ''),
