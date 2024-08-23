@@ -42,6 +42,9 @@ const Navbar = () => {
                   <Button color="inherit" component={Link} to="/alerts">
                       Alerts
                   </Button>
+                  <Button color='inherit' component={Link} to='/preferences'>
+                        Preferences
+                  </Button>
                 </Box>
                 <Button color="inherit" onClick={handleLogout}>
                     Logout
