@@ -122,39 +122,65 @@ def parse_body_fields(body):
 
     return body_dict, extra_fields_dict
 
-def separate_head_body_msg():
-    pass
+def separate_head_body_msg(line, char):
+
+    split_header_from_body_message = line.split(char)
+
+    split_body_from_message = re.split(r'(?<=\])', split_header_from_body_message[1])
+    
+    header_str = split_header_from_body_message[0]
+    body_str = split_body_from_message[0]
+    message_str = split_body_from_message[1]
+
+    header_dict = parse_header_fields(header_str)
+    body_dict, extra_fields_dict = parse_body_fields(body_str)
+
+    # to store the extra fields in a string
+
+    extra_fields_str = str(extra_fields_dict)
+
+    # merge the 2 dictionary's into log_dict
+
+    log_dict = dict()
+    log_dict = {**header_dict, **body_dict, "message": message_str.strip(), "extra_fields": extra_fields_str}
+
+    
+    insert_data(log_dict)
 
 
 def parse_line(line):
+
+    
 
     try:
         
         
         if re.search(r'(?<!\S)-(?!\S)', line):
 
-            split_header_from_body_message = line.split(" - ")
+            separate_head_body_msg(line, ' - ')
 
-            split_body_from_message = re.split(r'(?<=\])', split_header_from_body_message[1])
+            # split_header_from_body_message = line.split(" - ")
+
+            # split_body_from_message = re.split(r'(?<=\])', split_header_from_body_message[1])
             
-            header_str = split_header_from_body_message[0]
-            body_str = split_body_from_message[0]
-            message_str = split_body_from_message[1]
+            # header_str = split_header_from_body_message[0]
+            # body_str = split_body_from_message[0]
+            # message_str = split_body_from_message[1]
 
-            header_dict = parse_header_fields(header_str)
-            body_dict, extra_fields_dict = parse_body_fields(body_str)
+            # header_dict = parse_header_fields(header_str)
+            # body_dict, extra_fields_dict = parse_body_fields(body_str)
 
-            # to store the extra fields in a string
+            # # to store the extra fields in a string
 
-            extra_fields_str = str(extra_fields_dict)
+            # extra_fields_str = str(extra_fields_dict)
 
-            # merge the 2 dictionary's into log_dict
+            # # merge the 2 dictionary's into log_dict
 
-            log_dict = dict()
-            log_dict = {**header_dict, **body_dict, "message": message_str.strip(), "extra_fields": extra_fields_str}
+            # log_dict = dict()
+            # log_dict = {**header_dict, **body_dict, "message": message_str.strip(), "extra_fields": extra_fields_str}
 
          
-            insert_data(log_dict)
+            # insert_data(log_dict)
         
         else:
             
