@@ -13,23 +13,29 @@ def insert_data(data):
     
     try:
 
-        iso_timestamp_str = data.get('iso_timestamp', '')
-        iso_timestamp = None
+        # iso_timestamp_str = data.get('iso_timestamp', '')
+        # iso_timestamp = None
 
-        if iso_timestamp_str:
-            iso_timestamp = datetime.fromisoformat(iso_timestamp_str)
+        # if iso_timestamp_str:
+        #     iso_timestamp = datetime.fromisoformat(iso_timestamp_str)
            
-            if iso_timestamp.tzinfo is not None:
-                iso_timestamp = iso_timestamp.astimezone(pytz.utc).replace(tzinfo=None)
+        #     if iso_timestamp.tzinfo is not None:
+        #         iso_timestamp = iso_timestamp.astimezone(pytz.utc).replace(tzinfo=None)
 
-            else:
-                pass
+        #     else:
+        #         pass
+
+        # iso_timestamp = parse_timestamp_utc(data, 'iso_timestamp')
+
+        iso_ts = parse_timestamp_utc(data, 'iso_timestamp')
+        event_ts = parse_timestamp_utc(data, 'EventReceivedTime')
 
         BronzeEventData.objects.create(
             # headers
                 priority=int(data.get('priority', 0)),
                 h_version=int(data.get('h_version', 0)),
-                iso_timestamp= data.get('iso_timestamp',''),
+                # iso_timestamp= data.get('iso_timestamp',''),
+                iso_timestamp = iso_ts,
                 hostname=data.get('hostname', ''),
                 app_name=data.get('app_name', ''),
                 process_id= data.get('process_id', ''),
@@ -53,7 +59,8 @@ def insert_data(data):
                 Opcode = data.get('Opcode', ''),
                 PackageName = data.get('PackageName', ''),
                 ContainerId = data.get('ContainerId', ''),
-                EventReceivedTime = data.get('EventReceivedTime', ''),
+                # EventReceivedTime = data.get('EventReceivedTime', ''),
+                EventReceivedTime = event_ts,
                 SourceModuleName = data.get('SourceModuleName', ''),
                 SourceModuleType = data.get('SourceModuleType', ''),
                 
@@ -65,6 +72,22 @@ def insert_data(data):
             )
     except Exception as e:
         print(f"Error inserting data: {data}\nError: {e}")
+
+def parse_timestamp_utc(dictionary, key):
+
+    timestamp_str = dictionary.get(key, '')
+    timestamp = None
+
+    if timestamp_str:
+        timestamp = datetime.fromisoformat(timestamp_str)
+
+        if timestamp.tzinfo is None:
+            timestamp = pytz.utc.localize(timestamp)
+        
+        else:
+            timestamp = timestamp.astimezone(pytz.utc)
+    
+    return timestamp
 
 def parse_header_fields(header):
 
