@@ -12,3 +12,10 @@ class RoleSerializerTests(APITestCase):
         role = serializer.save()
         self.assertEqual(role.name, data['name'])
 
+    def test_invalid_role_creation(self):
+        data = {}
+        serializer = RoleSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('name', serializer.errors)
+    
+    
