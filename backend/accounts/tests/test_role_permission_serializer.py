@@ -19,3 +19,14 @@ class RolePermissionSerializerTests(APITestCase):
         role_permission = serializer.save()
         self.assertEqual(role_permission.role, self.role)
         self.assertEqual(role_permission.permission, self.permission)
+    
+    def test_invalid_role_permission_creation(self):
+        data = {
+            'role': str(self.role.role_id)
+            # Missing permission
+        }
+        serializer = RolePermissionSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('permission', serializer.errors)
+
+        
