@@ -24,6 +24,17 @@ class UserSerializerTests(APITestCase):
         self.assertEqual(user.email, data['email'])
         self.assertTrue(user.check_password(data['password']))
         self.assertEqual(user.role, self.role)
+    
+    def test_password_write_only_field(self):
+        data = {
+            'username': 'testuser',
+            'email': 'test@example.com',
+            'password': 'password123'
+        }
+        serializer = UserSerializer(data=data)
+        serializer.is_valid()
+        self.assertNotIn('password', serializer.data)
+
 
 
 
