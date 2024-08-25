@@ -1,6 +1,6 @@
 # logs/serializers.py
 from rest_framework import serializers
-from .models import BronzeEventData, EventData
+from .models import BronzeEventData, EventData, RouterData
 from core.serializers import RuleSerializer
 
 class BronzeEventDataSerializer(serializers.ModelSerializer):
@@ -20,3 +20,8 @@ class EventDataSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         representation['source'] = BronzeEventDataSerializer(instance.source).data
         return representation
+
+class RouterDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RouterData
+        fields = '__all__'

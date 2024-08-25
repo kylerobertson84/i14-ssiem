@@ -3,24 +3,24 @@ from django.core.management.base import BaseCommand
 from logs.models import *
 import re
 from datetime import datetime
-from django.utils import timezone
+import pytz
 
 from logs.management.commands.constants import *
 
 
 def insert_data(data):
 
-    # timestamp = datetime.strptime(data['iso_timestamp'], '%Y-%m-%dT%H:%M:%S.%f%z')
-    # event_received_time = datetime.strptime(data['event_received_time'], '%Y-%m-%d %H:%M:%S')
-    # if event_received_time:
-    #         event_received_time = timezone.make_aware(event_received_time, timezone.get_current_timezone())
-
+    
     try:
+
+        iso_ts = parse_timestamp_utc(data, 'iso_timestamp')
+        event_ts = parse_timestamp_utc(data, 'EventReceivedTime')
+
         BronzeEventData.objects.create(
             # headers
                 priority=int(data.get('priority', 0)),
                 h_version=int(data.get('h_version', 0)),
-                iso_timestamp= data.get('iso_timestamp',''),
+                iso_timestamp = iso_ts,
                 hostname=data.get('hostname', ''),
                 app_name=data.get('app_name', ''),
                 process_id= data.get('process_id', ''),
@@ -44,7 +44,7 @@ def insert_data(data):
                 Opcode = data.get('Opcode', ''),
                 PackageName = data.get('PackageName', ''),
                 ContainerId = data.get('ContainerId', ''),
-                EventReceivedTime = data.get('EventReceivedTime', ''),
+                EventReceivedTime = event_ts,
                 SourceModuleName = data.get('SourceModuleName', ''),
                 SourceModuleType = data.get('SourceModuleType', ''),
                 
@@ -56,6 +56,22 @@ def insert_data(data):
             )
     except Exception as e:
         print(f"Error inserting data: {data}\nError: {e}")
+
+def parse_timestamp_utc(dictionary, key):
+
+    timestamp_str = dictionary.get(key, '')
+    timestamp = None
+
+    if timestamp_str:
+        timestamp = datetime.fromisoformat(timestamp_str)
+
+        if timestamp.tzinfo is None:
+            timestamp = pytz.utc.localize(timestamp)
+        
+        else:
+            timestamp = timestamp.astimezone(pytz.utc)
+    
+    return timestamp
 
 def parse_header_fields(header):
 
@@ -106,35 +122,72 @@ def parse_body_fields(body):
 
     return body_dict, extra_fields_dict
 
+def separate_head_body_msg(line, char):
+
+    split_header_from_body_message = line.split(char)
+
+    split_body_from_message = re.split(r'(?<=\])', split_header_from_body_message[1])
+    
+    header_str = split_header_from_body_message[0]
+    body_str = split_body_from_message[0]
+    message_str = split_body_from_message[1]
+
+    header_dict = parse_header_fields(header_str)
+    body_dict, extra_fields_dict = parse_body_fields(body_str)
+
+    # to store the extra fields in a string
+
+    extra_fields_str = str(extra_fields_dict)
+
+    # merge the 2 dictionary's into log_dict
+
+    log_dict = dict()
+    log_dict = {**header_dict, **body_dict, "message": message_str.strip(), "extra_fields": extra_fields_str}
+
+    
+    insert_data(log_dict)
+
+def separate_head_body_msg_when_bug_in_log(line, char):
+    
+    split_head_from_body_msg = line.split(char, 1)
+    split_hex_from_head = split_head_from_body_msg[0].split('{')
+
+    split_body_from_message = re.split(r'(?<=\])', split_head_from_body_msg[1])
+
+    # print(split_body_from_message[0])
+
+    header_str = split_hex_from_head[0]
+    body_str = split_body_from_message[0]
+    message_str = split_body_from_message[1]
+
+    header_dict = parse_header_fields(header_str)
+    body_dict, extra_fields_dict = parse_body_fields(body_str)
+
+    # to store the extra fields in a string
+
+    extra_fields_str = str(extra_fields_dict)
+
+    # merge the 2 dictionary's into log_dict
+
+    log_dict = dict()
+    log_dict = {**header_dict, **body_dict, "message": message_str.strip(), "extra_fields": extra_fields_str}
+
+    insert_data(log_dict)
+
 
 def parse_line(line):
 
     try:
         
+        
         if re.search(r'(?<!\S)-(?!\S)', line):
 
-            split_header_from_body_message = line.split(" - ")
+            separate_head_body_msg(line, ' - ')
+        
+        else:
 
-            split_body_from_message = re.split(r'(?<=\])', split_header_from_body_message[1])
+            separate_head_body_msg_when_bug_in_log(line, '} ')
             
-            header_str = split_header_from_body_message[0]
-            body_str = split_body_from_message[0]
-            message_str = split_body_from_message[1]
-
-            header_dict = parse_header_fields(header_str)
-            body_dict, extra_fields_dict = parse_body_fields(body_str)
-
-            # to store the extra fields in a string
-
-            extra_fields_str = str(extra_fields_dict)
-
-            # merge the 2 dictionary's into log_dict
-
-            log_dict = dict()
-            log_dict = {**header_dict, **body_dict, "message": message_str.strip(), "extra_fields": extra_fields_str}
-
-         
-            insert_data(log_dict)
 
     except Exception as e:
         print(f"Error processing line: {line}\nError: {e}")
