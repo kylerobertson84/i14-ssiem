@@ -34,6 +34,20 @@ class UserSerializerTests(APITestCase):
         serializer = UserSerializer(data=data)
         serializer.is_valid()
         self.assertNotIn('password', serializer.data)
+    
+    def test_user_creation_without_role(self):
+        data = {
+            'username': 'testuser',
+            'email': 'test@example.com',
+            'password': 'password123'
+            # No role provided
+        }
+        serializer = UserSerializer(data=data)
+        self.assertTrue(serializer.is_valid())
+        user = serializer.save()
+        self.assertIsNone(user.role)
+
+
 
 
 
