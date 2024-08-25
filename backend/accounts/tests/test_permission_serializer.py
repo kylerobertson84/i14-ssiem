@@ -11,3 +11,9 @@ class PermissionSerializerTests(APITestCase):
         self.assertTrue(serializer.is_valid())
         permission = serializer.save()
         self.assertEqual(permission.name, data['name'])
+
+    def test_invalid_permission_creation(self):
+        data = {}
+        serializer = PermissionSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('name', serializer.errors)
