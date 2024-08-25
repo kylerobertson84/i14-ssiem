@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import ReportList from '../components/Reports/ReportList';
 import ReportGenerator from '../components/Reports/ReportGenerator';
 import ReportViewer from '../components/Reports/ReportViewer';
 import ReportExporter from '../components/Reports/ReportExporter';
+import ReportList from '../components/Reports/ReportList';
+import '../Design/Report.css';
 
 const ReportsPage = () => {
   const [reports, setReports] = useState([]);
@@ -17,17 +18,19 @@ const ReportsPage = () => {
   };
 
   return (
-    <div className="reporting-container">
+    <main className="reporting-container">
       <h2>Generate and Export Report</h2>
       <ReportGenerator onGenerate={handleGenerate} />
+      <div className="report-tiles-container">
+        <ReportList reports={reports} onSelect={handleSelectReport} />
+      </div>
       {selectedReport && (
-        <>
+        <div className="report-details">
           <ReportViewer report={selectedReport} />
           <ReportExporter report={selectedReport} />
-        </>
+        </div>
       )}
-      <ReportList reports={reports} onSelect={handleSelectReport} />
-    </div>
+    </main>
   );
 };
 

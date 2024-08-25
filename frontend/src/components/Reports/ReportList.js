@@ -1,16 +1,18 @@
 import React from 'react';
+import '../../Design/Report.css';
 
 const ReportList = ({ reports, onSelect }) => {
     return (
-        <div>
+        <div className="report-tiles-container">
             <h3>Available Reports</h3>
-            <ul>
+            <div className="report-tiles">
                 {reports.map((report, index) => (
-                    <li key={index} onClick={() => onSelect(report)}>
-                        {report.name}
-                    </li>
+                    <div key={index} className="report-tile" onClick={() => onSelect(report)}>
+                        <h4>{report.reportName}</h4>
+                        <button className="view-button">View Report</button>
+                    </div>
                 ))}
-            </ul>
+            </div>
         </div>
     );
 };

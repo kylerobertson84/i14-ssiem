@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import '../../Design/ReportGenerator.css';
+import '../../Design/Report.css';
 
 const ReportGenerator = ({ onGenerate }) => {
+    const [reportName, setReportName] = useState('')
     const [reportType, setReportType] = useState('');
     const [status, setStatus] = useState('');
     const [dataSource, setDataSource] = useState('');
@@ -11,8 +12,9 @@ const ReportGenerator = ({ onGenerate }) => {
 
     const handleGenerate = (e) => {
         e.preventDefault();
-        const newReport = { reportType, status, dataSource, ruleId, userId, description };
+        const newReport = { reportName, reportType, status, dataSource, ruleId, userId, description };
         onGenerate(newReport);
+        setReportName('');
         setReportType('');
         setStatus('');
         setDataSource('');
@@ -24,6 +26,17 @@ const ReportGenerator = ({ onGenerate }) => {
     return (
         <form className="reporting-form" onSubmit={handleGenerate}>
             <div className="left-section">
+                <div className="form-group">
+                    <label htmlFor="reportName" className="form-label">Name of Report</label>
+                    <input
+                        type="text"
+                        id="reportName"
+                        placeholder="Name of Report"
+                        className="form-input"
+                        value={reportName}
+                        onChange={(e) => setReportName(e.target.value)}
+                    />
+                </div>
                 <div className="form-group">
                     <label htmlFor="reportType" className="form-label">Type</label>
                     <input
