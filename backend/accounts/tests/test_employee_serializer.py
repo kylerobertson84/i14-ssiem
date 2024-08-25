@@ -17,3 +17,13 @@ class EmployeeSerializerTests(APITestCase):
         self.assertEqual(employee.first_name, data['first_name'])
         self.assertEqual(employee.last_name, data['last_name'])
         self.assertEqual(employee.email, data['email'])
+    
+    def test_invalid_employee_creation(self):
+        data = {
+            'last_name': 'Doe',
+            'email': 'john.doe@example.com'
+        }
+        serializer = EmployeeSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('first_name', serializer.errors)
+
