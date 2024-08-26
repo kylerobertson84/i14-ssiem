@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import Navbar from '../components/NavBar';
+import PreferencesForm from '../components/PreferencesForm.js';
 import axios from 'axios';
 import AuthService from '../services/AuthService.js';
 import API_ENDPOINTS from '../services/apiConfig.js';
@@ -49,7 +50,9 @@ const Preferences = () => {
           <p>Roles: </p>
 
         </div>
-
+        <div>
+          <PreferencesForm/>
+        </div>
       
       </div>
 
@@ -57,5 +60,7 @@ const Preferences = () => {
   };
   
   export default Preferences;
+
+  
 
 {/* */}
