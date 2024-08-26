@@ -45,9 +45,9 @@ const Preferences = () => {
           */}
         </div>
         <div className = 'body'>
-          <p>Name: John</p>
+          <p>Name: john</p>   {/* user.username*/}
           <p> Email: Email@gmail.com</p>
-          <p>Roles: </p>
+          <p>Roles:  </p>  {/* {user.role_id}*/}
 
         </div>
         <div>
