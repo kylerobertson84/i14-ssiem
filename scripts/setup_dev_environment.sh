@@ -33,6 +33,9 @@ docker-compose down -v --remove-orphans
 # Build and start the Docker containers
 docker-compose up --build -d
 
+# Prune unused Docker images
+docker image prune -f
+
 # Please do not decrease the sleep time below 5 seconds
 sleep 3
 

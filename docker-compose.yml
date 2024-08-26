@@ -110,18 +110,7 @@ services:
     depends_on:
       - redis
       - celery
-
-##Log watcher service to check for new log files.
-  log_watcher:
-    build: 
-      context: ./backend
-      dockerfile: Dockerfile.watchdog
-    volumes:
-      - ./log_files:/app/log_files
-    command: python manage.py watch_log_files /app/log_files
-    depends_on:
-      - db
-
+      
 volumes:
   mariadb_data:
   log_files:
