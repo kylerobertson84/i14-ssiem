@@ -171,6 +171,9 @@ DATABASES = {
     'PASSWORD': os.getenv('DB_PASSWORD', 'random_password'),
     'HOST': os.getenv('DB_HOST', 'db'),
     'PORT': os.getenv('DB_PORT', '3306'),
+    'TEST': {
+        'NAME': 'test_siem_db',
+    },
   }
 }
 
