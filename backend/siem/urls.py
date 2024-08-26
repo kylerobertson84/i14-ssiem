@@ -15,15 +15,17 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
+# siem/urls.py
+
 from django.contrib import admin
 from django.urls import path, include
 
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
-from siem.views import health_check, home
+from siem.views import health_check
 
 from rest_framework.routers import DefaultRouter
-from logs.views import BronzeEventDataViewSet, EventDataViewSet
+from logs.views import BronzeEventDataViewSet, EventDataViewSet, RouterDataViewSet
 from alerts.views import AlertViewSet, AssignedAlertViewSet
 from reports.views import IncidentReportViewSet
 
@@ -33,6 +35,7 @@ router.register(r'events', EventDataViewSet)
 router.register(r'alerts', AlertViewSet)
 router.register(r'assigned-alerts', AssignedAlertViewSet)
 router.register(r'incident-reports', IncidentReportViewSet)
+router.register(r'router-data', RouterDataViewSet)
 
 
 urlpatterns = [
