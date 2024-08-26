@@ -43,7 +43,7 @@ class RuleEngine:
         return similar_events >= count
 
     def _check_time_range(self, event, time_range):
-        event_time = datetime.strptime(event.iso_timestamp, '%Y-%m-%dT%H:%M:%S.%f%z').time()
+        event_time = event.iso_timestamp.time()
         start_time = datetime.strptime(time_range['start'], '%H:%M').time()
         end_time = datetime.strptime(time_range['end'], '%H:%M').time()
         

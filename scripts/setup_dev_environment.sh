@@ -37,16 +37,10 @@ docker-compose up --build -d
 docker image prune -f
 
 # Please do not decrease the sleep time below 5 seconds
-sleep 3
+sleep 7
 
 # Function to check if the superuser exists
-superuser_exists() {
-    docker-compose exec backend python manage.py shell -c "from django.contrib.auth import get_user_model; User = get_user_model(); print(User.objects.filter(is_superuser=True).exists())"
-}
-
-# Create a superuser for Django admin if it doesn't exist
-if [ "$(superuser_exists)" = "False" ]; then
-    docker-compose exec backend python manage.py shell -c "
+docker-compose exec backend python manage.py shell -c "
 from django.contrib.auth import get_user_model;
 User = get_user_model();
 username = 'admin';
@@ -58,8 +52,6 @@ if not User.objects.filter(username=username).exists():
 else:
     print('Superuser already exists.');
 "
-else
-    echo "Superuser already exists. Skipping creation."
 fi
 
 # Print success message

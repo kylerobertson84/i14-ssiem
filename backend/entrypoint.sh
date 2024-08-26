@@ -14,7 +14,6 @@ while ! nc -z db 3306; do
 done
 log "Database started"
 
-
 # Run any pending migrations (this will be skipped if no new migrations are found)
 log "Applying migrations..."
 if ! python manage.py migrate; then
