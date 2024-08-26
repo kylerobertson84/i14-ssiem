@@ -238,10 +238,18 @@ AUTH_USER_MODEL = 'accounts.User'
 CELERY_BROKER_URL = 'redis://redis:6379/0'
 CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
 
+LOG_FILES_DIRECTORY = '/app/log_files'
+PROCESSED_FILES_DIRECTORY = '/app/processed_log_files_watchdog'
 
 CELERY_BEAT_SCHEDULE = {
-    'process-logs': {
-        'task': 'logs.tasks.process_logs',
+    'check-and-process-logs': {
+        'task': 'logs.tasks.check_and_process_logs',
         'schedule': crontab(minute='*/1'),  # Run every minute
     },
+    
+    ## Don't need this anymore just for testing Log Processing
+    # 'process-logs': {
+    #     'task': 'logs.tasks.process_logs',
+    #     'schedule': crontab(minute='*/1'),  # Run every minute
+    # },
 }

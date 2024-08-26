@@ -30,8 +30,8 @@ fi
 log "Creating rules..."
 python manage.py create_rules
 
-log "Parsing data..."
-python manage.py parse_log_file ./log_files/log1.txt
+#log "Parsing data..."
+#python manage.py parse_log_file ./log_files/log1.txt
 
 # Start Gunicorn - offering better performance than Django's built-in server
 log "Starting Gunicorn server..."

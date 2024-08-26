@@ -99,27 +99,28 @@ services:
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
 
-  # Monitoring tool for Celery. - Not at the moment.
-  # flower:
-  #   image: mher/flower
-  #   environment:
-  #     - CELERY_BROKER_URL=redis://redis:6379/0
-  #     - FLOWER_PORT=5555
-  #   ports:
-  #     - 5555:5555
-  #   depends_on:
-  #     - redis
-  #     - celery
-  # Log watcher service to check for new log files.
-  # Not at the moment. manually insert the log files into the log_files folder.
-  # Dockerfile.watchdog ready for this container setup.
-  # log_watcher:
-  #   build: ./backend
-  #   volumes:
-  #     - ./log_files:/app/log_files
-  #   command: python manage.py watch_log_files /app/log_files
-  #   depends_on:
-  #     - db
+## Monitoring tool for Celery.
+  flower:
+    image: mher/flower
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - FLOWER_PORT=5555
+    ports:
+      - 5555:5555
+    depends_on:
+      - redis
+      - celery
+
+##Log watcher service to check for new log files.
+  log_watcher:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile.watchdog
+    volumes:
+      - ./log_files:/app/log_files
+    command: python manage.py watch_log_files /app/log_files
+    depends_on:
+      - db
 
 volumes:
   mariadb_data:
