@@ -158,7 +158,6 @@ const Dashboard = () => {
               
               <Grid item xs={12} sm={6} md={4} sx={{ padding: 3 }}>
                 <Paper sx={{ padding: 2 }}>
-                  <InfoCard title="Logs" value={data.infoCards.values[1]} icon={Notes}/>
 
                   <InfoCard title="Logs" value={recordCount + routerLogCount} icon={Notes}/>
 
