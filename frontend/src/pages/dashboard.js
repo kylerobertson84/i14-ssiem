@@ -37,6 +37,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchUser = async () => {
       const token = localStorage.getItem('token');
+      
       if (token) {
         console.log('Authorization header:', `Bearer ${token}`);
         try {
@@ -45,6 +46,7 @@ const Dashboard = () => {
               Authorization: `Bearer ${token}`,
             },
           });
+          
           setUser(response.data);
         } catch (error) {
           console.error('Error fetching user data', error);
@@ -135,13 +137,7 @@ const Dashboard = () => {
           display: 'flex',
           flexDirection: 'column',
         }}
-        sx={{
-          marginBottom: 5,
-          marginLeft: 5,
-          marginRight: 5,
-          display: 'flex',
-          flexDirection: 'column',
-        }}
+       
       >
         <Title />
         
