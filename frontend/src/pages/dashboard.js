@@ -31,9 +31,6 @@ const Dashboard = () => {
   const [user, setUser] = useState(null);
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-
-
- 
   const [recordCount, setRecordCount] = useState(0);
   const [routerLogCount, setRouterLogCount] = useState(0);
 
@@ -159,26 +156,13 @@ const Dashboard = () => {
               
               {/* Info cards styling padding and grid items */}
               <Grid item xs={12} sm={6} md={4} sx={{ padding: 3 }}>
-        <Title />
-        
-        {/* Alerts, database stats and graph grids */}
-        <Grid container spacing={3}>
-          
-          {/* Info cards and two graph grid */}
-          <Grid item xs={12} md={8}>
-            
-            {/* Info cards and graph spacing */}
-            <Grid container spacing={3} >
-              
-              {/* Info cards styling padding and grid items */}
-              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3 }}>
                 <Paper sx={{ padding: 2 }}>
                   <InfoCard title="Total Devices" value={data.infoCards.values[0]} icon={Devices}/>
-                  <InfoCard title="Total Devices" value={data.infoCards.values[0]} icon={Devices}/>
+                  
                 </Paper>
               </Grid>
               
-              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3 }}>
+              
               <Grid item xs={12} sm={6} md={4} sx={{ padding: 3 }}>
                 <Paper sx={{ padding: 2 }}>
 
@@ -187,35 +171,35 @@ const Dashboard = () => {
                 </Paper>
               </Grid>
 
-              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3 }}>
+             
               <Grid item xs={12} sm={6} md={4} sx={{ padding: 3 }}>
                 <Paper sx={{ padding: 2 }}>
+                  
                   <InfoCard title="New Devices (24hr)" value={data.infoCards.values[2]} icon={AddToQueue}/>
-                  <InfoCard title="New Devices (24hr)" value={data.infoCards.values[2]} icon={AddToQueue}/>
                 </Paper>
               </Grid>
 
-              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3 }}>
+           
               <Grid item xs={12} sm={6} md={4} sx={{ padding: 3 }}>
                 <Paper sx={{ padding: 2 }}>
+                  
                   <InfoCard title="Open Investigations" value={data.infoCards.values[3]} icon={Search}/>
-                  <InfoCard title="Open Investigations" value={data.infoCards.values[3]} icon={Search}/>
                 </Paper>
               </Grid>
 
-              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3 }}>
+              
               <Grid item xs={12} sm={6} md={4} sx={{ padding: 3 }}>
                 <Paper sx={{ padding: 2 }}>
-                  <InfoCard title="Events per Day" value={data.infoCards.values[4]} icon={EditCalendar}/>
+                 
                   <InfoCard title="Events per Day" value={data.infoCards.values[4]} icon={EditCalendar}/>
                 </Paper>
               </Grid>
 
-              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3 }}>
+             
 
               <Grid item xs={12} sm={6} md={4} sx={{ padding: 3 }}>
                 <Paper sx={{ padding: 2 }}>
-                  <InfoCard title="Closed Investigations" value={data.infoCards.values[5]} icon={AssignmentTurnedInOutlined}/>
+                  
                   <InfoCard title="Closed Investigations" value={data.infoCards.values[5]} icon={AssignmentTurnedInOutlined}/>
                 </Paper>
               </Grid>
@@ -226,35 +210,20 @@ const Dashboard = () => {
                   <LogsPerDayChart data={data.graphs.dataBar} />
                 </Paper>
               </Grid>
-              {/* Graphs Section */}
-              <Grid item xs={12} md={6}>
-                <Paper sx={{ padding: 2 }}>
-                  <LogsPerDayChart data={data.graphs.dataBar} />
-                </Paper>
-              </Grid>
+              
 
               <Grid item xs={12} md={6}>
                 <Paper sx={{ padding: 2 }}>
                   <LogsByDeviceChart data={data.graphs.dataPie}/>
                 </Paper>
               </Grid>
-              <Grid item xs={12} md={6}>
-                <Paper sx={{ padding: 2 }}>
-                  <LogsByDeviceChart data={data.graphs.dataPie}/>
-                </Paper>
-              </Grid>
+              
+
             </Grid>
-          </Grid>
+          
           </Grid>
 
-          {/* Alerts Section */}
-          <Grid item xs={12} md={4}>
-            <Paper sx={{ padding: 2, marginBottom: 3 }}>
-              <Typography variant="h6" gutterBottom>Latest Alerts</Typography>
-              <Alert hostname={data.alerts.hostName[0]} message={data.alerts.message[0]} />
-              <Alert hostname={data.alerts.hostName[1]} message={data.alerts.message[1]} />
-              <Alert hostname={data.alerts.hostName[2]} message={data.alerts.message[2]} />
-              <Alert hostname={data.alerts.hostName[3]} message={data.alerts.message[3]} />
+         
           {/* Alerts Section */}
           <Grid item xs={12} md={4}>
             <Paper sx={{ padding: 2, marginBottom: 3 }}>
@@ -270,26 +239,8 @@ const Dashboard = () => {
                 </Link>
               </Typography>
             </Paper>
-              <Typography variant="body2">
-                <Link style={{ width: "100%", display: 'flex', justifyContent: 'right', textDecoration: 'none', color: 'black' }} to="/alerts">
-                  View more &gt;
-                </Link>
-              </Typography>
-            </Paper>
 
-            {/* System Stats */}
-            <Paper sx={{ padding: 2 }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Typography variant="h6">SIEM Database Server Status</Typography>
-                <MonitorHeartOutlined sx={{ fontSize: 40, color: '#6c757d' }}/>
-              </Box>
-              <SystemStat 
-                dataDisk={data.graphs.diskData} 
-                dataRam={data.graphs.ramData} 
-                dataCpu={data.graphs.cpuData}      
-              />
-            </Paper>
-          </Grid>
+
             {/* System Stats */}
             <Paper sx={{ padding: 2 }}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -432,9 +383,6 @@ function SystemStat({
   dataCpu,
   dataDisk,
   dataRam
-  dataCpu,
-  dataDisk,
-  dataRam
 }) {
   return (
     <Box sx={{ padding: 2 }}>
@@ -444,11 +392,9 @@ function SystemStat({
         <Box sx={{ flexGrow: 1 }}>
           <Typography variant="body1" >
             Disk Used: {dataDisk[5].value}%
-            Disk Used: {dataDisk[5].value}%
           </Typography>
         </Box>
 
-        <DiskUsageChart data={dataDisk}/>
         <DiskUsageChart data={dataDisk}/>
       </Box>
 
@@ -458,10 +404,8 @@ function SystemStat({
         <Box sx={{ flexGrow: 1 }}>
           <Typography variant="body1" >
             RAM Load: {dataRam[5].value}%
-            RAM Load: {dataRam[5].value}%
           </Typography>
         </Box>
-        <RamUsageChart data={dataRam}/>
         <RamUsageChart data={dataRam}/>
       </Box>
 
@@ -471,10 +415,9 @@ function SystemStat({
         <Box sx={{ flexGrow: 1 }}>
           <Typography variant="body1" >
             CPU Load: {dataCpu[5].value}%
-            CPU Load: {dataCpu[5].value}%
+
           </Typography>
         </Box>
-        <CpuLoadChart data={dataCpu}/>
         <CpuLoadChart data={dataCpu}/>
 
       </Box>
