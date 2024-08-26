@@ -15,8 +15,6 @@ import ProtectedLayout from './components/ProtectedLayout';
 
 
 
-
-
 const App = () => (
   <Router>
       <Routes>
