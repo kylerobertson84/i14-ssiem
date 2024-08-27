@@ -1,7 +1,7 @@
-
-
 import React, { Children, useEffect, useState } from 'react';
 import axios from 'axios';
+
+
 
 /* Icons */
 import { 
@@ -22,8 +22,9 @@ import { Link } from 'react-router-dom';
 import { Grid, Paper, Typography, Box } from '@mui/material';
 import Navbar from '../components/NavBar.js';
 import { LogsPerDayChart, LogsByDeviceChart, CpuLoadChart, RamUsageChart, DiskUsageChart } from '../components/dashboardGraphs.js';
+import AuthService from '../services/AuthService.js';
+import API_ENDPOINTS from '../services/apiConfig.js';
 
-import { fetchUser, fetchLogCount, fetchRouterLogCount } from '../services/apiService.js';
 
 
 const Dashboard = () => {
@@ -34,23 +35,69 @@ const Dashboard = () => {
   const [routerLogCount, setRouterLogCount] = useState(0);
 
   useEffect(() => {
-    const loadData = async () => {
-      try {
-        const [userData, logCountData, routerLogCountData] = await Promise.all([
-          fetchUser(),
-          fetchLogCount(),
-          fetchRouterLogCount(),
-        ]);
-
-        setUser(userData);
-        setRecordCount(logCountData.count);
-        setRouterLogCount(routerLogCountData.router_log_count);
-      } catch (error) {
-        console.error('Error loading dashboard data', error);
+    const fetchUser = async () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        console.log('Authorization header:', `Bearer ${token}`);
+        try {
+            const response = await axios.get(API_ENDPOINTS.user, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          setUser(response.data);
+        } catch (error) {
+          console.error('Error fetching user data', error);
+        }
       }
     };
 
-    loadData();
+    const fetchLogCount = async () => {
+      const token = AuthService.getToken();
+      if (token) {
+        console.log('Authorization header:', `Bearer ${token}`);
+        try {
+            
+            const response = await axios.get(API_ENDPOINTS.logCount, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          setRecordCount(response.data.count);
+        } catch (error) {
+          console.error('Error fetching record count', error);
+        }
+      } else {
+        console.error('No token found');
+        // Optionally redirect to login
+      }
+    };
+
+    const fetchRouterLogCount = async () => {
+      const token = AuthService.getToken();
+      if (token) {
+        console.log('Authorization header:', `Bearer ${token}`);
+        try {
+            
+            const response = await axios.get(API_ENDPOINTS.routerLogCount, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          setRouterLogCount(response.data.router_log_count);
+        } catch (error) {
+          console.error('Error fetching router record count', error);
+        }
+      } else {
+        console.error('No token found');
+        // Optionally redirect to login
+      }
+    };
+
+
+    fetchUser();
+    fetchLogCount();
+    fetchRouterLogCount();
   }, []);
 
   useEffect(() => {
@@ -75,6 +122,8 @@ const Dashboard = () => {
   }
 
 
+
+
   return (
     <div>
       <Navbar />
@@ -86,7 +135,13 @@ const Dashboard = () => {
           display: 'flex',
           flexDirection: 'column',
         }}
-       
+        sx={{
+          marginBottom: 5,
+          marginLeft: 5,
+          marginRight: 5,
+          display: 'flex',
+          flexDirection: 'column',
+        }}
       >
         <Title />
         
