@@ -25,7 +25,7 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, Spec
 from siem.views import health_check
 
 from rest_framework.routers import DefaultRouter
-from logs.views import BronzeEventDataViewSet, EventDataViewSet, RouterDataViewSet
+from logs.views import BronzeEventDataViewSet, EventDataViewSet, RouterDataViewSet, LogPercentageViewSet
 from alerts.views import AlertViewSet, AssignedAlertViewSet
 from reports.views import IncidentReportViewSet
 
@@ -36,6 +36,7 @@ router.register(r'alerts', AlertViewSet)
 router.register(r'assigned-alerts', AssignedAlertViewSet)
 router.register(r'incident-reports', IncidentReportViewSet)
 router.register(r'router-data', RouterDataViewSet)
+router.register(r'log-percentage', LogPercentageViewSet, basename='log-percentage')
 
 
 urlpatterns = [
@@ -44,6 +45,7 @@ urlpatterns = [
     path('api/health', health_check, name='health_check'),
     path('api/v1/', include(router.urls)),
     path('api/', include('accounts.urls')),
+    # path('api/v1/logs/', include('logs.urls')),
     
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),

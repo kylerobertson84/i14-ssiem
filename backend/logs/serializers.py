@@ -29,6 +29,5 @@ class RouterDataSerializer(serializers.ModelSerializer):
 
 
 class LogCountSerializer(serializers.Serializer):
-    bronze_event_data_count = serializers.IntegerField()
-    router_data_count = serializers.IntegerField()
-    total_count = serializers.IntegerField()
+    windows_os_percentage = serializers.FloatField()
+    network_percentage = serializers.FloatField()

@@ -7,6 +7,7 @@ from .models import BronzeEventData, EventData, RouterData
 from .serializers import BronzeEventDataSerializer, EventDataSerializer, RouterDataSerializer, LogCountSerializer
 from utils.pagination import StandardResultsSetPagination
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 # from rest_framework.authentication import TokenAuthentication
 
 class BronzeEventDataViewSet(viewsets.ReadOnlyModelViewSet):
@@ -51,4 +52,26 @@ class RouterDataViewSet(viewsets.ReadOnlyModelViewSet):
     def router_log_count(self, request):
         router_log_count = self.queryset.count()
         return Response({'router_log_count': router_log_count})
+
+class LogPercentageViewSet(viewsets.ViewSet):
+
+    @action(detail=False, methods=['get'])
+    def log_percentages(self, request):
+        bronze_event_data_count = BronzeEventData.objects.count()
+        router_data_count = RouterData.objects.count()
+        total_log_count = bronze_event_data_count + router_data_count
+
+        if total_log_count > 0:
+            data = {
+                'windows_os_percentage': (bronze_event_data_count / total_log_count) * 100,
+                'network_percentage': (router_data_count / total_log_count) * 100,
+            }
+        else:
+            data = {
+                'windows_os_percentage': 0,
+                'network_percentage': 0,
+            }
+
+        serializer = LogCountSerializer(data)
+        return Response(serializer.data)
 
