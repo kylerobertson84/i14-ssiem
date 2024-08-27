@@ -31,3 +31,9 @@ class RouterDataSerializer(serializers.ModelSerializer):
 class LogCountSerializer(serializers.Serializer):
     windows_os_percentage = serializers.FloatField()
     network_percentage = serializers.FloatField()
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['windows_os_percentage'] = round(representation['windows_os_percentage'], 2)
+        representation['network_percentage'] = round(representation['network_percentage'], 2)
+        return representation
