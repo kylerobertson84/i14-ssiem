@@ -3,7 +3,6 @@ import axios from 'axios';
 import AuthService from './AuthService';
 
 const instance = axios.create({
-    // baseURL: 'http://127.0.0.1:8000/api/',
     baseURL: process.env.REACT_APP_API_URL,
 });
 
@@ -37,5 +36,4 @@ instance.interceptors.response.use(
 );
 
 export default instance;
-
 

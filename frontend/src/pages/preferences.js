@@ -4,44 +4,31 @@
 import React, { useEffect, useState } from 'react';
 import Navbar from '../components/NavBar';
 import PreferencesForm from '../components/PreferencesForm.js';
-import axios from 'axios';
-import AuthService from '../services/AuthService.js';
-import API_ENDPOINTS from '../services/apiConfig.js';
-//import {IoPersonCirculeOutline} from "react-icons/io5"; 
+import { fetchUser } from '../services/apiService.js';
 
+//import {IoPersonCirculeOutline} from "react-icons/io5"; 
 
 const Preferences = () => {
   const [user, setUser] = useState(null);
-  const [error, setError] = useState(null);
-
+  
   useEffect(() => {
-    const fetchUser = async () => {
-      // const token = localStorage.getItem('token');
-      const token = AuthService.getToken();
-      if (token) {
-        console.log('Authorization header:', `Bearer ${token}`);
-        try {
-          const response = await axios.get(API_ENDPOINTS.user, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          setUser(response.data);
-        } catch (error) {
-          console.error('Error fetching user data', error);
-          setError('Failed to fetch user data');
-        }
-      } else {
-        setError('No token found');
+    const loadData = async () => {
+      try {
+        const [userData] = await Promise.all([
+          fetchUser(),
+        ]);
+
+        setUser(userData);
+        
+      } catch (error) {
+        console.error('Error loading dashboard data', error);
       }
-    }
-    fetchUser();
+    };
+
+    loadData();
   }, []);
 
-  if (error) {
-    return <div>{error}</div>;
-  }
-
+  
   return (
     <div className='profile'>
       <Navbar />
