@@ -134,15 +134,8 @@ const Dashboard = () => {
           marginRight: 5,
           display: 'flex',
           flexDirection: 'column',
-        }}
-        sx={{
-          marginBottom: 5,
-          marginLeft: 5,
-          marginRight: 5,
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
+        }}>
+
         <Title />
         
         {/* Alerts, database stats and graph grids */}
@@ -333,7 +326,7 @@ function Alert(
       padding: 0, 
       margin: 1.5,
       borderRadius: 5,
-      backgroundColor: 'rgba(240,20,47,1)'
+      backgroundColor: 'rgb(197,217,226)'
       }}>
     
       <Box
@@ -351,8 +344,8 @@ function Alert(
             paddingBottom: .25,
           }}>
         
-            <p>Device: {hostname}</p>
-            <p>{message}</p>
+            <p><strong>Device: {hostname}</strong></p>
+            <p><strong>{message}</strong></p>
         
         </Box>
 
