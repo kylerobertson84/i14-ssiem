@@ -18,4 +18,8 @@ export const fetchRouterLogCount = () => {
   return apiRequest(API_ENDPOINTS.routerLogCount);
 };
 
+export const logPercentages = () => {
+    return apiRequest(API_ENDPOINTS.log_percentages);
+  };
+
 
