@@ -52,7 +52,6 @@ if not User.objects.filter(username=username).exists():
 else:
     print('Superuser already exists.');
 "
-fi
 
 # Print success message
 echo "Development environment setup complete!"
