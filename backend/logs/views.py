@@ -4,7 +4,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import BronzeEventData, EventData, RouterData
-from .serializers import BronzeEventDataSerializer, EventDataSerializer, RouterDataSerializer
+from .serializers import BronzeEventDataSerializer, EventDataSerializer, RouterDataSerializer, LogCountSerializer
 from utils.pagination import StandardResultsSetPagination
 from rest_framework.permissions import IsAuthenticated
 # from rest_framework.authentication import TokenAuthentication

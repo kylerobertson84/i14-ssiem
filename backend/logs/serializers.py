@@ -26,3 +26,9 @@ class RouterDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = RouterData
         fields = '__all__'
+
+
+class LogCountSerializer(serializers.Serializer):
+    bronze_event_data_count = serializers.IntegerField()
+    router_data_count = serializers.IntegerField()
+    total_count = serializers.IntegerField()
