@@ -44,35 +44,32 @@ const Preferences = () => {
   }
 
   return (
-    <div className='Preferences'>
+    <div classname='preferences'>
       <Navbar />
       <h1>Preferences Page</h1>
-      <div className='avatar'>
-        { <div className='avatar-wrapper'>
-            {(
-              <AccountCircleRoundedIcon/>
+        <div className='profile'>
+          <div className='avatar'>
+            <AccountCircleRoundedIcon fontSize='large'/>
+          </div>
+          <div className='body'>
+            {!user ? (
+              <p>Loading user data...</p>
+            ) : (
+              <>
+                <p>Username: {user.username}</p>
+                <p>Email: {user.email || 'No email provided'}</p>
+                
+                <p>Roles: {user.role ? user.role.name : 'No role assigned'}</p>
+              </>
             )}
           </div>
-          }
-      </div>
-      <div className='body'>
-        {!user ? (
-          <p>Loading user data...</p>
-        ) : (
-          <>
-            <p>Username: {user.username}</p>
-            <p>Email: {user.email || 'No email provided'}</p>
-            
-            <p>Roles: {user.role ? user.role.name : 'No role assigned'}</p>
-          </>
-        )}
-      </div>
-      <div>
-        <PreferencesForm />
-      </div>
-      <div>
-      </div>
+          <div>
+            <PreferencesForm />
+          </div>
+          <div>
+          </div>
 
+        </div>
     </div>
 
   );
