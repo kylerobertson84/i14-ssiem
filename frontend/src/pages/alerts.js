@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Alert from '../components/Alerts';
 import '../pages/Design.css';
 import alertsData from '../data/alerts.json';  // Importing pre-saved alerts data
+import Navbar from '../components/NavBar';
 
 const AlertsPage = () => {
     const [alerts, setAlerts] = useState([]);
@@ -30,6 +31,7 @@ const AlertsPage = () => {
 
     return (
         <div>
+            <Navbar />
             <h1>Alerts</h1>
             <div className="search-container">
                 <input

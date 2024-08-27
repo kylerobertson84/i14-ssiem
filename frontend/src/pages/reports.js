@@ -5,6 +5,7 @@ import ReportViewer from '../components/Reports/ReportViewer';
 import ReportExporter from '../components/Reports/ReportExporter';
 import ReportList from '../components/Reports/ReportList';
 import '../Design/Report.css';
+import Navbar from '../components/NavBar';
 
 const ReportsPage = () => {
   const [reports, setReports] = useState([]);
@@ -20,6 +21,7 @@ const ReportsPage = () => {
 
   return (
     <main className="reporting-container">
+      <Navbar />
       <h2>Generate and Export Report</h2>
       <ReportGenerator onGenerate={handleGenerate} />
       <div className="report-tiles-container">
