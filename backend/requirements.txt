@@ -11,4 +11,6 @@ gunicorn
 djoser
 djangorestframework-simplejwt
 drf-spectacular
+celery
+redis
 pytz
