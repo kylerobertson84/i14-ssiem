@@ -3,11 +3,12 @@
 
 import React, { useEffect, useState } from 'react';
 import Navbar from '../components/NavBar';
+import '../pages/ProfileStyle.css';
 import PreferencesForm from '../components/PreferencesForm.js';
 import axios from 'axios';
 import AuthService from '../services/AuthService.js';
 import API_ENDPOINTS from '../services/apiConfig.js';
-//import {IoPersonCirculeOutline} from "react-icons/io5"; 
+import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 
 
 const Preferences = () => {
@@ -43,16 +44,16 @@ const Preferences = () => {
   }
 
   return (
-    <div className='profile'>
+    <div className='Preferences'>
       <Navbar />
       <h1>Preferences Page</h1>
       <div className='avatar'>
-        {/* <div className='avatar-wrapper'>
-            {user.avatar (
-              <IoPersonCirculeOutline/>
+        { <div className='avatar-wrapper'>
+            {(
+              <AccountCircleRoundedIcon/>
             )}
           </div>
-          */}
+          }
       </div>
       <div className='body'>
         {!user ? (
@@ -70,7 +71,6 @@ const Preferences = () => {
         <PreferencesForm />
       </div>
       <div>
-        <SearchBar />
       </div>
 
     </div>
@@ -80,40 +80,4 @@ const Preferences = () => {
 
 export default Preferences;
 
-
-function SearchBar() {
-  const [query, setQuery] = useState("");
-  const [results, setResults] = useState([]);
-  return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-        flexDirection: "column",
-      }}
-    >
-      <div style={{
-        position: "absolute",
-        top: "25%",
-        left: "5%",
-        transform: "translate(-50% )",
-        fontSize: '2em'
-      }}>
-        <span style={{ color: "#4285F4" }}>Search For User</span>
-      </div>
-      <div
-        style={{
-          position: "absolute",
-          top: "40%",
-          left: "50%",
-          transform: "translate(-50% )",
-        }}
-      >
-        {/*<SearchBar query={query} setQuery={setQuery}/>*/} {/* causes the page not to load*/}
-      </div>
-    </div>
-  );
-}
 {/* */ }
