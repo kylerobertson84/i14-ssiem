@@ -20,7 +20,7 @@ import { Grid, Paper, Typography, Box } from '@mui/material';
 import Navbar from '../components/NavBar.js';
 import { LogsPerDayChart, LogsByDeviceChart, CpuLoadChart, RamUsageChart, DiskUsageChart } from '../components/dashboardGraphs.js';
 
-import { fetchUser, fetchLogCount, fetchRouterLogCount } from '../services/apiService.js';
+import { fetchUser, fetchLogCount, fetchRouterLogCount, fetchLogPercentages } from '../services/apiService.js';
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
@@ -28,19 +28,28 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [recordCount, setRecordCount] = useState(0);
   const [routerLogCount, setRouterLogCount] = useState(0);
+  const [logPercentages, setLogPercentages] = useState({});
+
+  const logsByDeviceData = [
+    { name: 'Windows OS', value: logPercentages.windows_os_percentage },
+    { name: 'Network', value: logPercentages.network_percentage }
+  ];
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [userData, logCountData, routerLogCountData] = await Promise.all([
+        const [userData, logCountData, routerLogCountData, logPercentages] = await Promise.all([
           fetchUser(),
           fetchLogCount(),
           fetchRouterLogCount(),
+          fetchLogPercentages(),
         ]);
 
         setUser(userData);
         setRecordCount(logCountData.count);
         setRouterLogCount(routerLogCountData.router_log_count);
+        setLogPercentages(logPercentages);
+        console.log("logPercentages",logPercentages);
       } catch (error) {
         console.error('Error loading dashboard data', error);
       }
@@ -69,8 +78,6 @@ const Dashboard = () => {
   if (!data) {
     return <div>Error loading data.</div>;
   }
-
-
 
 
   return (
@@ -156,7 +163,8 @@ const Dashboard = () => {
 
               <Grid item xs={12} md={6}>
                 <Paper sx={{ padding: 2 }}>
-                  <LogsByDeviceChart data={data.graphs.dataPie}/>
+                  
+                  <LogsByDeviceChart data={logsByDeviceData}/>
                 </Paper>
               </Grid>
               
