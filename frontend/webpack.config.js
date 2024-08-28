@@ -1,4 +1,4 @@
-// webpack.config.js
+// DO NOT REMOVE WITHOUT THIS DOCKER CONTAINER WILL NOT AUTOMATICALLY UPDATE THE FRONTEND
 const path = require('path');
 
 module.exports = {

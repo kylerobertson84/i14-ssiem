@@ -1,10 +1,16 @@
 django
+django-filter
 djangorestframework
 mysqlclient
 django-cors-headers
 django-extensions
+python-dotenv
 watchdog
 Werkzeug
 gunicorn
 djoser
 djangorestframework-simplejwt
+drf-spectacular
+celery
+redis
+pytz

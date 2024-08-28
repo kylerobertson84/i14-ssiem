@@ -1,0 +1,74 @@
+[
+    {
+        "id": 126,
+        "hostname": "WDT-01",
+        "event_id": 4740,
+        "severity": "info",
+        "event_time": "2024-03-12 16:05:16",
+        "message": "A user account was locked out",
+        "ip_address": "192.168.0.196",
+        "user_id": "S-1-5-18",
+        "rule_triggered": "Account lockout",
+        "comments": ""
+    },
+    {
+        "id": 125,
+        "hostname": "WDT-05",
+        "event_id": 4740,
+        "severity": "info",
+        "event_time": "2024-03-12 16:05:12",
+        "message": "A user account was locked out",
+        "ip_address": "192.168.0.199",
+        "user_id": "S-1-5-18",
+        "rule_triggered": "Account lockout",
+        "comments": ""
+    },
+    {
+        "id": 124,
+        "hostname": "WDT-05",
+        "event_id": 4625,
+        "severity": "error",
+        "event_time": "2024-03-12 16:05:10",
+        "message": "A logon request failed",
+        "ip_address": "192.168.0.196",
+        "user_id": "S-1-5-18",
+        "rule_triggered": "Logon Failed",
+        "comments": ""
+    },
+    {
+        "id": 123,
+        "hostname": "WDT-05",
+        "event_id": 4625,
+        "severity": "error",
+        "event_time": "2024-03-12 16:05:06",
+        "message": "A logon request failed",
+        "ip_address": "192.168.0.199",
+        "user_id": "S-1-5-18",
+        "rule_triggered": "Logon Failed",
+        "comments": ""
+    },
+    {
+        "id": 122,
+        "hostname": "WDT-05",
+        "event_id": 4625,
+        "severity": "error",
+        "event_time": "2024-03-12 16:05:02",
+        "message": "A logon request failed",
+        "ip_address": "192.168.0.199",
+        "user_id": "S-1-5-18",
+        "rule_triggered": "Logon Failed",
+        "comments": ""
+    },
+    {
+        "id": 121,
+        "hostname": "WDT-01",
+        "event_id": 1005,
+        "severity": "info",
+        "event_time": "2024-03-12 16:04:16",
+        "message": "A malware scan failed",
+        "ip_address": "192.168.0.1",
+        "user_id": "S-1-5-19",
+        "rule_triggered": "Defender Anti-Virus",
+        "comments": ""
+    }
+]

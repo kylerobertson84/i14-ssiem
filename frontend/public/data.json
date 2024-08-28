@@ -1,0 +1,121 @@
+{
+  "infoCards": {
+    "comment for below because no comments allowed in json":[
+      "there are no existing api calls for the ones below, 1st value is total devices this would be something like the total number of unique hostnames in the db ",
+      "2nd value is the total logs, i think maybe doing the formatting on the backend could be good but i would just convert the large number to like 10k or 5M and not show the whole number",
+      "3rd value is new devices so that would just be the new hostnames in the DB in the last 24 hours",
+      "4th value is the amount of open investigations, there is the api to get an open investigation but not sure how i would get a total count of open investigations from that api endpoint",
+      "5th value is logs per day so basically how many new lines in the db in the last 24 hours, might do formatting on the backend or frontend who knows",
+      "6th value is the closed investigations, same as the 4th value there is the api for investigations but i wouldn't know how to grab all"
+    ],
+    "values": [
+      "301",
+      "321k",
+      "7",
+      "23",
+      "10,556",
+      "142"
+    ]
+},
+
+
+
+  "comment for below because no comments allowed in json":[
+    "Could use /api/v1/alerts/ which should return then i could theortetically use event.source.hostname and rule.description",
+    "The only problem is that i will need the last 4 returned and i need to do it in a way in which the results are returned in an array",
+    "not the end of the world if they're not since i can just call each one seperately but thats just how i have it set up"
+  ],
+
+  "alerts": {
+    "hostName": [
+      "WDT-01",
+      "WDT-01",
+      "WDT-03",
+      "WDT-04"
+    ],
+    "message": [
+      "Failed Login Attempt",
+      "New User Account Created",
+      "Failed Login Attempt",
+      "Windows Defender Detected Malware"
+    ]
+  },
+
+
+  "graphs": {
+    "comment for below because no comments allowed in json":[
+    "Need this to be returned as i have it below, the graph stuff i do not understand how it works fully and this array type stuff seems to be how",
+    "it likes the data to be fed into it (who am i to argue)",
+    "values are just the amount of logs for the day (name field) per device",
+    "yes those name fields have to be labled name as it names the x axis on the graph"
+  ],
+    "dataBar": [
+      { "name": "Jan 1", "Computer": 300, "Networking": 100 },
+      { "name": "Jan 2", "Computer": 400, "Networking": 300 },
+      { "name": "Jan 3", "Computer": 200, "Networking": 500 },
+      { "name": "Jan 4", "Computer": 278, "Networking": 200 },
+      { "name": "Jan 5", "Computer": 189, "Networking": 600 },
+      { "name": "Jan 6", "Computer": 239, "Networking": 400 },
+      { "name": "Jan 7", "Computer": 349, "Networking": 300 }
+    ],
+
+
+    "comment for below because no comments allowed in json1":[
+    "again this is similar to the above but it just needs the device type (we can just go with network and computer) ",
+    "and then the percentage of the total logs which that device has generated, we could just do it over the last day or 2 instead of querying the db",
+    "for all the logs ever to then figure out the percentage since that might be costly"
+  ],
+    "dataPie": [
+      { "name": "Windows OS", "value": 50 },
+      { "name": "Networking Devices", "value": 25 },
+      { "name": "Linux OS", "value": 15 },
+      { "name": "MacOS", "value": 10 }
+    ],
+
+
+
+    "comment for below because no comments allowed in json2":[
+    "pretty self explainitory i just need disk usage percentage for the last 5 hours and then the present value",
+    "Again like the graphs above i do need the name as thats the thing that the recharts looks for to lable the graph"
+  ],
+    "diskData": [
+      { "name": "5h ago", "value": 60 },
+      { "name": "4h ago", "value": 62 },
+      { "name": "3h ago", "value": 65 },
+      { "name": "2h ago", "value": 68 },
+      { "name": "1h ago", "value": 70 },
+      { "name": "Now", "value": 75 }
+    ],
+
+
+
+    "comment for below because no comments allowed in json3":[
+    "pretty self explainitory i just need ram usage percentage for the last 5 hours and then the present value",
+    "Again like the graphs above i do need the name as thats the thing that the recharts looks for to lable the graph"
+  ],
+    "ramData": [
+      { "name": "5h ago", "value": 65 },
+      { "name": "4h ago", "value": 40 },
+      { "name": "3h ago", "value": 24 },
+      { "name": "2h ago", "value": 55 },
+      { "name": "1h ago", "value": 60 },
+      { "name": "Now", "value": 34 }
+    ],
+
+
+    
+    "comment for below because no comments allowed in json4":[
+    "pretty self explainitory i just need cpu usage percentage for the last 5 hours and then the present value",
+    "Again like the graphs above i do need the name as thats the thing that the recharts looks for to lable the graph"
+  ],
+    "cpuData": [
+      { "name": "5h ago", "value": 15 },
+      { "name": "4h ago", "value": 50 },
+      { "name": "3h ago", "value": 20 },
+      { "name": "2h ago", "value": 25 },
+      { "name": "1h ago", "value": 30 },
+      { "name": "Now", "value": 7 }
+    ]
+  }
+
+}

@@ -7,6 +7,8 @@ COPY webpack.config.js ./
 
 RUN npm install
 
+
+
 COPY . .
 
 CMD ["npm", "start"]

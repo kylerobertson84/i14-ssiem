@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Exit immediately if a command exits with a non-zero status
 set -e
@@ -27,29 +27,18 @@ if [ ! -d ".git" ]; then
     git clone https://github.com/kylerobertson84/i14-ssiem.git .
 fi
 
+# Removing current and running containers
+docker-compose down -v --remove-orphans
+
 # Build and start the Docker containers
-docker-compose up -d
+docker-compose up --build -d
 
-# Install backend dependencies
-docker-compose exec backend pip install -r requirements.txt
+# Prune unused Docker images
+docker image prune -f
 
-# Run backend migrations
-docker-compose exec backend python manage.py migrate
+# Wait for the backend service to be healthy
+sleep 3
 
-# Install frontend dependencies
-docker-compose exec frontend npm install
-
-# Function to check if the superuser exists
-superuser_exists() {
-    docker-compose exec backend python manage.py shell -c "from django.contrib.auth import get_user_model; User = get_user_model(); print(User.objects.filter(is_superuser=True).exists())"
-}
-
-# Create a superuser for Django admin if it doesn't exist
-if [ "$(superuser_exists)" = "False" ]; then
-    docker-compose exec backend python manage.py createsuperuser
-else
-    echo "Superuser already exists. Skipping creation."
-fi
 
 # Print success message
 echo "Development environment setup complete!"
