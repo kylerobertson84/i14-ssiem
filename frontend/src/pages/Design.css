@@ -1,79 +1,72 @@
-body {
-    font-family: Arial, sans-serif;
-}
-
-h1 {
-    text-align: center;
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
-.search-container {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.search-container input {
-    padding: 8px;
-    width: 50%;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
-
-.alerts-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-    padding: 0 20px;
-    justify-content: center;
-}
-
-.alert-card {
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    padding: 20px;
-    background-color: #f9f9f9;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    text-align: left;
-}
-
-.alert-card h3 {
-    margin-top: 0;
-}
-
-.alert-card p {
-    margin: 5px 0;
-}
-
-.alert-card button {
-    margin-top: 10px;
-    padding: 10px;
-    background-color: #007bff;
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    font-family: 'Roboto', Arial, sans-serif;
+    background-color: #f5f5f5;
+  }
+  
+  #root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  .app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  .main-content {
+    flex: 1;
+    padding: 24px;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+  }
+  
+  /* Navbar styles */
+  .MuiAppBar-root {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  /* Footer styles */
+  footer {
+    background-color: #1565c0;
     color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.alert-card button:hover {
-    background-color: #0056b3;
-}
-
-.pagination {
+    padding: 16px 0;
     text-align: center;
-    margin-top: 20px;
-}
-
-.pagination button {
-    margin: 0 5px;
-    padding: 10px 15px;
-    border: none;
-    background-color: #007bff;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.pagination button:hover {
-    background-color: #0056b3;
-}
+  }
+  
+  /* General styles */
+  .MuiContainer-root {
+    padding-top: 24px;
+    padding-bottom: 24px;
+  }
+  
+  .MuiTypography-h4 {
+    margin-bottom: 24px;
+    font-weight: bold;
+    color: #1565c0;
+  }
+  
+  .MuiPaper-root {
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .MuiButton-root {
+    text-transform: none;
+    font-weight: 600;
+    border-radius: 8px;
+  }
+  
+  @media (max-width: 600px) {
+    .main-content {
+      padding: 16px;
+    }
+  }

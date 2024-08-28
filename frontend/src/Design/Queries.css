@@ -1,0 +1,41 @@
+.MuiContainer-root {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.MuiPaper-root {
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.MuiPaper-root:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.MuiTableRow-root {
+  cursor: pointer;
+}
+
+.MuiChip-root {
+  font-weight: 600;
+}
+
+.MuiTableHead-root .MuiTableCell-root {
+  font-weight: bold;
+}
+
+.MuiButton-root {
+  text-transform: none;
+  font-weight: 600;
+}
+
+.MuiSelect-select {
+  display: flex;
+  align-items: center;
+}
+
+@media (max-width: 600px) {
+  .MuiContainer-root {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}

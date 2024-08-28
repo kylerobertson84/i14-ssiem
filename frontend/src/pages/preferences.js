@@ -2,7 +2,6 @@
 // src/pages/preferences.js
 
 import React, { useEffect, useState } from 'react';
-import Navbar from '../components/NavBar';
 import PreferencesForm from '../components/PreferencesForm.js';
 import { fetchUser } from '../services/apiService.js';
 
@@ -31,7 +30,6 @@ const Preferences = () => {
   
   return (
     <div className='profile'>
-      <Navbar />
       <h1>Preferences Page</h1>
       <div className='avatar'>
         {/* <div className='avatar-wrapper'>

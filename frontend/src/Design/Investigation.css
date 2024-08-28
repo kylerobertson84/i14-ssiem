@@ -1,0 +1,48 @@
+.investigation-page {
+    padding: 24px;
+  }
+  
+  .investigation-page h1 {
+    margin-bottom: 24px;
+    color: #1976d2;
+  }
+  
+  .MuiPaper-root {
+    margin-bottom: 24px;
+  }
+  
+  .MuiTableHead-root {
+    background-color: #f5f5f5;
+  }
+  
+  .MuiTableHead-root .MuiTableCell-root {
+    font-weight: bold;
+  }
+  
+  .MuiTableBody-root .MuiTableRow-root:hover {
+    background-color: #f0f7ff;
+  }
+  
+  .MuiTablePagination-root {
+    border-top: 1px solid #e0e0e0;
+  }
+  
+  .MuiDialog-paper {
+    padding: 16px;
+  }
+  
+  .MuiDialogTitle-root {
+    background-color: #1976d2;
+    color: white;
+    margin: -16px -16px 16px -16px;
+    padding: 16px;
+  }
+  
+  .MuiDialogContent-root {
+    padding: 16px;
+  }
+  
+  .MuiDialogActions-root {
+    padding: 16px;
+    border-top: 1px solid #e0e0e0;
+  }

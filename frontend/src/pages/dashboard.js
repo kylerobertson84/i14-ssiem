@@ -17,7 +17,6 @@ from '@mui/icons-material';
 
 import { Link } from 'react-router-dom';
 import { Grid, Paper, Typography, Box } from '@mui/material';
-import Navbar from '../components/NavBar.js';
 import { LogsPerDayChart, LogsByDeviceChart, CpuLoadChart, RamUsageChart, DiskUsageChart } from '../components/dashboardGraphs.js';
 
 import { fetchUser, fetchLogCount, fetchRouterLogCount, fetchLogPercentages } from '../services/apiService.js';
@@ -82,7 +81,6 @@ const Dashboard = () => {
 
   return (
     <div>
-      <Navbar />
       <Box
         sx={{
           marginBottom: 5,

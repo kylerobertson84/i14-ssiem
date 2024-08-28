@@ -1,0 +1,25 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+    background-color: #f5f5f5;
+  }
+  
+  .MuiAppBar-root {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  .MuiButton-root {
+    text-transform: none !important;
+  }
+  
+  .MuiButton-startIcon {
+    margin-right: 4px !important;
+  }
+  
+  @media (max-width: 600px) {
+    .MuiToolbar-root {
+      padding-left: 16px !important;
+      padding-right: 16px !important;
+    }
+  }

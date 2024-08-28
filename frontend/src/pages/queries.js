@@ -1,34 +1,56 @@
-
-
 import React, { useState } from 'react';
-import { Container, Typography, TextField, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import {
+  Container,
+  Typography,
+  TextField,
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Grid,
+  Box,
+  Chip,
+  IconButton,
+  useTheme,
+  useMediaQuery,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel
+} from '@mui/material';
+import {
+  Search as SearchIcon,
+  Clear as ClearIcon,
+  GetApp as ExportIcon
+} from '@mui/icons-material';
 import LogDetails from '../components/LogDetails';
-import Navbar from '../components/NavBar';
+
+const severityOptions = [
+  { value: 'Low', color: 'success' },
+  { value: 'Medium', color: 'warning' },
+  { value: 'High', color: 'error' },
+  { value: 'Critical', color: 'error' }
+];
 
 const Queries = () => {
-  const [device, setDevice] = useState('');
-  const [ip, setIp] = useState('');
-  const [time, setTime] = useState('');
-  const [severity, setSeverity] = useState('');
-  const [process, setProcess] = useState('');
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const [filters, setFilters] = useState({
+    device: '',
+    ip: '',
+    time: '',
+    severity: '',
+    process: ''
+  });
   const [searchResults, setSearchResults] = useState([]);
   const [selectedLog, setSelectedLog] = useState(null);
 
-  // Function to filter the data based on the search criteria
-  const handleSearch = () => {
-    const results = tableData.filter(log => {
-      const matchesDevice = device ? log.device.toLowerCase().includes(device.toLowerCase()) : true;
-      const matchesIp = ip ? log.ip.toLowerCase().includes(ip.toLowerCase()) : true;
-      const matchesTime = time ? log.time.toLowerCase().includes(time.toLowerCase()) : true;
-      const matchesSeverity = severity ? log.severity.toLowerCase() === severity.toLowerCase() : true;
-      const matchesProcess = process ? process.split(',').map(p => p.trim().toLowerCase()).includes(log.process.toLowerCase()) : true;
-      return matchesDevice && matchesIp && matchesTime && matchesSeverity && matchesProcess;
-    });
-    setSearchResults(results);
-  };
-
-  const [tableData, setTableData] = useState([
-    // Sample data for demonstration
+  const tableData = [
     { device: 'Device 1', ip: '192.168.1.1', time: 'Apr 11 12:00 PM', severity: 'High', process: 'dhcpd', details: 'Log details for Device 1' },
     { device: 'Device 2', ip: '192.168.1.2', time: 'Apr 12 01:00 PM', severity: 'Medium', process: 'kern', details: 'Log details for Device 2' },
     { device: 'Device 3', ip: '192.168.1.3', time: 'Apr 13 02:00 PM', severity: 'Low', process: 'dhcpd', details: 'Log details for Device 3' },
@@ -37,7 +59,38 @@ const Queries = () => {
     { device: 'Device 6', ip: '192.168.1.6', time: 'Apr 16 05:00 PM', severity: 'Medium', process: 'Windows Kernel', details: 'Log details for Device 6' },
     { device: 'Device 7', ip: '192.168.1.7', time: 'Apr 17 06:00 PM', severity: 'Low', process: 'Application Hang', details: 'Log details for Device 7' },
     { device: 'Device 8', ip: '192.168.1.8', time: 'Apr 18 07:00 PM', severity: 'Critical', process: 'Application Hang', details: 'Log details for Device 8' }
-  ]);
+  ];
+
+  const handleFilterChange = (event) => {
+    const { name, value } = event.target;
+    setFilters(prevFilters => ({ ...prevFilters, [name]: value }));
+  };
+
+  const handleSearch = () => {
+    const results = tableData.filter(log => {
+      return Object.entries(filters).every(([key, value]) => {
+        if (!value) return true;
+        if (key === 'process') {
+          return value.split(',').some(p => 
+            log[key].toLowerCase().includes(p.trim().toLowerCase())
+          );
+        }
+        return log[key].toLowerCase().includes(value.toLowerCase());
+      });
+    });
+    setSearchResults(results);
+  };
+
+  const handleClear = () => {
+    setFilters({
+      device: '',
+      ip: '',
+      time: '',
+      severity: '',
+      process: ''
+    });
+    setSearchResults([]);
+  };
 
   const handleRowClick = (log) => {
     setSelectedLog(log);
@@ -54,107 +107,148 @@ const Queries = () => {
     link.click();
   };
 
+  const renderSearchFields = () => (
+    <Grid container spacing={3}>
+      {Object.entries(filters).map(([key, value]) => (
+        <Grid item xs={12} sm={6} md={4} key={key}>
+          {key === 'severity' ? (
+            <FormControl fullWidth variant="outlined">
+              <InputLabel>Severity</InputLabel>
+              <Select
+                name="severity"
+                value={value}
+                onChange={handleFilterChange}
+                label="Severity"
+              >
+                <MenuItem value="">
+                  <em>Any</em>
+                </MenuItem>
+                {severityOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    <Chip 
+                      label={option.value}
+                      size="small"
+                      color={option.color}
+                      sx={{ mr: 1 }}
+                    />
+                    {option.value}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          ) : (
+            <TextField
+              name={key}
+              label={key.charAt(0).toUpperCase() + key.slice(1)}
+              variant="outlined"
+              fullWidth
+              value={value}
+              onChange={handleFilterChange}
+              placeholder={`Enter ${key}`}
+            />
+          )}
+        </Grid>
+      ))}
+    </Grid>
+  );
+
   return (
     <Container maxWidth="lg">
-      <Navbar />
-      <Typography variant="h3" component="h1" gutterBottom>
-        Queries
+      <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 4, fontWeight: 'bold', color: theme.palette.primary.main }}>
+        Log Queries
       </Typography>
 
-      <TextField
-        label="Device"
-        variant="outlined"
-        fullWidth
-        placeholder="Enter device name"
-        value={device}
-        onChange={(e) => setDevice(e.target.value)}
-        sx={{ mb: 2 }}
-      />
-      
-      <TextField
-        label="IP"
-        variant="outlined"
-        fullWidth
-        placeholder="Enter IP address"
-        value={ip}
-        onChange={(e) => setIp(e.target.value)}
-        sx={{ mb: 2 }}
-      />
-      
-      <TextField
-        label="Time"
-        variant="outlined"
-        fullWidth
-        placeholder="Enter time (e.g., Apr 11 12:00 PM)"
-        value={time}
-        onChange={(e) => setTime(e.target.value)}
-        sx={{ mb: 2 }}
-      />
+      <Paper elevation={3} sx={{ p: 4, mb: 4, borderRadius: 2 }}>
+        {renderSearchFields()}
+        <Box sx={{ mt: 4, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+          <Button
+            variant="outlined"
+            startIcon={<ClearIcon />}
+            onClick={handleClear}
+            sx={{ borderRadius: 2 }}
+          >
+            Clear
+          </Button>
+          <Button
+            variant="contained"
+            startIcon={<SearchIcon />}
+            onClick={handleSearch}
+            sx={{ borderRadius: 2 }}
+          >
+            Search
+          </Button>
+        </Box>
+      </Paper>
 
-      <TextField
-        label="Severity"
-        variant="outlined"
-        fullWidth
-        placeholder="Enter severity (e.g., High, Medium, Low, Critical)"
-        value={severity}
-        onChange={(e) => setSeverity(e.target.value)}
-        sx={{ mb: 2 }}
-      />
-      
-      <TextField
-        label="Process"
-        variant="outlined"
-        fullWidth
-        placeholder="Enter processes (comma-separated)"
-        value={process}
-        onChange={(e) => setProcess(e.target.value)}
-        sx={{ mb: 4 }}
-      />
+      {searchResults.length > 0 && (
+        <>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+              Search Results ({searchResults.length})
+            </Typography>
+            <Button
+              variant="outlined"
+              startIcon={<ExportIcon />}
+              onClick={exportResults}
+              sx={{ borderRadius: 2 }}
+            >
+              Export
+            </Button>
+          </Box>
 
-      <Button 
-        variant="contained" 
-        color="primary" 
-        onClick={handleSearch}
-        sx={{ mb: 4 }}
-      >
-        Search
-      </Button>
-      
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Device</TableCell>
-              <TableCell>IP</TableCell>
-              <TableCell>Time</TableCell>
-              <TableCell>Severity</TableCell>
-              <TableCell>Process</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {searchResults.map((row, index) => (
-              <TableRow key={index} onClick={() => handleRowClick(row)} hover>
-                <TableCell>{row.device}</TableCell>
-                <TableCell>{row.ip}</TableCell>
-                <TableCell>{row.time}</TableCell>
-                <TableCell>{row.severity}</TableCell>
-                <TableCell>{row.process}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+          <TableContainer component={Paper} sx={{ mb: 4, borderRadius: 2, overflow: 'hidden' }}>
+            <Table>
+              <TableHead>
+                <TableRow sx={{ backgroundColor: theme.palette.primary.main }}>
+                  <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Device</TableCell>
+                  <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>IP</TableCell>
+                  {!isMobile && (
+                    <>
+                      <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Time</TableCell>
+                      <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Severity</TableCell>
+                      <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Process</TableCell>
+                    </>
+                  )}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {searchResults.map((row, index) => (
+                  <TableRow 
+                    key={index} 
+                    onClick={() => handleRowClick(row)} 
+                    hover 
+                    sx={{ '&:nth-of-type(odd)': { backgroundColor: theme.palette.action.hover } }}
+                  >
+                    <TableCell>{row.device}</TableCell>
+                    <TableCell>{row.ip}</TableCell>
+                    {!isMobile && (
+                      <>
+                        <TableCell>{row.time}</TableCell>
+                        <TableCell>
+                          <Chip
+                            label={row.severity}
+                            color={
+                              row.severity === 'High' || row.severity === 'Critical'
+                                ? 'error'
+                                : row.severity === 'Medium'
+                                ? 'warning'
+                                : 'success'
+                            }
+                            size="small"
+                          />
+                        </TableCell>
+                        <TableCell>{row.process}</TableCell>
+                      </>
+                    )}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </>
+      )}
 
-      <Button 
-        variant="contained" 
-        color="primary" 
-        onClick={exportResults}
-        sx={{ mt: 3 }}
-      >
-        Export Results
-      </Button>
-
-      <LogDetails log={selectedLog} />
+      {selectedLog && <LogDetails log={selectedLog} />}
     </Container>
   );
 };
