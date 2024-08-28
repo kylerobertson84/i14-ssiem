@@ -11,13 +11,6 @@ from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
-# # Define a mapping of file patterns to processing commands
-# FILE_PROCESSING_MAP = {
-#     'log1.txt': 'parse_log_file',
-#     'router1.txt': 'parse_router',
-#     # Add more patterns and commands as needed
-# }
-
 @shared_task
 def check_and_process_logs():
     log_directory = settings.LOG_FILES_DIRECTORY
@@ -35,30 +28,20 @@ def check_and_process_logs():
 def process_log_file(log_directory, processed_directory, filename):
     file_path = os.path.join(log_directory, filename)
     try:
-        ## Hardcoded to check if the file is log1.txt or router1.txt
-        if filename == 'log1.txt':
-            call_command('parse_log_file', file_path)
-            logger.info(f"Processed log file: {filename}")
-        elif filename == 'router1.txt':
+        # Check if the file is router1.txt
+        if filename == 'router1.txt':
             call_command('parse_router', file_path)
             logger.info(f"Processed router file: {filename}")
         else:
-            logger.warning(f"No command associated with the file: {filename}")
-            
-        # Dynamic way to process files
-        # command = FILE_PROCESSING_MAP.get(filename)
-        # if command:
-        #     call_command(command, file_path)
-        #     logger.info(f"Processed file {filename} with command {command}")
-        # else:
-        #     logger.warning(f"No command associated with the file: {filename}")
+            # Handle all other .txt files with parse_log_file
+            call_command('parse_log_file', file_path)
+            logger.info(f"Processed log file: {filename}")
         
         # Move the processed file to the processed directory
         shutil.move(file_path, os.path.join(processed_directory, filename))
         logger.info(f"Moved file {filename} to {processed_directory}")
     except Exception as e:
         logger.error(f"Error processing file {filename}: {e}")
-
 
 @shared_task(bind=True, max_retries=3)
 def process_logs(self):
