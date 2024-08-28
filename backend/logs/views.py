@@ -1,3 +1,4 @@
+
 # logs/views.py
 from rest_framework import viewsets, filters
 from rest_framework.decorators import action
@@ -8,6 +9,10 @@ from .serializers import BronzeEventDataSerializer, EventDataSerializer, RouterD
 from utils.pagination import StandardResultsSetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
+
+from django.db.models.functions import TruncHour
+from django.db.models import Count
+
 # from rest_framework.authentication import TokenAuthentication
 
 class BronzeEventDataViewSet(viewsets.ReadOnlyModelViewSet):
@@ -75,3 +80,41 @@ class LogPercentageViewSet(viewsets.ViewSet):
         serializer = LogCountSerializer(data)
         return Response(serializer.data)
 
+class LogAggregationViewSet(viewsets.ViewSet):
+    @action(detail=False, methods=['get'])
+    def logs_per_hour(self, request):
+        # Aggregate BronzeEventData logs per hour
+        bronze_event_data = (
+            BronzeEventData.objects
+            .annotate(hour=TruncHour('iso_timestamp'))
+            .values('hour')
+            .annotate(count=Count('id'))
+            .order_by('hour')
+        )
+
+        # Aggregate RouterData logs per hour
+        router_data = (
+            RouterData.objects
+            .annotate(hour=TruncHour('date_time'))
+            .values('hour')
+            .annotate(count=Count('id'))
+            .order_by('hour')
+        )
+
+        # Format data for the chart
+        data = []
+        hours = sorted(set(
+            [entry['hour'] for entry in bronze_event_data] +
+            [entry['hour'] for entry in router_data]
+        ))
+
+        for hour in hours:
+            bronze_count = next((item['count'] for item in bronze_event_data if item['hour'] == hour), 0)
+            router_count = next((item['count'] for item in router_data if item['hour'] == hour), 0)
+            data.append({
+                'name': hour.strftime('%Y-%m-%d %H:%M:%S'),
+                'Computer': bronze_count,
+                'Networking': router_count,
+            })
+
+        return Response(data)
