@@ -3,28 +3,34 @@ import {
   Container,
   Typography,
   TextField,
-  Grid,
-  Card,
-  CardContent,
-  CardActions,
   Button,
-  Chip,
-  Box,
-  Pagination,
-  useTheme,
-  useMediaQuery,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   Table,
   TableBody,
   TableCell,
   TableContainer,
+  TableHead,
   TableRow,
-  Paper
+  Paper,
+  Chip,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Box,
+  Tooltip,
+  TablePagination,
+  TableSortLabel
 } from '@mui/material';
-import { Search as SearchIcon } from '@mui/icons-material';
+import {
+  Search as SearchIcon,
+  Visibility as ViewIcon,
+  AssignmentInd as AssignIcon
+} from '@mui/icons-material';
 import alertsData from '../data/alerts.json';
 
 const severityColors = {
@@ -36,36 +42,15 @@ const severityColors = {
   critical: 'error'
 };
 
-const AlertCard = ({ alert, onViewDetails }) => {
-  const theme = useTheme();
+const AlertDetailsDialog = ({ alert, open, onClose, onAssign }) => {
+  const [assignee, setAssignee] = useState('');
 
-  return (
-    <Card elevation={3} sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <CardContent sx={{ flexGrow: 1 }}>
-        <Typography variant="h6" component="div" gutterBottom>
-          {alert.hostname}
-        </Typography>
-        <Chip 
-          label={alert.severity.charAt(0).toUpperCase() + alert.severity.slice(1)} 
-          color={severityColors[alert.severity.toLowerCase()]} 
-          size="small" 
-          sx={{ mb: 1 }} 
-        />
-        <Typography variant="body2" color="text.secondary">
-          {alert.message}
-        </Typography>
-      </CardContent>
-      <CardActions>
-        <Button size="small" color="primary" onClick={() => onViewDetails(alert)}>
-          View Details
-        </Button>
-      </CardActions>
-    </Card>
-  );
-};
-
-const AlertDetailsDialog = ({ alert, open, onClose }) => {
   if (!alert) return null;
+
+  const handleAssign = () => {
+    onAssign(alert.id, assignee);
+    onClose();
+  };
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
@@ -85,9 +70,24 @@ const AlertDetailsDialog = ({ alert, open, onClose }) => {
             </TableBody>
           </Table>
         </TableContainer>
+        <FormControl fullWidth sx={{ mt: 2 }}>
+          <InputLabel>Assign To</InputLabel>
+          <Select
+            value={assignee}
+            onChange={(e) => setAssignee(e.target.value)}
+            label="Assign To"
+          >
+            <MenuItem value="John Doe">John Doe</MenuItem>
+            <MenuItem value="Jane Smith">Jane Smith</MenuItem>
+            <MenuItem value="Alice Johnson">Alice Johnson</MenuItem>
+          </Select>
+        </FormControl>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Close</Button>
+        <Button onClick={handleAssign} color="primary" variant="contained" disabled={!assignee}>
+          Assign
+        </Button>
       </DialogActions>
     </Dialog>
   );
@@ -95,31 +95,39 @@ const AlertDetailsDialog = ({ alert, open, onClose }) => {
 
 const AlertsPage = () => {
   const [alerts, setAlerts] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [filteredAlerts, setFilteredAlerts] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedAlert, setSelectedAlert] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
-  const alertsPerPage = 6;
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const [severityFilter, setSeverityFilter] = useState('');
+  const [orderBy, setOrderBy] = useState('event_time');
+  const [order, setOrder] = useState('desc');
 
   useEffect(() => {
     setAlerts(alertsData);
+    setFilteredAlerts(alertsData);
   }, []);
 
-  const filteredAlerts = alerts.filter(
-    (alert) =>
-      alert.hostname.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      alert.severity.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      alert.message.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  useEffect(() => {
+    const filtered = alerts.filter(
+      (alert) =>
+        (alert.hostname.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        alert.message.toLowerCase().includes(searchTerm.toLowerCase())) &&
+        (severityFilter ? alert.severity === severityFilter : true)
+    );
+    setFilteredAlerts(filtered);
+    setPage(0);
+  }, [searchTerm, severityFilter, alerts]);
 
-  const indexOfLastAlert = currentPage * alertsPerPage;
-  const indexOfFirstAlert = indexOfLastAlert - alertsPerPage;
-  const currentAlerts = filteredAlerts.slice(indexOfFirstAlert, indexOfLastAlert);
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
 
-  const handlePageChange = (event, value) => {
-    setCurrentPage(value);
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
 
   const handleViewDetails = (alert) => {
@@ -131,47 +139,139 @@ const AlertsPage = () => {
     setOpenDialog(false);
   };
 
+  const handleAssign = (alertId, assignee) => {
+    // Need to update this one in the backend
+    setAlerts(alerts.map(alert => 
+      alert.id === alertId ? { ...alert, assigned_to: assignee } : alert
+    ));
+  };
+
+  const handleRequestSort = (property) => {
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(property);
+  };
+
+  const sortedAlerts = filteredAlerts.sort((a, b) => {
+    if (order === 'desc') {
+      return b[orderBy] < a[orderBy] ? -1 : 1;
+    } else {
+      return a[orderBy] < b[orderBy] ? -1 : 1;
+    }
+  });
+
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 4, fontWeight: 'bold', color: theme.palette.primary.main }}>
+    <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
+      <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 4, fontWeight: 'bold' }}>
         Alerts
       </Typography>
 
-      <Box sx={{ mb: 4 }}>
+      <Box sx={{ display: 'flex', mb: 2, gap: 2 }}>
         <TextField
-          fullWidth
           variant="outlined"
           placeholder="Search alerts..."
           InputProps={{
             startAdornment: <SearchIcon color="action" sx={{ mr: 1 }} />,
           }}
           onChange={(e) => setSearchTerm(e.target.value)}
-          sx={{ bgcolor: 'background.paper' }}
+          sx={{ flexGrow: 1 }}
         />
+        <FormControl sx={{ minWidth: 120 }}>
+          <InputLabel>Severity</InputLabel>
+          <Select
+            value={severityFilter}
+            onChange={(e) => setSeverityFilter(e.target.value)}
+            label="Severity"
+          >
+            <MenuItem value="">All</MenuItem>
+            <MenuItem value="info">Info</MenuItem>
+            <MenuItem value="low">Low</MenuItem>
+            <MenuItem value="medium">Medium</MenuItem>
+            <MenuItem value="high">High</MenuItem>
+            <MenuItem value="critical">Critical</MenuItem>
+          </Select>
+        </FormControl>
       </Box>
 
-      <Grid container spacing={3}>
-        {currentAlerts.map(alert => (
-          <Grid item key={alert.id} xs={12} sm={6} md={4}>
-            <AlertCard alert={alert} onViewDetails={handleViewDetails} />
-          </Grid>
-        ))}
-      </Grid>
-
-      <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
-        <Pagination 
-          count={Math.ceil(filteredAlerts.length / alertsPerPage)} 
-          page={currentPage} 
-          onChange={handlePageChange}
-          color="primary"
-          size={isMobile ? "small" : "medium"}
-        />
-      </Box>
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650 }} aria-label="alerts table">
+          <TableHead>
+            <TableRow>
+              <TableCell>
+                <TableSortLabel
+                  active={orderBy === 'event_time'}
+                  direction={orderBy === 'event_time' ? order : 'asc'}
+                  onClick={() => handleRequestSort('event_time')}
+                >
+                  Time
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={orderBy === 'hostname'}
+                  direction={orderBy === 'hostname' ? order : 'asc'}
+                  onClick={() => handleRequestSort('hostname')}
+                >
+                  Hostname
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={orderBy === 'severity'}
+                  direction={orderBy === 'severity' ? order : 'asc'}
+                  onClick={() => handleRequestSort('severity')}
+                >
+                  Severity
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>Message</TableCell>
+              <TableCell>Assigned To</TableCell>
+              <TableCell>Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {sortedAlerts
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((alert) => (
+                <TableRow key={alert.id} hover>
+                  <TableCell>{alert.event_time}</TableCell>
+                  <TableCell>{alert.hostname}</TableCell>
+                  <TableCell>
+                    <Chip 
+                      label={alert.severity.charAt(0).toUpperCase() + alert.severity.slice(1)} 
+                      color={severityColors[alert.severity.toLowerCase()]} 
+                      size="small"
+                    />
+                  </TableCell>
+                  <TableCell>{alert.message}</TableCell>
+                  <TableCell>{alert.assigned_to || 'Unassigned'}</TableCell>
+                  <TableCell>
+                    <Tooltip title="View Details">
+                      <IconButton onClick={() => handleViewDetails(alert)} size="small">
+                        <ViewIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </TableCell>
+                </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[10, 25, 50]}
+        component="div"
+        count={filteredAlerts.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
 
       <AlertDetailsDialog 
         alert={selectedAlert}
         open={openDialog}
         onClose={handleCloseDialog}
+        onAssign={handleAssign}
       />
     </Container>
   );
