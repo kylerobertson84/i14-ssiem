@@ -2,6 +2,7 @@ FROM python:3.12
 WORKDIR /backend
 COPY requirements.txt .
 RUN pip install -r requirements.txt
+
 COPY . .
 
 # Copy the entrypoint script and set correct line endings

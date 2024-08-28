@@ -36,22 +36,9 @@ docker-compose up --build -d
 # Prune unused Docker images
 docker image prune -f
 
-# Please do not decrease the sleep time below 5 seconds
-sleep 7
+# Wait for the backend service to be healthy
+sleep 3
 
-# Function to check if the superuser exists
-docker-compose exec backend python manage.py shell -c "
-from django.contrib.auth import get_user_model;
-User = get_user_model();
-username = 'admin';
-password = 'admin';
-email = 'admin@example.com';
-if not User.objects.filter(username=username).exists():
-    User.objects.create_superuser(username=username, password=password, email=email);
-    print('Superuser created successfully.');
-else:
-    print('Superuser already exists.');
-"
 
 # Print success message
 echo "Development environment setup complete!"

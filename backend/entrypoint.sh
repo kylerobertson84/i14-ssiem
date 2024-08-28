@@ -29,8 +29,10 @@ fi
 log "Creating rules..."
 python manage.py create_rules
 
-#log "Parsing data..."
-#python manage.py parse_log_file ./log_files/log1.txt
+# Create superuser if it doesn't exist
+log "Creating superuser..."
+python manage.py create_superuser || log "Superuser creation failed or already exists."
+
 
 # Start Gunicorn - offering better performance than Django's built-in server
 log "Starting Gunicorn server..."

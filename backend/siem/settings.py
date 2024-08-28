@@ -241,11 +241,13 @@ LOGGING = {
 AUTH_USER_MODEL = 'accounts.User'
 
 # Celery settings
+
 CELERY_BROKER_URL = 'redis://redis:6379/0'
 CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
 
-LOG_FILES_DIRECTORY = '/backend/log_files'
-PROCESSED_FILES_DIRECTORY = '/backend/processed_log_files_watchdog'
+
+LOG_FILES_DIRECTORY = '/app/log_files'
+PROCESSED_FILES_DIRECTORY = '/app/processed_log_files'
 
 CELERY_BEAT_SCHEDULE = {
     'check-and-process-logs': {

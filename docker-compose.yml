@@ -69,6 +69,7 @@ services:
     command: celery -A siem worker -l info
     volumes:
       - ./log_files:/app/log_files
+      - ./processed_log_files:/app/processed_log_files
     depends_on:
       - backend
       - redis
@@ -92,6 +93,7 @@ services:
     command: celery -A siem beat -l info
     volumes:
       - ./log_files:/app/log_files
+      - ./processed_log_files:/app/processed_log_files
     depends_on:
       - backend
       - redis
@@ -105,6 +107,7 @@ services:
     environment:
       - CELERY_BROKER_URL=redis://redis:6379/0
       - FLOWER_PORT=5555
+      - TZ=Australia/Melbourne
     ports:
       - 5555:5555
     depends_on:
@@ -114,3 +117,4 @@ services:
 volumes:
   mariadb_data:
   log_files:
+  processed_log_files:
