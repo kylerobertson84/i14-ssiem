@@ -18,7 +18,7 @@ from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 import { Grid, Paper, Typography, Box } from '@mui/material';
 import Navbar from '../components/NavBar.js';
-import { LogsPerDayChart, LogsByDeviceChart, CpuLoadChart, RamUsageChart, DiskUsageChart } from '../components/dashboardGraphs.js';
+import { LogsPerHourChart, LogsByDeviceChart, CpuLoadChart, RamUsageChart, DiskUsageChart } from '../components/dashboardGraphs.js';
 
 import { fetchUser, fetchLogCount, fetchRouterLogCount, fetchLogPercentages } from '../services/apiService.js';
 
@@ -156,7 +156,7 @@ const Dashboard = () => {
               {/* Graphs Section */}
               <Grid item xs={12} md={6}>
                 <Paper sx={{ padding: 2 }}>
-                  <LogsPerDayChart data={data.graphs.dataBar} />
+                  <LogsPerHourChart data={data.graphs.dataBar} />
                 </Paper>
               </Grid>
               
