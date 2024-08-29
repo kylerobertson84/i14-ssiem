@@ -70,3 +70,28 @@ html, body {
       padding: 16px;
     }
   }
+
+  .investigation-page .MuiDialogTitle-root {
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .investigation-page .MuiDialogContent-root {
+    padding-top: 20px;
+  }
+  
+  .investigation-page .MuiPaper-root {
+    transition: box-shadow 0.3s ease-in-out;
+  }
+  
+  .investigation-page .MuiPaper-root:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .investigation-page .MuiSelect-select {
+    padding: 10px;
+  }
+  
+  .investigation-page .MuiButton-contained {
+    text-transform: none;
+  }

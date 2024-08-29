@@ -1,10 +1,15 @@
-
 import React, { useState } from 'react';
+import {
+  Container,
+  Typography,
+  Grid,
+  Paper,
+  Box
+} from '@mui/material';
 import ReportGenerator from '../components/Reports/ReportGenerator';
+import ReportList from '../components/Reports/ReportList';
 import ReportViewer from '../components/Reports/ReportViewer';
 import ReportExporter from '../components/Reports/ReportExporter';
-import ReportList from '../components/Reports/ReportList';
-import '../Design/Report.css';
 
 const ReportsPage = () => {
   const [reports, setReports] = useState([]);
@@ -19,19 +24,37 @@ const ReportsPage = () => {
   };
 
   return (
-    <main className="reporting-container">
-      <h2>Generate and Export Report</h2>
-      <ReportGenerator onGenerate={handleGenerate} />
-      <div className="report-tiles-container">
-        <ReportList reports={reports} onSelect={handleSelectReport} />
-      </div>
-      {selectedReport && (
-        <div className="report-details">
-          <ReportViewer report={selectedReport} />
-          <ReportExporter report={selectedReport} />
-        </div>
-      )}
-    </main>
+    <Container maxWidth="lg">
+      <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 4, fontWeight: 'bold', color: 'primary.main' }}>
+        Reports Management
+      </Typography>
+
+      <Grid container spacing={4}>
+        <Grid item xs={12}>
+          <ReportGenerator onGenerate={handleGenerate} />
+        </Grid>
+
+        <Grid item xs={12} md={6}>
+          {reports.length > 0 && (
+          <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
+            <ReportList reports={reports} onSelect={handleSelectReport} />
+          </Paper>
+          )}
+        </Grid>
+
+        <Grid item xs={12} md={6}>
+          {selectedReport && (
+            <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
+              <Typography variant="h6" gutterBottom>Selected Report</Typography>
+              <ReportViewer report={selectedReport} />
+              <Box sx={{ mt: 2 }}>
+                <ReportExporter report={selectedReport} />
+              </Box>
+            </Paper>
+          )}
+        </Grid>
+      </Grid>
+    </Container>
   );
 };
 

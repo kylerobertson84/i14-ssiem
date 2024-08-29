@@ -22,8 +22,8 @@ import {
   FormControl,
   InputLabel,
   Box,
-  Tooltip,
   TablePagination,
+  useTheme,
   TableSortLabel
 } from '@mui/material';
 import {
@@ -43,14 +43,18 @@ const severityColors = {
 };
 
 const AlertDetailsDialog = ({ alert, open, onClose, onAssign }) => {
-  const [assignee, setAssignee] = useState('');
+  const [assignee, setAssignee] = useState(alert?.assigned_to || '');
+  const [comment, setComment] = useState(alert?.comments || '');
 
   if (!alert) return null;
 
   const handleAssign = () => {
-    onAssign(alert.id, assignee);
+    onAssign(alert.id, assignee, comment);
     onClose();
   };
+
+  const excludedFields = ['comments', 'assigned_to'];
+  const filteredAlertEntries = Object.entries(alert).filter(([key]) => !excludedFields.includes(key));
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
@@ -58,10 +62,10 @@ const AlertDetailsDialog = ({ alert, open, onClose, onAssign }) => {
       <DialogContent>
         <TableContainer component={Paper}>
           <Table>
-            <TableBody>
-              {Object.entries(alert).map(([key, value]) => (
+          <TableBody>
+              {filteredAlertEntries.map(([key, value]) => (
                 <TableRow key={key}>
-                  <TableCell component="th" scope="row" sx={{ fontWeight: 'bold' }}>
+                  <TableCell component="th" scope="row" sx={{ fontWeight: 'bold', width: '30%' }}>
                     {key.charAt(0).toUpperCase() + key.split('_').join(' ').slice(1)}
                   </TableCell>
                   <TableCell>{value.toString()}</TableCell>
@@ -70,23 +74,35 @@ const AlertDetailsDialog = ({ alert, open, onClose, onAssign }) => {
             </TableBody>
           </Table>
         </TableContainer>
-        <FormControl fullWidth sx={{ mt: 2 }}>
+        <Typography variant="h6" gutterBottom>Assignment</Typography>
+        <FormControl fullWidth sx={{ mb: 2 }}>
           <InputLabel>Assign To</InputLabel>
           <Select
             value={assignee}
             onChange={(e) => setAssignee(e.target.value)}
             label="Assign To"
           >
+            <MenuItem value="">Unassigned</MenuItem>
             <MenuItem value="John Doe">John Doe</MenuItem>
             <MenuItem value="Jane Smith">Jane Smith</MenuItem>
             <MenuItem value="Alice Johnson">Alice Johnson</MenuItem>
           </Select>
         </FormControl>
+
+        <Typography variant="h6" gutterBottom>Comments</Typography>
+        <TextField
+          fullWidth
+          multiline
+          rows={4}
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+          placeholder="Add a comment..."
+        />
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Close</Button>
-        <Button onClick={handleAssign} color="primary" variant="contained" disabled={!assignee}>
-          Assign
+        <Button onClick={handleAssign} color="primary" variant="contained">
+          Save Changes
         </Button>
       </DialogActions>
     </Dialog>
@@ -94,6 +110,7 @@ const AlertDetailsDialog = ({ alert, open, onClose, onAssign }) => {
 };
 
 const AlertsPage = () => {
+  const theme = useTheme();
   const [alerts, setAlerts] = useState([]);
   const [filteredAlerts, setFilteredAlerts] = useState([]);
   const [page, setPage] = useState(0);
@@ -139,10 +156,9 @@ const AlertsPage = () => {
     setOpenDialog(false);
   };
 
-  const handleAssign = (alertId, assignee) => {
-    // Need to update this one in the backend
+  const handleAssign = (alertId, assignee, comment) => {
     setAlerts(alerts.map(alert => 
-      alert.id === alertId ? { ...alert, assigned_to: assignee } : alert
+      alert.id === alertId ? { ...alert, assigned_to: assignee, comments: comment } : alert
     ));
   };
 
@@ -161,7 +177,7 @@ const AlertsPage = () => {
   });
 
   return (
-    <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 4, fontWeight: 'bold' }}>
         Alerts
       </Typography>
@@ -196,17 +212,18 @@ const AlertsPage = () => {
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="alerts table">
           <TableHead>
-            <TableRow>
+            <TableRow sx={{ backgroundColor: theme.palette.primary.main }}>
               <TableCell>
                 <TableSortLabel
                   active={orderBy === 'event_time'}
                   direction={orderBy === 'event_time' ? order : 'asc'}
                   onClick={() => handleRequestSort('event_time')}
+                  sx={{ color: 'white', fontWeight: 'bold' }}
                 >
                   Time
                 </TableSortLabel>
               </TableCell>
-              <TableCell>
+              <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>
                 <TableSortLabel
                   active={orderBy === 'hostname'}
                   direction={orderBy === 'hostname' ? order : 'asc'}
@@ -215,7 +232,7 @@ const AlertsPage = () => {
                   Hostname
                 </TableSortLabel>
               </TableCell>
-              <TableCell>
+              <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>
                 <TableSortLabel
                   active={orderBy === 'severity'}
                   direction={orderBy === 'severity' ? order : 'asc'}
@@ -224,9 +241,8 @@ const AlertsPage = () => {
                   Severity
                 </TableSortLabel>
               </TableCell>
-              <TableCell>Message</TableCell>
-              <TableCell>Assigned To</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Message</TableCell>
+              <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -244,13 +260,12 @@ const AlertsPage = () => {
                     />
                   </TableCell>
                   <TableCell>{alert.message}</TableCell>
-                  <TableCell>{alert.assigned_to || 'Unassigned'}</TableCell>
                   <TableCell>
-                    <Tooltip title="View Details">
+                    <AssignIcon title="View Details">
                       <IconButton onClick={() => handleViewDetails(alert)} size="small">
                         <ViewIcon />
                       </IconButton>
-                    </Tooltip>
+                    </AssignIcon>
                   </TableCell>
                 </TableRow>
             ))}
