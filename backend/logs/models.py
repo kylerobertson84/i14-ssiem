@@ -1,14 +1,17 @@
+
+# logs/models.py
+
 from django.db import models
 from utils.models import BaseModel
 from core.models import Rule
 from django.conf import settings
 
 class BronzeEventData(BaseModel):
+    created_at = models.DateTimeField(auto_now_add=True)
     priority = models.IntegerField(null=True, blank=True)
     h_version = models.IntegerField(null=True, blank=True)
     processed = models.BooleanField(default=False)
     iso_timestamp = models.DateTimeField(null=True, blank=True)
-    #iso_timestamp = models.CharField(max_length=100,null=True,blank=True)
     hostname = models.CharField(max_length=255,null=True, blank=True)
     app_name = models.CharField(max_length=255,null=True, blank=True)
     process_id = models.CharField(max_length=50,null=True, blank=True)
@@ -51,8 +54,8 @@ class EventData(BaseModel):
         return f"Event {self.id} - {self.timestamp}"
 
 class RouterData(BaseModel):
+    created_at = models.DateTimeField(auto_now_add=True)
     severity = models.IntegerField(null = True, blank = True)
-    # timestamp = models.DateTimeField(null = True, blank = True)
     date_time = models.CharField(max_length=100,null=True,blank=True)
     hostname = models.CharField(max_length=100,null=True,blank=True)
     process = models.CharField(max_length=100,null=True,blank=True)
