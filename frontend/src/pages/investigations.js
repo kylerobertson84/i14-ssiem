@@ -36,7 +36,7 @@ const Investigations = () => {
       <Navbar/>
       <h1>Investigations</h1>
       <Container maxWidth="sm" className="investigation-Table">
-            <DataGrid>
+            <DataGrid
               rows = {alerts}
               columns = {columns}
               initialState={{
@@ -47,7 +47,7 @@ const Investigations = () => {
               pageSizeOptions={[5, 10]}
               checkboxSelection
               sx={{ overflow: 'clip' }}
-            </DataGrid>
+            />
       </Container>
   </div>
   );
