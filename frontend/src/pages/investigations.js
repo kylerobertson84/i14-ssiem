@@ -41,7 +41,6 @@ const Investigations = () => {
               columns = {columns}
               initialState={{
                 pagination: {
-                  page: {page},
                   paginationModel: { page: 0, pageSize: 5 },
                 },
               }}
