@@ -1,4 +1,4 @@
-django
+django>=5.0.8
 django-filter
 djangorestframework
 mysqlclient
