@@ -12,7 +12,7 @@ import {
   DialogActions,
   TextField
 } from '@mui/material';
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid, GridRowProp, GridColDef } from '@mui/x-data-grid';
 //import '../Design/Investigation.css'
 
 const alerts = [
