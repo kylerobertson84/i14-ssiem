@@ -37,11 +37,11 @@ const columns = [
     field: 'status', 
     headerName: 'Status', 
     width: 180,
-    renderCell: (params) => {
-      const handleChange = (event) => {
+    renderCell: (params) => {  //customises what is displayed within the cell
+      const handleChange = (event) => { //updates the status of alert when new value is selected
         const newStatus = event.target.value;
         const rowIndex = params.api.getRowIndex(params.id);
-        params.api.updateRows([{ ...params.row, status: newStatus }]);
+        params.api.updateRows([{ ...params.row, status: newStatus }]); 
       };
 
       return (
@@ -61,15 +61,26 @@ const columns = [
 ];
 
 const Investigations = () => {
-  
   const [alerts, setAlerts] = useState(initialAlerts);
+  const [selectionModel, setSelectionModel] = useState([]);
 
+  //This updates the table when change is made
   const handleProcessRowUpdate = (newRow) => {
     setAlerts((prev) =>
       prev.map((alert) => (alert.id === newRow.id ? newRow : alert))
     );
     return newRow;
   };
+
+  const handleSelectionModelChange = (newSelection) => {
+    // Allow only one row to be selected
+    if (newSelection.length > 0) {
+      setSelectionModel([newSelection[0]]);
+    } else {
+      setSelectionModel([]);
+    }
+  };
+
 
 
   return (
@@ -88,6 +99,8 @@ const Investigations = () => {
           }}
           pageSizeOptions={[5, 10]}
           checkboxSelection
+          selectionModel={selectionModel}
+          onSelectionModelChange={handleSelectionModelChange}
           disableSelectionOnClick
           sx={{ overflow: 'clip' }}
         />
