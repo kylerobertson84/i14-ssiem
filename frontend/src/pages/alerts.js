@@ -22,6 +22,7 @@ import {
   FormControl,
   InputLabel,
   Box,
+  Tooltip,
   TablePagination,
   useTheme,
   TableSortLabel
@@ -29,7 +30,7 @@ import {
 import {
   Search as SearchIcon,
   Visibility as ViewIcon,
-  AssignmentInd as AssignIcon
+  Settings as SettingsIcon
 } from '@mui/icons-material';
 import alertsData from '../data/alerts.json';
 
@@ -261,11 +262,11 @@ const AlertsPage = () => {
                   </TableCell>
                   <TableCell>{alert.message}</TableCell>
                   <TableCell>
-                    <AssignIcon title="View Details">
+                    <Tooltip title="View Details">
                       <IconButton onClick={() => handleViewDetails(alert)} size="small">
-                        <ViewIcon />
+                        <SettingsIcon />
                       </IconButton>
-                    </AssignIcon>
+                    </Tooltip>
                   </TableCell>
                 </TableRow>
             ))}
