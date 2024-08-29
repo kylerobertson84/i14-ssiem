@@ -112,7 +112,8 @@ class LogAggregationViewSet(viewsets.ViewSet):
             bronze_count = next((item['count'] for item in bronze_event_data if item['hour'] == hour), 0)
             router_count = next((item['count'] for item in router_data if item['hour'] == hour), 0)
             data.append({
-                'name': hour.strftime('%Y-%m-%d %H:%M:%S'),
+                # 'name': hour.strftime('%Y-%m-%d %H:%M:%S'),
+                'name': hour.strftime('%H:%M:%S'),
                 'Computer': bronze_count,
                 'Networking': router_count,
             })
