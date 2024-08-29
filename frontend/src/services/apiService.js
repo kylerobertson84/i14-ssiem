@@ -23,3 +23,6 @@ export const fetchLogPercentages = () => {
   };
 
 
+export const fetchLogsPerHour = () => {
+  return apiRequest(API_ENDPOINTS.logs_per_hour)
+};

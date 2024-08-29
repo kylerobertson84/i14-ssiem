@@ -86,7 +86,7 @@ class LogAggregationViewSet(viewsets.ViewSet):
         # Aggregate BronzeEventData logs per hour
         bronze_event_data = (
             BronzeEventData.objects
-            .annotate(hour=TruncHour('iso_timestamp'))
+            .annotate(hour=TruncHour('created_at'))
             .values('hour')
             .annotate(count=Count('id'))
             .order_by('hour')
@@ -95,7 +95,7 @@ class LogAggregationViewSet(viewsets.ViewSet):
         # Aggregate RouterData logs per hour
         router_data = (
             RouterData.objects
-            .annotate(hour=TruncHour('date_time'))
+            .annotate(hour=TruncHour('created_at'))
             .values('hour')
             .annotate(count=Count('id'))
             .order_by('hour')

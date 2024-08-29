@@ -3,10 +3,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, Area
 import { PieChart, Pie, Cell } from 'recharts';
 import { Typography, Box } from '@mui/material';
 
-
-
 const COLORSBAR = ['#0088FE', '#00C49F'];
-
 const COLORSPIE = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
 export const LogsPerHourChart = ({ data }) => (

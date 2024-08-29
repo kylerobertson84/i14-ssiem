@@ -20,7 +20,7 @@ import { Grid, Paper, Typography, Box } from '@mui/material';
 import Navbar from '../components/NavBar.js';
 import { LogsPerHourChart, LogsByDeviceChart, CpuLoadChart, RamUsageChart, DiskUsageChart } from '../components/dashboardGraphs.js';
 
-import { fetchUser, fetchLogCount, fetchRouterLogCount, fetchLogPercentages } from '../services/apiService.js';
+import { fetchUser, fetchLogCount, fetchRouterLogCount, fetchLogPercentages, fetchLogsPerHour } from '../services/apiService.js';
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
@@ -29,6 +29,7 @@ const Dashboard = () => {
   const [recordCount, setRecordCount] = useState(0);
   const [routerLogCount, setRouterLogCount] = useState(0);
   const [logPercentages, setLogPercentages] = useState({});
+  const [logsPerHour, setLogsPerHour] = useState([]);
 
   const logsByDeviceData = [
     { name: 'Windows OS', value: logPercentages.windows_os_percentage },
@@ -38,17 +39,20 @@ const Dashboard = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [userData, logCountData, routerLogCountData, logPercentages] = await Promise.all([
+        const [userData, logCountData, routerLogCountData, logPercentages, logsPerHour] = await Promise.all([
           fetchUser(),
           fetchLogCount(),
           fetchRouterLogCount(),
           fetchLogPercentages(),
+          fetchLogsPerHour(),
         ]);
 
         setUser(userData);
         setRecordCount(logCountData.count);
         setRouterLogCount(routerLogCountData.router_log_count);
         setLogPercentages(logPercentages);
+        setLogsPerHour(logsPerHour);
+
         console.log("logPercentages",logPercentages);
       } catch (error) {
         console.error('Error loading dashboard data', error);
@@ -156,7 +160,7 @@ const Dashboard = () => {
               {/* Graphs Section */}
               <Grid item xs={12} md={6}>
                 <Paper sx={{ padding: 2 }}>
-                  <LogsPerHourChart data={data.graphs.dataBar} />
+                  <LogsPerHourChart data={logsPerHour} />
                 </Paper>
               </Grid>
               
