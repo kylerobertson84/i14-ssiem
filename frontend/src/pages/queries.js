@@ -14,13 +14,13 @@ import {
   Grid,
   Box,
   Chip,
-  IconButton,
   useTheme,
   useMediaQuery,
   Select,
   MenuItem,
   FormControl,
-  InputLabel
+  InputLabel,
+  Stack
 } from '@mui/material';
 import {
   Search as SearchIcon,
@@ -28,6 +28,9 @@ import {
   GetApp as ExportIcon
 } from '@mui/icons-material';
 import LogDetails from '../components/LogDetails';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 
 const severityOptions = [
   { value: 'Low', color: 'success' },
@@ -42,8 +45,9 @@ const Queries = () => {
 
   const [filters, setFilters] = useState({
     device: '',
-    ip: '',
-    time: '',
+    host: '',
+    startTime: null,
+    endTime: null,
     severity: '',
     process: ''
   });
@@ -51,14 +55,14 @@ const Queries = () => {
   const [selectedLog, setSelectedLog] = useState(null);
 
   const tableData = [
-    { device: 'Device 1', ip: '192.168.1.1', time: 'Apr 11 12:00 PM', severity: 'High', process: 'dhcpd', details: 'Log details for Device 1' },
-    { device: 'Device 2', ip: '192.168.1.2', time: 'Apr 12 01:00 PM', severity: 'Medium', process: 'kern', details: 'Log details for Device 2' },
-    { device: 'Device 3', ip: '192.168.1.3', time: 'Apr 13 02:00 PM', severity: 'Low', process: 'dhcpd', details: 'Log details for Device 3' },
-    { device: 'Device 4', ip: '192.168.1.4', time: 'Apr 14 03:00 PM', severity: 'Critical', process: 'dhcpd', details: 'Log details for Device 4' },
-    { device: 'Device 5', ip: '192.168.1.5', time: 'Apr 15 04:00 PM', severity: 'High', process: 'Windows Kernel', details: 'Log details for Device 5' },
-    { device: 'Device 6', ip: '192.168.1.6', time: 'Apr 16 05:00 PM', severity: 'Medium', process: 'Windows Kernel', details: 'Log details for Device 6' },
-    { device: 'Device 7', ip: '192.168.1.7', time: 'Apr 17 06:00 PM', severity: 'Low', process: 'Application Hang', details: 'Log details for Device 7' },
-    { device: 'Device 8', ip: '192.168.1.8', time: 'Apr 18 07:00 PM', severity: 'Critical', process: 'Application Hang', details: 'Log details for Device 8' }
+    { device: 'Device 1', ip: '192.168.1.1', time: '2024-04-11T12:00:00', severity: 'High', process: 'dhcpd', details: 'Log details for Device 1' },
+    { device: 'Device 2', ip: '192.168.1.2', time: '2024-04-12T13:00:00', severity: 'Medium', process: 'kern', details: 'Log details for Device 2' },
+    { device: 'Device 3', ip: '192.168.1.3', time: '2024-04-13T14:00:00', severity: 'Low', process: 'dhcpd', details: 'Log details for Device 3' },
+    { device: 'Device 4', ip: '192.168.1.4', time: '2024-04-14T15:00:00', severity: 'Critical', process: 'dhcpd', details: 'Log details for Device 4' },
+    { device: 'Device 5', ip: '192.168.1.5', time: '2024-04-15T16:00:00', severity: 'High', process: 'Windows Kernel', details: 'Log details for Device 5' },
+    { device: 'Device 6', ip: '192.168.1.6', time: '2024-04-16T17:00:00', severity: 'Medium', process: 'Windows Kernel', details: 'Log details for Device 6' },
+    { device: 'Device 7', ip: '192.168.1.7', time: '2024-04-17T18:00:00', severity: 'Low', process: 'Application Hang', details: 'Log details for Device 7' },
+    { device: 'Device 8', ip: '192.168.1.8', time: '2024-04-18T19:00:00', severity: 'Critical', process: 'Application Hang', details: 'Log details for Device 8' }
   ];
 
   const handleFilterChange = (event) => {
@@ -66,16 +70,39 @@ const Queries = () => {
     setFilters(prevFilters => ({ ...prevFilters, [name]: value }));
   };
 
+  const handleTimeChange = (name, value) => {
+    setFilters(prevFilters => ({ ...prevFilters, [name]: value }));
+  };
+
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+    return new Date(dateString).toLocaleDateString('en-US', options);
+  };
+
   const handleSearch = () => {
+    // This function here should be handled by the backend
     const results = tableData.filter(log => {
+      const logTime = new Date(log.time);
       return Object.entries(filters).every(([key, value]) => {
+        if (key === 'startTime' && value) {
+          // Filter logs with time greater than or equal to the start time
+          return logTime >= new Date(value);
+        }
+        if (key === 'endTime' && value) {
+          // Filter logs with time less than or equal to the end time
+          return logTime <= new Date(value);
+        }
         if (!value) return true;
         if (key === 'process') {
           return value.split(',').some(p => 
             log[key].toLowerCase().includes(p.trim().toLowerCase())
           );
         }
-        return log[key].toLowerCase().includes(value.toLowerCase());
+        // Filter logs with case-insensitive match
+        if (key === 'device' || key === 'ip' || key === 'severity') {
+          return log[key].toLowerCase().includes(value.toLowerCase());
+        }
+        return true;
       });
     });
     setSearchResults(results);
@@ -84,8 +111,9 @@ const Queries = () => {
   const handleClear = () => {
     setFilters({
       device: '',
-      ip: '',
-      time: '',
+      IP: '',
+      startTime: null,
+      endTime: null,
       severity: '',
       process: ''
     });
@@ -109,46 +137,83 @@ const Queries = () => {
 
   const renderSearchFields = () => (
     <Grid container spacing={3}>
-      {Object.entries(filters).map(([key, value]) => (
-        <Grid item xs={12} sm={6} md={4} key={key}>
-          {key === 'severity' ? (
-            <FormControl fullWidth variant="outlined">
-              <InputLabel>Severity</InputLabel>
-              <Select
-                name="severity"
-                value={value}
-                onChange={handleFilterChange}
-                label="Severity"
-              >
-                <MenuItem value="">
-                  <em>Any</em>
-                </MenuItem>
-                {severityOptions.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    <Chip 
-                      label={option.value}
-                      size="small"
-                      color={option.color}
-                      sx={{ mr: 1 }}
-                    />
-                    {option.value}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          ) : (
-            <TextField
-              name={key}
-              label={key.charAt(0).toUpperCase() + key.slice(1)}
-              variant="outlined"
-              fullWidth
-              value={value}
-              onChange={handleFilterChange}
-              placeholder={`Enter ${key}`}
+      <Grid item xs={12} sm={6} md={4}>
+        <TextField
+          name="device"
+          label="Device"
+          variant="outlined"
+          fullWidth
+          value={filters.device}
+          onChange={handleFilterChange}
+          placeholder="Enter device"
+        />
+      </Grid>
+      <Grid item xs={12} sm={6} md={4}>
+        <TextField
+          name="host"
+          label="Host"
+          variant="outlined"
+          fullWidth
+          value={filters.host}
+          onChange={handleFilterChange}
+          placeholder="Enter host"
+        />
+      </Grid>
+      <Grid item xs={12} md={4}>
+        <FormControl fullWidth variant="outlined">
+          <InputLabel>Severity</InputLabel>
+          <Select
+            name="severity"
+            value={filters.severity}
+            onChange={handleFilterChange}
+            label="Severity"
+          >
+            <MenuItem value="">
+              <em>Any</em>
+            </MenuItem>
+            {severityOptions.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                <Chip 
+                  label={option.value}
+                  size="small"
+                  color={option.color}
+                  sx={{ mr: 1 }}
+                />
+                {option.value}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Grid>
+      <Grid item xs={12} sm={6}>
+        <TextField
+          name="process"
+          label="Process"
+          variant="outlined"
+          fullWidth
+          value={filters.process}
+          onChange={handleFilterChange}
+          placeholder="Enter process"
+        />
+      </Grid>
+      <Grid item xs={12} sm={6}>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <Stack direction="row" spacing={2}>
+            <DateTimePicker
+              label="Start Time"
+              value={filters.startTime}
+              onChange={(newValue) => handleTimeChange('startTime', newValue)}
+              renderInput={(params) => <TextField {...params} fullWidth />}
             />
-          )}
-        </Grid>
-      ))}
+            <DateTimePicker
+              label="End Time"
+              value={filters.endTime}
+              onChange={(newValue) => handleTimeChange('endTime', newValue)}
+              renderInput={(params) => <TextField {...params} fullWidth />}
+            />
+          </Stack>
+        </LocalizationProvider>
+      </Grid>
     </Grid>
   );
 
@@ -217,13 +282,13 @@ const Queries = () => {
                     key={index} 
                     onClick={() => handleRowClick(row)} 
                     hover 
-                    sx={{ '&:nth-of-type(odd)': { backgroundColor: theme.palette.action.hover } }}
+                    sx={{ '&:nth-of-type(odd)': { backgroundColor: theme.palette.action.hover }, cursor: 'pointer' }}
                   >
                     <TableCell>{row.device}</TableCell>
                     <TableCell>{row.ip}</TableCell>
                     {!isMobile && (
                       <>
-                        <TableCell>{row.time}</TableCell>
+                        <TableCell>{formatDate(row.time)}</TableCell>
                         <TableCell>
                           <Chip
                             label={row.severity}

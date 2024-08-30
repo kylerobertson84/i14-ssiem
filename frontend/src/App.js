@@ -26,7 +26,7 @@ const App = () => (
             <Route path="/reports" element={<Reports />} />
             <Route path='/alerts' element={<Alerts/>} />
             <Route path='/preferences' element={<Preferences/>} />
-            <Route path="/" element={<Navigate replace to="/dashboard" />} />
+            <Route path="/" element={<Navigate replace to="/login" />} />
           </Routes>
         <Footer />
       </div>
