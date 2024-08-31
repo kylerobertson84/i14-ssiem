@@ -20,7 +20,7 @@ import { Grid, Paper, Typography, Box } from '@mui/material';
 import Navbar from '../components/NavBar.js';
 import { LogsPerHourChart, LogsByDeviceChart, CpuLoadChart, RamUsageChart, DiskUsageChart } from '../components/dashboardGraphs.js';
 
-import { fetchUser, fetchLogCount, fetchRouterLogCount, fetchLogPercentages, fetchLogsPerHour } from '../services/apiService.js';
+import { fetchUser, fetchLogCount, fetchRouterLogCount, fetchLogPercentages, fetchLogsPerHour, fetchEventsToday } from '../services/apiService.js';
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
@@ -30,6 +30,7 @@ const Dashboard = () => {
   const [routerLogCount, setRouterLogCount] = useState(0);
   const [logPercentages, setLogPercentages] = useState({});
   const [logsPerHour, setLogsPerHour] = useState([]);
+  const [eventsToday, setEventsToday] = useState({});
 
   const logsByDeviceData = [
     { name: 'Windows OS', value: logPercentages.windows_os_percentage },
@@ -39,12 +40,13 @@ const Dashboard = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [userData, logCountData, routerLogCountData, logPercentages, logsPerHour] = await Promise.all([
+        const [userData, logCountData, routerLogCountData, logPercentages, logsPerHour, eventsToday] = await Promise.all([
           fetchUser(),
           fetchLogCount(),
           fetchRouterLogCount(),
           fetchLogPercentages(),
           fetchLogsPerHour(),
+          fetchEventsToday(),
         ]);
 
         setUser(userData);
@@ -52,6 +54,7 @@ const Dashboard = () => {
         setRouterLogCount(routerLogCountData.router_log_count);
         setLogPercentages(logPercentages);
         setLogsPerHour(logsPerHour);
+        setEventsToday(eventsToday);
 
         console.log("logPercentages",logPercentages);
       } catch (error) {
@@ -144,7 +147,7 @@ const Dashboard = () => {
               <Grid item xs={12} sm={6} md={4} sx={{ padding: 3 }}>
                 <Paper sx={{ padding: 2 }}>
                  
-                  <InfoCard title="Events per Day" value={data.infoCards.values[4]} icon={EditCalendar}/>
+                  <InfoCard title="Events Today" value={eventsToday.events_today} icon={EditCalendar}/>
                 </Paper>
               </Grid>
 
