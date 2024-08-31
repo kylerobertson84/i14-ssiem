@@ -21,6 +21,7 @@ services:
       - ./backend:/backend
     ports:
       - "${DOCKER_BACKEND_PORT:-8000}:8000"
+      - "514:514/udp"
     environment:
       - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
       - DJANGO_DEBUG=${DJANGO_DEBUG:-True}
