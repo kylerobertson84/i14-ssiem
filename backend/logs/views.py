@@ -10,8 +10,9 @@ from utils.pagination import StandardResultsSetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from django.db.models.functions import TruncHour
+from django.db.models.functions import TruncHour, TruncDay
 from django.db.models import Count
+from django.utils import timezone
 
 # from rest_framework.authentication import TokenAuthentication
 
@@ -119,3 +120,15 @@ class LogAggregationViewSet(viewsets.ViewSet):
             })
 
         return Response(data)
+    
+class EventsToday(viewsets.ViewSet):
+    @action(detail=False, methods=['get'])
+    def events_today(self, request):
+        today = timezone.now().date()
+        event_today_count = EventData.objects.annotate(day=TruncDay('timestamp')).filter(day=today).count()
+        data = {
+            'events_today': event_today_count
+        }
+        return Response(data)
+
+        
