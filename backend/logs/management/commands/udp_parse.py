@@ -3,9 +3,13 @@ import re
 from datetime import datetime
 import pytz
 from django.core.management.base import BaseCommand
-from logs.models import BronzeEventData
+from logs.models import *
 from logs.management.commands.constants import BODY_KEY_SET
 
+# constant regular expressions
+
+SEVERITY_RE = r'(?<=\>)'
+DATE_TIME_RE = r'(\w{3}\s+\d{1,2}\s+\d{2}:\d{2}:\d{2})'
 
 class Command(BaseCommand):
     help = 'Runs the UDP parser script'
@@ -33,7 +37,12 @@ class SyslogUDPServer:
                 syslog_message = data.decode('utf-8').strip()
 
                 # Process and insert data
-                parse_line(syslog_message)
+                #parse_line(syslog_message)
+                
+                if "NXLOG" in syslog_message:
+                    parse_line(syslog_message)
+                else:
+                    parse_router_line(syslog_message)
 
                 # Print to the terminal
                 print(f"Received message from {addr}: {syslog_message}")
@@ -187,6 +196,100 @@ def separate_head_body_msg_when_bug_in_log(line, char):
     log_dict = {**header_dict, **body_dict, "message": message_str.strip(), "extra_fields": extra_fields_str}
 
     insert_data(log_dict)
+
+def insert_router_data(a_dict):
+
+    try:
+        RouterData.objects.create(
+            severity = a_dict.get('severity', 0),
+            date_time = a_dict.get('date_time', ''),
+            hostname = a_dict.get('hostname', ''),
+            process = a_dict.get('process', ''),
+            message = a_dict.get('message', ''),
+        )
+    
+    except Exception as e:
+        print(f"Error inserting data: {a_dict}\nError: {e}")
+
+
+
+def parse_router_line(line):
+
+    try:
+
+        # to get the severity / priority
+
+        split_sev_from_header = re.split(SEVERITY_RE, line)
+        sev_str = split_sev_from_header[0]
+        severity = sev_str.replace('<', '').replace('>', '')
+
+        # print(severity[0])
+        # print(split_sev_from_header[1])
+        
+        # to get the date and time
+
+        split_date_from_header = re.split(DATE_TIME_RE, split_sev_from_header[1])
+        date_time = split_date_from_header[1]
+        # print(date_time)
+
+        # to get host name
+
+        strip_str = split_date_from_header[2].strip()
+        split_host_from_header = strip_str.split()
+        hostname = split_host_from_header[0]
+        # print(hostname)
+
+        # to get process
+
+        check_process = split_host_from_header[1]
+        # print(split_host_from_header)
+
+        # check if process contains a comma:
+
+        if "," in check_process:
+            remove_comma = check_process.replace(",", " ", 1)
+            split_process_from_msg = remove_comma.split()
+            process = split_process_from_msg[0]
+        else:
+            process = check_process.replace(":","")
+           
+        
+        # to get the message
+
+        # check if element contains a comma and remove it if it does
+
+        if "," in split_host_from_header[1]: 
+            split_host_from_header[1] = split_host_from_header[1].replace(",", " ", 1)
+            list_to_string = " ".join(split_host_from_header)
+            split_string = list_to_string.split()
+
+            # remove the first 2 elements from the list
+
+            slice_list = split_string[2:]
+            message = " ".join(slice_list)
+        
+        else:
+            
+            slice_list = split_host_from_header[2:]
+            message = " ".join(slice_list)
+
+        # place router fields into a dictionary
+        
+        log_dict = dict()
+
+        log_dict["severity"] = int(severity)
+        log_dict["date_time"] = date_time
+        log_dict["hostname"] = hostname
+        log_dict["process"] = process
+        log_dict["message"] = message
+
+        insert_router_data(log_dict)
+            
+
+
+    except Exception as e:
+        print(f"Error processing line: {line}\nError: {e}")
+
 
 
 def parse_line(line):

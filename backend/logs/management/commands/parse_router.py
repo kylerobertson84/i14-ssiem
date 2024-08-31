@@ -10,7 +10,7 @@ import re
 SEVERITY_RE = r'(?<=\>)'
 DATE_TIME_RE = r'(\w{3}\s+\d{1,2}\s+\d{2}:\d{2}:\d{2})'
 
-def insert_data(a_dict):
+def insert_router_data(a_dict):
 
     try:
         RouterData.objects.create(
@@ -26,7 +26,7 @@ def insert_data(a_dict):
 
 
 
-def parse_line(line):
+def parse_router_line(line):
 
     try:
 
@@ -96,7 +96,7 @@ def parse_line(line):
         log_dict["process"] = process
         log_dict["message"] = message
 
-        insert_data(log_dict)
+        insert_router_data(log_dict)
             
 
 
