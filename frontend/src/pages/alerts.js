@@ -120,7 +120,7 @@ const AlertsPage = () => {
   const [selectedAlert, setSelectedAlert] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [severityFilter, setSeverityFilter] = useState('');
-  const [orderBy, setOrderBy] = useState('event_time');
+  const [orderBy, setOrderBy] = useState('timestamp');
   const [order, setOrder] = useState('desc');
 
   useEffect(() => {
@@ -132,7 +132,7 @@ const AlertsPage = () => {
     const filtered = alerts.filter(
       (alert) =>
         (alert.hostname.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        alert.message.toLowerCase().includes(searchTerm.toLowerCase())) &&
+        alert.rule_triggered.toLowerCase().includes(searchTerm.toLowerCase())) &&
         (severityFilter ? alert.severity === severityFilter : true)
     );
     setFilteredAlerts(filtered);
@@ -216,9 +216,9 @@ const AlertsPage = () => {
             <TableRow sx={{ backgroundColor: theme.palette.primary.main }}>
               <TableCell>
                 <TableSortLabel
-                  active={orderBy === 'event_time'}
-                  direction={orderBy === 'event_time' ? order : 'asc'}
-                  onClick={() => handleRequestSort('event_time')}
+                  active={orderBy === 'timestamp'}
+                  direction={orderBy === 'timestamp' ? order : 'asc'}
+                  onClick={() => handleRequestSort('timestamp')}
                   sx={{ color: 'white', fontWeight: 'bold' }}
                 >
                   Time
@@ -242,7 +242,7 @@ const AlertsPage = () => {
                   Severity
                 </TableSortLabel>
               </TableCell>
-              <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Message</TableCell>
+              <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Rule Triggered</TableCell>
               <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -251,7 +251,7 @@ const AlertsPage = () => {
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((alert) => (
                 <TableRow key={alert.id} hover>
-                  <TableCell>{alert.event_time}</TableCell>
+                  <TableCell>{alert.timestamp}</TableCell>
                   <TableCell>{alert.hostname}</TableCell>
                   <TableCell>
                     <Chip 
@@ -260,7 +260,7 @@ const AlertsPage = () => {
                       size="small"
                     />
                   </TableCell>
-                  <TableCell>{alert.message}</TableCell>
+                  <TableCell><strong>{alert.rule_triggered}</strong></TableCell>
                   <TableCell>
                     <Tooltip title="View Details">
                       <IconButton onClick={() => handleViewDetails(alert)} size="small">

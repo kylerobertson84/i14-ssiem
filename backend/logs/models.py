@@ -1,12 +1,11 @@
 from django.db import models
 from utils.models import BaseModel
-from core.models import Rule
-from django.conf import settings
 
 class BronzeEventData(BaseModel):
     priority = models.IntegerField(null=True, blank=True)
     h_version = models.IntegerField(null=True, blank=True)
-    processed = models.BooleanField(default=False)
+    ## Better algo dont need this field
+    #processed = models.BooleanField(default=False)
     iso_timestamp = models.DateTimeField(null=True, blank=True)
     #iso_timestamp = models.CharField(max_length=100,null=True,blank=True)
     hostname = models.CharField(max_length=255,null=True, blank=True)
@@ -40,15 +39,17 @@ class BronzeEventData(BaseModel):
     def __str__(self):
         return f"{self.iso_timestamp} - {self.app_name} - {self.EventType}"
     
+## Duplicate why do we even need this one? Doesn't make sense
+## We can just use the BronzeEventData model
+## and add a field to indicate if the data has been processed
+# class EventData(BaseModel):
+#     event_id = models.AutoField(primary_key=True)
+#     timestamp = models.DateTimeField()
+#     # source = models.ForeignKey(BronzeEventData, on_delete=models.CASCADE)
+#     # rule = models.ForeignKey(Rule, on_delete=models.CASCADE)
 
-class EventData(BaseModel):
-    event_id = models.AutoField(primary_key=True)
-    timestamp = models.DateTimeField()
-    # source = models.ForeignKey(BronzeEventData, on_delete=models.CASCADE)
-    # rule = models.ForeignKey(Rule, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f"Event {self.id} - {self.timestamp}"
+#     def __str__(self):
+#         return f"Event {self.id} - {self.timestamp}"
 
 class RouterData(BaseModel):
     severity = models.IntegerField(null = True, blank = True)

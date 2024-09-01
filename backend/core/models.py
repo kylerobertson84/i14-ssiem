@@ -2,11 +2,12 @@ from django.db import models
 from utils.models import BaseModel
 
 class Rule(BaseModel):
-    rule_id = models.AutoField(primary_key=True)
-    rule_name = models.CharField(max_length=30)
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=255)
     description = models.CharField(max_length=255)
     conditions = models.TextField()
     severity = models.CharField(max_length=20, choices=[
+        ('INFO', 'Info'),
         ('LOW', 'Low'),
         ('MEDIUM', 'Medium'),
         ('HIGH', 'High'),
@@ -14,4 +15,4 @@ class Rule(BaseModel):
     ], default='MEDIUM')
 
     def __str__(self):
-        return self.rule_name
+        return f"{self.name} - {self.severity}"

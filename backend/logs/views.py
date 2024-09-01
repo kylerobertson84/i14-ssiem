@@ -1,10 +1,9 @@
-# logs/views.py
 from rest_framework import viewsets, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
-from .models import BronzeEventData, EventData, RouterData
-from .serializers import BronzeEventDataSerializer, EventDataSerializer, RouterDataSerializer, LogCountSerializer
+from .models import BronzeEventData, RouterData
+from .serializers import BronzeEventDataSerializer, RouterDataSerializer, LogCountSerializer
 from utils.pagination import StandardResultsSetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -29,15 +28,15 @@ class BronzeEventDataViewSet(viewsets.ReadOnlyModelViewSet):
         count = self.queryset.count()
         return Response({'count': count})
 
-class EventDataViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = EventData.objects.all()
-    serializer_class = EventDataSerializer
-    pagination_class = StandardResultsSetPagination
-    filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
-    # filterset_fields = ['source__event_type', 'rule__rule_name']
-    ordering_fields = ['timestamp']
-    search_fields = ['source__hostname', 'source__account_name']
-    permission_classes = [IsAuthenticated] 
+# class EventDataViewSet(viewsets.ReadOnlyModelViewSet):
+#     queryset = EventData.objects.all()
+#     serializer_class = EventDataSerializer
+#     pagination_class = StandardResultsSetPagination
+#     filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
+#     # filterset_fields = ['source__event_type', 'rule__rule_name']
+#     ordering_fields = ['timestamp']
+#     search_fields = ['source__hostname', 'source__account_name']
+#     permission_classes = [IsAuthenticated] 
 
 class RouterDataViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = RouterData.objects.all()
@@ -54,6 +53,7 @@ class RouterDataViewSet(viewsets.ReadOnlyModelViewSet):
         return Response({'router_log_count': router_log_count})
 
 class LogPercentageViewSet(viewsets.ViewSet):
+    serializer_class = LogCountSerializer
 
     @action(detail=False, methods=['get'])
     def log_percentages(self, request):
@@ -72,6 +72,7 @@ class LogPercentageViewSet(viewsets.ViewSet):
                 'network_percentage': 0,
             }
 
-        serializer = LogCountSerializer(data)
+        serializer = self.serializer_class(data)
         return Response(serializer.data)
+
 

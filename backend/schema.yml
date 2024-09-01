@@ -4,6 +4,824 @@ info:
   version: 1.0.0
   description: API for SIEM application
 paths:
+  /api/employees/:
+    get:
+      operationId: employees_list
+      tags:
+      - employees
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Employee'
+          description: ''
+    post:
+      operationId: employees_create
+      tags:
+      - employees
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Employee'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Employee'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Employee'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+          description: ''
+  /api/employees/{user}/:
+    get:
+      operationId: employees_retrieve
+      parameters:
+      - in: path
+        name: user
+        schema:
+          type: string
+          format: uuid
+        description: A unique value identifying this employee.
+        required: true
+      tags:
+      - employees
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+          description: ''
+    put:
+      operationId: employees_update
+      parameters:
+      - in: path
+        name: user
+        schema:
+          type: string
+          format: uuid
+        description: A unique value identifying this employee.
+        required: true
+      tags:
+      - employees
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Employee'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Employee'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Employee'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+          description: ''
+    patch:
+      operationId: employees_partial_update
+      parameters:
+      - in: path
+        name: user
+        schema:
+          type: string
+          format: uuid
+        description: A unique value identifying this employee.
+        required: true
+      tags:
+      - employees
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedEmployee'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedEmployee'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedEmployee'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+          description: ''
+    delete:
+      operationId: employees_destroy
+      parameters:
+      - in: path
+        name: user
+        schema:
+          type: string
+          format: uuid
+        description: A unique value identifying this employee.
+        required: true
+      tags:
+      - employees
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/permissions/:
+    get:
+      operationId: permissions_list
+      tags:
+      - permissions
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Permission'
+          description: ''
+    post:
+      operationId: permissions_create
+      tags:
+      - permissions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Permission'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Permission'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Permission'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permission'
+          description: ''
+  /api/permissions/{permission_id}/:
+    get:
+      operationId: permissions_retrieve
+      parameters:
+      - in: path
+        name: permission_id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this permission.
+        required: true
+      tags:
+      - permissions
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permission'
+          description: ''
+    put:
+      operationId: permissions_update
+      parameters:
+      - in: path
+        name: permission_id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this permission.
+        required: true
+      tags:
+      - permissions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Permission'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Permission'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Permission'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permission'
+          description: ''
+    patch:
+      operationId: permissions_partial_update
+      parameters:
+      - in: path
+        name: permission_id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this permission.
+        required: true
+      tags:
+      - permissions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPermission'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPermission'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPermission'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permission'
+          description: ''
+    delete:
+      operationId: permissions_destroy
+      parameters:
+      - in: path
+        name: permission_id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this permission.
+        required: true
+      tags:
+      - permissions
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/role-permissions/:
+    get:
+      operationId: role_permissions_list
+      tags:
+      - role-permissions
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RolePermission'
+          description: ''
+    post:
+      operationId: role_permissions_create
+      tags:
+      - role-permissions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RolePermission'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RolePermission'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RolePermission'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RolePermission'
+          description: ''
+  /api/role-permissions/{id}/:
+    get:
+      operationId: role_permissions_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this role permission.
+        required: true
+      tags:
+      - role-permissions
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RolePermission'
+          description: ''
+    put:
+      operationId: role_permissions_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this role permission.
+        required: true
+      tags:
+      - role-permissions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RolePermission'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RolePermission'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RolePermission'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RolePermission'
+          description: ''
+    patch:
+      operationId: role_permissions_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this role permission.
+        required: true
+      tags:
+      - role-permissions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRolePermission'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedRolePermission'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedRolePermission'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RolePermission'
+          description: ''
+    delete:
+      operationId: role_permissions_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this role permission.
+        required: true
+      tags:
+      - role-permissions
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/roles/:
+    get:
+      operationId: roles_list
+      tags:
+      - roles
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Role'
+          description: ''
+    post:
+      operationId: roles_create
+      tags:
+      - roles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Role'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Role'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Role'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+          description: ''
+  /api/roles/{role_id}/:
+    get:
+      operationId: roles_retrieve
+      parameters:
+      - in: path
+        name: role_id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this role.
+        required: true
+      tags:
+      - roles
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+          description: ''
+    put:
+      operationId: roles_update
+      parameters:
+      - in: path
+        name: role_id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this role.
+        required: true
+      tags:
+      - roles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Role'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Role'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Role'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+          description: ''
+    patch:
+      operationId: roles_partial_update
+      parameters:
+      - in: path
+        name: role_id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this role.
+        required: true
+      tags:
+      - roles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRole'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedRole'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedRole'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+          description: ''
+    delete:
+      operationId: roles_destroy
+      parameters:
+      - in: path
+        name: role_id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this role.
+        required: true
+      tags:
+      - roles
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/token/:
+    post:
+      operationId: token_create
+      description: |-
+        Takes a set of user credentials and returns an access and refresh JSON web
+        token pair to prove the authentication of those credentials.
+      tags:
+      - token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenObtainPair'
+          description: ''
+  /api/token/refresh/:
+    post:
+      operationId: token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /api/users/:
+    get:
+      operationId: users_list
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+          description: ''
+    post:
+      operationId: users_create
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/users/{user_id}/:
+    get:
+      operationId: users_retrieve
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this user.
+        required: true
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    put:
+      operationId: users_update
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this user.
+        required: true
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    patch:
+      operationId: users_partial_update
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this user.
+        required: true
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    delete:
+      operationId: users_destroy
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this user.
+        required: true
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/users/me/:
+    get:
+      operationId: users_me_retrieve
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
   /api/v1/alerts/:
     get:
       operationId: v1_alerts_list
@@ -27,7 +845,7 @@ paths:
         schema:
           type: integer
       - in: query
-        name: rule__rule_name
+        name: rule__name
         schema:
           type: string
       - name: search
@@ -43,32 +861,20 @@ paths:
           enum:
           - CRITICAL
           - HIGH
+          - INFO
           - LOW
           - MEDIUM
         description: |-
+          * `INFO` - Info
           * `LOW` - Low
           * `MEDIUM` - Medium
           * `HIGH` - High
           * `CRITICAL` - Critical
-      - in: query
-        name: status
-        schema:
-          type: string
-          enum:
-          - CLOSED
-          - IN_PROGRESS
-          - NEW
-          - RESOLVED
-        description: |-
-          * `NEW` - New
-          * `IN_PROGRESS` - In Progress
-          * `RESOLVED` - Resolved
-          * `CLOSED` - Closed
       tags:
       - v1
       security:
+      - jwtAuth: []
       - cookieAuth: []
-      - basicAuth: []
       responses:
         '200':
           content:
@@ -91,10 +897,9 @@ paths:
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/Alert'
-        required: true
       security:
+      - jwtAuth: []
       - cookieAuth: []
-      - basicAuth: []
       responses:
         '201':
           content:
@@ -115,8 +920,8 @@ paths:
       tags:
       - v1
       security:
+      - jwtAuth: []
       - cookieAuth: []
-      - basicAuth: []
       responses:
         '200':
           content:
@@ -146,10 +951,9 @@ paths:
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/Alert'
-        required: true
       security:
+      - jwtAuth: []
       - cookieAuth: []
-      - basicAuth: []
       responses:
         '200':
           content:
@@ -180,8 +984,8 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedAlert'
       security:
+      - jwtAuth: []
       - cookieAuth: []
-      - basicAuth: []
       responses:
         '200':
           content:
@@ -201,8 +1005,8 @@ paths:
       tags:
       - v1
       security:
+      - jwtAuth: []
       - cookieAuth: []
-      - basicAuth: []
       responses:
         '204':
           description: No response body
@@ -229,104 +1033,15 @@ paths:
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/Alert'
-        required: true
       security:
+      - jwtAuth: []
       - cookieAuth: []
-      - basicAuth: []
       responses:
         '200':
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Alert'
-          description: ''
-  /api/v1/assigned-alerts/:
-    get:
-      operationId: v1_assigned_alerts_list
-      parameters:
-      - in: query
-        name: alert__severity
-        schema:
-          type: string
-          enum:
-          - CRITICAL
-          - HIGH
-          - LOW
-          - MEDIUM
-        description: |-
-          * `LOW` - Low
-          * `MEDIUM` - Medium
-          * `HIGH` - High
-          * `CRITICAL` - Critical
-      - in: query
-        name: alert__status
-        schema:
-          type: string
-          enum:
-          - CLOSED
-          - IN_PROGRESS
-          - NEW
-          - RESOLVED
-        description: |-
-          * `NEW` - New
-          * `IN_PROGRESS` - In Progress
-          * `RESOLVED` - Resolved
-          * `CLOSED` - Closed
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - in: query
-        name: user__username
-        schema:
-          type: string
-      tags:
-      - v1
-      security:
-      - cookieAuth: []
-      - basicAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedAssignedAlertList'
-          description: ''
-  /api/v1/assigned-alerts/{id}/:
-    get:
-      operationId: v1_assigned_alerts_retrieve
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this assigned alert.
-        required: true
-      tags:
-      - v1
-      security:
-      - cookieAuth: []
-      - basicAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AssignedAlert'
           description: ''
   /api/v1/bronze-events/:
     get:
@@ -359,8 +1074,8 @@ paths:
       tags:
       - v1
       security:
+      - jwtAuth: []
       - cookieAuth: []
-      - basicAuth: []
       responses:
         '200':
           content:
@@ -381,8 +1096,8 @@ paths:
       tags:
       - v1
       security:
+      - jwtAuth: []
       - cookieAuth: []
-      - basicAuth: []
       responses:
         '200':
           content:
@@ -390,67 +1105,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/BronzeEventData'
           description: ''
-  /api/v1/events/:
+  /api/v1/bronze-events/count/:
     get:
-      operationId: v1_events_list
-      parameters:
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      operationId: v1_bronze_events_count_retrieve
       tags:
       - v1
       security:
+      - jwtAuth: []
       - cookieAuth: []
-      - basicAuth: []
       responses:
         '200':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedEventDataList'
-          description: ''
-  /api/v1/events/{event_id}/:
-    get:
-      operationId: v1_events_retrieve
-      parameters:
-      - in: path
-        name: event_id
-        schema:
-          type: integer
-        description: A unique integer value identifying this event data.
-        required: true
-      tags:
-      - v1
-      security:
-      - cookieAuth: []
-      - basicAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EventData'
+                $ref: '#/components/schemas/BronzeEventData'
           description: ''
   /api/v1/incident-reports/:
     get:
@@ -485,15 +1153,31 @@ paths:
         schema:
           type: string
           enum:
+          - archived
           - closed
+          - draft
           - ongoing
         description: |-
+          * `draft` - Draft
           * `ongoing` - Ongoing
           * `closed` - Closed
+          * `archived` - Archived
       - in: query
         name: type
         schema:
           type: string
+          enum:
+          - compliance_audit
+          - network_traffic
+          - security_incident
+          - system_performance
+          - user_activity
+        description: |-
+          * `security_incident` - Security Incident
+          * `network_traffic` - Network Traffic
+          * `user_activity` - User Activity
+          * `system_performance` - System Performance
+          * `compliance_audit` - Compliance Audit
       - in: query
         name: user__username
         schema:
@@ -501,8 +1185,8 @@ paths:
       tags:
       - v1
       security:
+      - jwtAuth: []
       - cookieAuth: []
-      - basicAuth: []
       responses:
         '200':
           content:
@@ -527,8 +1211,8 @@ paths:
               $ref: '#/components/schemas/IncidentReport'
         required: true
       security:
+      - jwtAuth: []
       - cookieAuth: []
-      - basicAuth: []
       responses:
         '201':
           content:
@@ -549,8 +1233,8 @@ paths:
       tags:
       - v1
       security:
+      - jwtAuth: []
       - cookieAuth: []
-      - basicAuth: []
       responses:
         '200':
           content:
@@ -582,8 +1266,8 @@ paths:
               $ref: '#/components/schemas/IncidentReport'
         required: true
       security:
+      - jwtAuth: []
       - cookieAuth: []
-      - basicAuth: []
       responses:
         '200':
           content:
@@ -614,8 +1298,8 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedIncidentReport'
       security:
+      - jwtAuth: []
       - cookieAuth: []
-      - basicAuth: []
       responses:
         '200':
           content:
@@ -635,11 +1319,342 @@ paths:
       tags:
       - v1
       security:
+      - jwtAuth: []
       - cookieAuth: []
-      - basicAuth: []
       responses:
         '204':
           description: No response body
+  /api/v1/incident-reports/{id}/generate_pdf/:
+    post:
+      operationId: v1_incident_reports_generate_pdf_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this incident report.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IncidentReport'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/IncidentReport'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/IncidentReport'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IncidentReport'
+          description: ''
+  /api/v1/incident-reports/get_rules/:
+    get:
+      operationId: v1_incident_reports_get_rules_retrieve
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IncidentReport'
+          description: ''
+  /api/v1/investigate/:
+    get:
+      operationId: v1_investigate_list
+      parameters:
+      - in: query
+        name: alert__severity
+        schema:
+          type: string
+      - in: query
+        name: assigned_to__email
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - CLOSED
+          - NEW
+          - PENDING
+          - RESOLVED
+        description: |-
+          * `NEW` - New
+          * `PENDING` - Pending
+          * `RESOLVED` - Resolved
+          * `CLOSED` - Closed
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedInvestigateAlertList'
+          description: ''
+    post:
+      operationId: v1_investigate_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvestigateAlert'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/InvestigateAlert'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/InvestigateAlert'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvestigateAlert'
+          description: ''
+  /api/v1/investigate/{investigation_id}/:
+    get:
+      operationId: v1_investigate_retrieve
+      parameters:
+      - in: path
+        name: investigation_id
+        schema:
+          type: integer
+        description: A unique integer value identifying this investigate alert.
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvestigateAlert'
+          description: ''
+    put:
+      operationId: v1_investigate_update
+      parameters:
+      - in: path
+        name: investigation_id
+        schema:
+          type: integer
+        description: A unique integer value identifying this investigate alert.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvestigateAlert'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/InvestigateAlert'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/InvestigateAlert'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvestigateAlert'
+          description: ''
+    patch:
+      operationId: v1_investigate_partial_update
+      parameters:
+      - in: path
+        name: investigation_id
+        schema:
+          type: integer
+        description: A unique integer value identifying this investigate alert.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedInvestigateAlert'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedInvestigateAlert'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedInvestigateAlert'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvestigateAlert'
+          description: ''
+    delete:
+      operationId: v1_investigate_destroy
+      parameters:
+      - in: path
+        name: investigation_id
+        schema:
+          type: integer
+        description: A unique integer value identifying this investigate alert.
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/log-percentage/log_percentages/:
+    get:
+      operationId: v1_log_percentage_log_percentages_retrieve
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogCount'
+          description: ''
+  /api/v1/router-data/:
+    get:
+      operationId: v1_router_data_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRouterDataList'
+          description: ''
+  /api/v1/router-data/{id}/:
+    get:
+      operationId: v1_router_data_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this router data.
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RouterData'
+          description: ''
+  /api/v1/router-data/router_log_count/:
+    get:
+      operationId: v1_router_data_router_log_count_retrieve
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RouterData'
+          description: ''
 components:
   schemas:
     Alert:
@@ -648,76 +1663,70 @@ components:
         alert_id:
           type: integer
           readOnly: true
-        event:
+        event_id:
           allOf:
-          - $ref: '#/components/schemas/EventData'
-          readOnly: true
-        rule:
-          allOf:
-          - $ref: '#/components/schemas/Rule'
+          - $ref: '#/components/schemas/AlertBronzeEventData'
           readOnly: true
         created_at:
           type: string
           format: date-time
           readOnly: true
-        updated_at:
-          type: string
-          format: date-time
+        rule_id:
+          allOf:
+          - $ref: '#/components/schemas/AlertRule'
           readOnly: true
-        timestamp:
-          type: string
-          format: date-time
-        status:
-          $ref: '#/components/schemas/AlertStatusEnum'
         severity:
           $ref: '#/components/schemas/SeverityEnum'
+        comments:
+          type: string
+          nullable: true
       required:
       - alert_id
       - created_at
-      - event
-      - rule
-      - timestamp
-      - updated_at
-    AlertStatusEnum:
-      enum:
-      - NEW
-      - IN_PROGRESS
-      - RESOLVED
-      - CLOSED
-      type: string
-      description: |-
-        * `NEW` - New
-        * `IN_PROGRESS` - In Progress
-        * `RESOLVED` - Resolved
-        * `CLOSED` - Closed
-    AssignedAlert:
+      - event_id
+      - rule_id
+    AlertBronzeEventData:
       type: object
       properties:
         id:
           type: integer
           readOnly: true
-        alert:
-          allOf:
-          - $ref: '#/components/schemas/Alert'
-          readOnly: true
-        user:
-          allOf:
-          - $ref: '#/components/schemas/User'
-          readOnly: true
-        created_at:
+        EventID:
           type: string
-          format: date-time
-          readOnly: true
-        updated_at:
+          nullable: true
+          maxLength: 50
+        UserID:
           type: string
-          format: date-time
-          readOnly: true
+          nullable: true
+          maxLength: 50
       required:
-      - alert
-      - created_at
       - id
-      - updated_at
-      - user
+    AlertRule:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 30
+      required:
+      - id
+      - name
+    AlertUser:
+      type: object
+      properties:
+        user_id:
+          type: string
+          format: uuid
+          readOnly: true
+        email:
+          type: string
+          format: email
+          maxLength: 80
+      required:
+      - email
+      - user_id
     BronzeEventData:
       type: object
       properties:
@@ -742,10 +1751,12 @@ components:
           maximum: 2147483647
           minimum: -2147483648
           nullable: true
+        processed:
+          type: boolean
         iso_timestamp:
           type: string
+          format: date-time
           nullable: true
-          maxLength: 100
         hostname:
           type: string
           nullable: true
@@ -832,8 +1843,8 @@ components:
           maxLength: 255
         EventReceivedTime:
           type: string
+          format: date-time
           nullable: true
-          maxLength: 100
         SourceModuleName:
           type: string
           nullable: true
@@ -852,38 +1863,40 @@ components:
       - created_at
       - id
       - updated_at
-    EventData:
+    Employee:
       type: object
       properties:
-        event_id:
-          type: integer
-          readOnly: true
-        source:
+        user:
           allOf:
-          - $ref: '#/components/schemas/BronzeEventData'
+          - $ref: '#/components/schemas/User'
           readOnly: true
-        rule:
-          allOf:
-          - $ref: '#/components/schemas/Rule'
-          readOnly: true
-        created_at:
+        user_id:
           type: string
-          format: date-time
-          readOnly: true
-        updated_at:
+          format: uuid
+          writeOnly: true
+        employee_id:
           type: string
-          format: date-time
           readOnly: true
-        timestamp:
+        first_name:
           type: string
-          format: date-time
+          maxLength: 20
+        last_name:
+          type: string
+          maxLength: 20
+        department:
+          type: string
+          nullable: true
+          maxLength: 50
+        job_title:
+          type: string
+          nullable: true
+          maxLength: 50
       required:
-      - created_at
-      - event_id
-      - rule
-      - source
-      - timestamp
-      - updated_at
+      - employee_id
+      - first_name
+      - last_name
+      - user
+      - user_id
     IncidentReport:
       type: object
       properties:
@@ -896,8 +1909,23 @@ components:
           readOnly: true
         user:
           allOf:
-          - $ref: '#/components/schemas/User'
+          - $ref: '#/components/schemas/IncidentReportUser'
           readOnly: true
+        rules:
+          type: array
+          items:
+            $ref: '#/components/schemas/IncidentReportRule'
+          readOnly: true
+        pdf_url:
+          type: string
+          format: uri
+          nullable: true
+          readOnly: true
+        rule_ids:
+          type: array
+          items:
+            type: integer
+          writeOnly: true
         created_at:
           type: string
           format: date-time
@@ -907,32 +1935,127 @@ components:
           format: date-time
           readOnly: true
         type:
-          type: string
-          maxLength: 20
+          $ref: '#/components/schemas/TypeEnum'
         status:
           $ref: '#/components/schemas/IncidentReportStatusEnum'
-        rules:
-          type: string
         description:
           type: string
+        pdf_file:
+          type: string
+          format: uri
+          nullable: true
       required:
       - created_at
       - description
       - id
+      - pdf_url
       - rules
       - source
       - status
       - type
       - updated_at
       - user
+    IncidentReportRule:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 30
+        description:
+          type: string
+          maxLength: 255
+        severity:
+          $ref: '#/components/schemas/SeverityEnum'
+      required:
+      - description
+      - id
+      - name
     IncidentReportStatusEnum:
       enum:
+      - draft
       - ongoing
       - closed
+      - archived
       type: string
       description: |-
+        * `draft` - Draft
         * `ongoing` - Ongoing
         * `closed` - Closed
+        * `archived` - Archived
+    IncidentReportUser:
+      type: object
+      properties:
+        user_id:
+          type: string
+          format: uuid
+          readOnly: true
+        email:
+          type: string
+          format: email
+          maxLength: 80
+      required:
+      - email
+      - user_id
+    InvestigateAlert:
+      type: object
+      properties:
+        investigation_id:
+          type: integer
+          readOnly: true
+        alert:
+          allOf:
+          - $ref: '#/components/schemas/Alert'
+          readOnly: true
+        assigned_to:
+          allOf:
+          - $ref: '#/components/schemas/AlertUser'
+          readOnly: true
+        status:
+          $ref: '#/components/schemas/InvestigateAlertStatusEnum'
+        notes:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - alert
+      - assigned_to
+      - created_at
+      - investigation_id
+      - updated_at
+    InvestigateAlertStatusEnum:
+      enum:
+      - NEW
+      - PENDING
+      - RESOLVED
+      - CLOSED
+      type: string
+      description: |-
+        * `NEW` - New
+        * `PENDING` - Pending
+        * `RESOLVED` - Resolved
+        * `CLOSED` - Closed
+    LogCount:
+      type: object
+      properties:
+        windows_os_percentage:
+          type: number
+          format: double
+        network_percentage:
+          type: number
+          format: double
+      required:
+      - network_percentage
+      - windows_os_percentage
     PaginatedAlertList:
       type: object
       required:
@@ -956,29 +2079,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Alert'
-    PaginatedAssignedAlertList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?page=4
-        previous:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?page=2
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/AssignedAlert'
     PaginatedBronzeEventDataList:
       type: object
       required:
@@ -1002,29 +2102,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/BronzeEventData'
-    PaginatedEventDataList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?page=4
-        previous:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?page=2
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/EventData'
     PaginatedIncidentReportList:
       type: object
       required:
@@ -1048,35 +2125,103 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/IncidentReport'
+    PaginatedInvestigateAlertList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvestigateAlert'
+    PaginatedRouterDataList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RouterData'
     PatchedAlert:
       type: object
       properties:
         alert_id:
           type: integer
           readOnly: true
-        event:
+        event_id:
           allOf:
-          - $ref: '#/components/schemas/EventData'
-          readOnly: true
-        rule:
-          allOf:
-          - $ref: '#/components/schemas/Rule'
+          - $ref: '#/components/schemas/AlertBronzeEventData'
           readOnly: true
         created_at:
           type: string
           format: date-time
           readOnly: true
-        updated_at:
-          type: string
-          format: date-time
+        rule_id:
+          allOf:
+          - $ref: '#/components/schemas/AlertRule'
           readOnly: true
-        timestamp:
-          type: string
-          format: date-time
-        status:
-          $ref: '#/components/schemas/AlertStatusEnum'
         severity:
           $ref: '#/components/schemas/SeverityEnum'
+        comments:
+          type: string
+          nullable: true
+    PatchedEmployee:
+      type: object
+      properties:
+        user:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+        user_id:
+          type: string
+          format: uuid
+          writeOnly: true
+        employee_id:
+          type: string
+          readOnly: true
+        first_name:
+          type: string
+          maxLength: 20
+        last_name:
+          type: string
+          maxLength: 20
+        department:
+          type: string
+          nullable: true
+          maxLength: 50
+        job_title:
+          type: string
+          nullable: true
+          maxLength: 50
     PatchedIncidentReport:
       type: object
       properties:
@@ -1089,8 +2234,23 @@ components:
           readOnly: true
         user:
           allOf:
-          - $ref: '#/components/schemas/User'
+          - $ref: '#/components/schemas/IncidentReportUser'
           readOnly: true
+        rules:
+          type: array
+          items:
+            $ref: '#/components/schemas/IncidentReportRule'
+          readOnly: true
+        pdf_url:
+          type: string
+          format: uri
+          nullable: true
+          readOnly: true
+        rule_ids:
+          type: array
+          items:
+            type: integer
+          writeOnly: true
         created_at:
           type: string
           format: date-time
@@ -1100,45 +2260,243 @@ components:
           format: date-time
           readOnly: true
         type:
-          type: string
-          maxLength: 20
+          $ref: '#/components/schemas/TypeEnum'
         status:
           $ref: '#/components/schemas/IncidentReportStatusEnum'
-        rules:
-          type: string
         description:
           type: string
-    Rule:
+        pdf_file:
+          type: string
+          format: uri
+          nullable: true
+    PatchedInvestigateAlert:
       type: object
       properties:
-        rule_id:
+        investigation_id:
           type: integer
           readOnly: true
-        rule_name:
+        alert:
+          allOf:
+          - $ref: '#/components/schemas/Alert'
+          readOnly: true
+        assigned_to:
+          allOf:
+          - $ref: '#/components/schemas/AlertUser'
+          readOnly: true
+        status:
+          $ref: '#/components/schemas/InvestigateAlertStatusEnum'
+        notes:
           type: string
-          maxLength: 30
-        description:
+          nullable: true
+        created_at:
           type: string
-          maxLength: 255
-        conditions:
+          format: date-time
+          readOnly: true
+        updated_at:
           type: string
+          format: date-time
+          readOnly: true
+    PatchedPermission:
+      type: object
+      properties:
+        permission_id:
+          type: string
+          format: uuid
+          readOnly: true
+        permission_name:
+          type: string
+          maxLength: 50
+    PatchedRole:
+      type: object
+      properties:
+        role_id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 20
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+          readOnly: true
+    PatchedRolePermission:
+      type: object
+      properties:
+        role:
+          $ref: '#/components/schemas/Role'
+        permission:
+          $ref: '#/components/schemas/Permission'
+    PatchedUser:
+      type: object
+      properties:
+        user_id:
+          type: string
+          format: uuid
+          readOnly: true
+        email:
+          type: string
+          format: email
+          maxLength: 80
+        role:
+          allOf:
+          - $ref: '#/components/schemas/Role'
+          readOnly: true
+        role_id:
+          type: string
+          format: uuid
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+        is_active:
+          type: boolean
+        is_staff:
+          type: boolean
+        permissions:
+          type: array
+          items:
+            type: string
+          readOnly: true
+    Permission:
+      type: object
+      properties:
+        permission_id:
+          type: string
+          format: uuid
+          readOnly: true
+        permission_name:
+          type: string
+          maxLength: 50
       required:
-      - conditions
-      - description
-      - rule_id
-      - rule_name
+      - permission_id
+    Role:
+      type: object
+      properties:
+        role_id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 20
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+          readOnly: true
+      required:
+      - name
+      - permissions
+      - role_id
+    RolePermission:
+      type: object
+      properties:
+        role:
+          $ref: '#/components/schemas/Role'
+        permission:
+          $ref: '#/components/schemas/Permission'
+      required:
+      - permission
+      - role
+    RouterData:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        severity:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        date_time:
+          type: string
+          nullable: true
+          maxLength: 100
+        hostname:
+          type: string
+          nullable: true
+          maxLength: 100
+        process:
+          type: string
+          nullable: true
+          maxLength: 100
+        message:
+          type: string
+          nullable: true
+      required:
+      - created_at
+      - id
+      - updated_at
     SeverityEnum:
       enum:
+      - INFO
       - LOW
       - MEDIUM
       - HIGH
       - CRITICAL
       type: string
       description: |-
+        * `INFO` - Info
         * `LOW` - Low
         * `MEDIUM` - Medium
         * `HIGH` - High
         * `CRITICAL` - Critical
+    TokenObtainPair:
+      type: object
+      properties:
+        email:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          readOnly: true
+      required:
+      - access
+      - email
+      - password
+      - refresh
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+      required:
+      - access
+      - refresh
+    TypeEnum:
+      enum:
+      - security_incident
+      - network_traffic
+      - user_activity
+      - system_performance
+      - compliance_audit
+      type: string
+      description: |-
+        * `security_incident` - Security Incident
+        * `network_traffic` - Network Traffic
+        * `user_activity` - User Activity
+        * `system_performance` - System Performance
+        * `compliance_audit` - Compliance Audit
     User:
       type: object
       properties:
@@ -1146,22 +2504,42 @@ components:
           type: string
           format: uuid
           readOnly: true
-        username:
-          type: string
-          maxLength: 15
         email:
           type: string
           format: email
-          nullable: true
           maxLength: 80
+        role:
+          allOf:
+          - $ref: '#/components/schemas/Role'
+          readOnly: true
+        role_id:
+          type: string
+          format: uuid
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+        is_active:
+          type: boolean
+        is_staff:
+          type: boolean
+        permissions:
+          type: array
+          items:
+            type: string
+          readOnly: true
       required:
+      - email
+      - password
+      - permissions
+      - role
       - user_id
-      - username
   securitySchemes:
-    basicAuth:
-      type: http
-      scheme: basic
     cookieAuth:
       type: apiKey
       in: cookie
       name: sessionid
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

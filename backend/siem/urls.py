@@ -25,15 +25,14 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, Spec
 from siem.views import health_check
 
 from rest_framework.routers import DefaultRouter
-from logs.views import BronzeEventDataViewSet, EventDataViewSet, RouterDataViewSet, LogPercentageViewSet
-from alerts.views import AlertViewSet, AssignedAlertViewSet
+from logs.views import BronzeEventDataViewSet, RouterDataViewSet, LogPercentageViewSet
+from alerts.views import AlertViewSet, InvestigateAlertViewSet
 from reports.views import IncidentReportViewSet
 
 router = DefaultRouter()
 router.register(r'bronze-events', BronzeEventDataViewSet)
-router.register(r'events', EventDataViewSet)
 router.register(r'alerts', AlertViewSet)
-router.register(r'assigned-alerts', AssignedAlertViewSet)
+router.register(r'investigate', InvestigateAlertViewSet)
 router.register(r'incident-reports', IncidentReportViewSet)
 router.register(r'router-data', RouterDataViewSet)
 router.register(r'log-percentage', LogPercentageViewSet, basename='log-percentage')
@@ -56,8 +55,10 @@ urlpatterns = [
     #/api/v1/bronze-events/
     #/api/v1/events/
     #/api/v1/alerts/
-    #/api/v1/assigned-alerts/
+    #/api/v1/investigate/
     #/api/v1/incident-reports/
+    #/api/v1/incident-reports/{id}/generate_pdf/
+    
     
     # TESTING APIs
     # /api/schema/redoc/

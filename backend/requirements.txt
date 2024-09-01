@@ -14,3 +14,5 @@ drf-spectacular
 celery
 redis
 pytz
+mysqlclient
+reportlab

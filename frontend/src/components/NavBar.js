@@ -46,10 +46,10 @@ const Navbar = () => {
 
   const navItems = [
     { label: 'Dashboard', path: '/dashboard', icon: <DashboardIcon /> },
-    { label: 'Investigations', path: '/investigations', icon: <InvestigationsIcon /> },
     { label: 'Queries', path: '/queries', icon: <QueriesIcon /> },
-    { label: 'Reports', path: '/reports', icon: <ReportsIcon /> },
     { label: 'Alerts', path: '/alerts', icon: <AlertsIcon /> },
+    { label: 'Investigations', path: '/investigations', icon: <InvestigationsIcon /> },
+    { label: 'Reports', path: '/reports', icon: <ReportsIcon /> },
     { label: 'Preferences', path: '/preferences', icon: <PreferencesIcon /> },
   ];
 

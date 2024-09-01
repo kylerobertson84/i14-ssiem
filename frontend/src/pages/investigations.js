@@ -93,7 +93,7 @@ const InvestigationPage = () => {
                   <TableRow key={alert.id}>
                     <TableCell>{alert.id}</TableCell>
                     <TableCell>{alert.device}</TableCell>
-                    <TableCell>{alert.type}</TableCell>
+                    <TableCell><strong>{alert.type}</strong></TableCell>
                     <TableCell>
                       {alert.status === 'Open' && <Error color="error" />}
                       {alert.status === 'In Progress' && <Search color="warning" />}
