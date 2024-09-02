@@ -17,9 +17,9 @@ from '@mui/icons-material';
 
 import { Link } from 'react-router-dom';
 import { Grid, Paper, Typography, Box, useTheme } from '@mui/material';
-import { LogsPerDayChart, LogsByDeviceChart, CpuLoadChart, RamUsageChart, DiskUsageChart } from '../components/dashboardGraphs.js';
+import { LogsPerHourChart, LogsByDeviceChart, CpuLoadChart, RamUsageChart, DiskUsageChart } from '../components/dashboardGraphs.js';
 
-import { fetchUser, fetchLogCount, fetchRouterLogCount, fetchLogPercentages } from '../services/apiService.js';
+import { fetchUser, fetchLogCount, fetchRouterLogCount, fetchLogPercentages, fetchLogsPerHour, fetchEventsToday } from '../services/apiService.js';
 
 const Dashboard = () => {
   const theme = useTheme();
@@ -29,6 +29,8 @@ const Dashboard = () => {
   const [recordCount, setRecordCount] = useState(0);
   const [routerLogCount, setRouterLogCount] = useState(0);
   const [logPercentages, setLogPercentages] = useState({});
+  const [logsPerHour, setLogsPerHour] = useState([]);
+  const [eventsToday, setEventsToday] = useState({});
 
   const logsByDeviceData = [
     { name: 'Windows OS', value: logPercentages.windows_os_percentage },
@@ -38,17 +40,22 @@ const Dashboard = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [userData, logCountData, routerLogCountData, logPercentages] = await Promise.all([
+        const [userData, logCountData, routerLogCountData, logPercentages, logsPerHour, eventsToday] = await Promise.all([
           fetchUser(),
           fetchLogCount(),
           fetchRouterLogCount(),
           fetchLogPercentages(),
+          fetchLogsPerHour(),
+          fetchEventsToday(),
         ]);
 
         setUser(userData);
         setRecordCount(logCountData.count);
         setRouterLogCount(routerLogCountData.router_log_count);
         setLogPercentages(logPercentages);
+        setLogsPerHour(logsPerHour);
+        setEventsToday(eventsToday);
+
         console.log("logPercentages",logPercentages);
       } catch (error) {
         console.error('Error loading dashboard data', error);
@@ -101,16 +108,59 @@ const Dashboard = () => {
             {/* Info cards and graph spacing */}
             <Grid container spacing={3} >
               {/* Info cards styling padding and grid items */}
-              <InfoCard title="Total Devices" value={data.infoCards.values[0]} icon={Devices} />
-              <InfoCard title="Logs" value={recordCount + routerLogCount} icon={Notes} />
-              <InfoCard title="New Devices (24hr)" value={data.infoCards.values[2]} icon={AddToQueue} />
-              <InfoCard title="Open Investigations" value={data.infoCards.values[3]} icon={Search} />
-              <InfoCard title="Events per Day" value={data.infoCards.values[4]} icon={EditCalendar} />
-              <InfoCard title="Closed Investigations" value={data.infoCards.values[5]} icon={AssignmentTurnedInOutlined} />
+              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3 }}>
+                <Paper sx={{ padding: 2 }}>
+                  <InfoCard title="Total Devices" value={data.infoCards.values[0]} icon={Devices}/>
+                  
+                </Paper>
+              </Grid>
+              
+              
+              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3 }}>
+                <Paper sx={{ padding: 2 }}>
+
+                  <InfoCard title="Logs" value={recordCount + routerLogCount} icon={Notes}/>
+
+                </Paper>
+              </Grid>
+
+             
+              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3 }}>
+                <Paper sx={{ padding: 2 }}>
+                  
+                  <InfoCard title="New Devices (24hr)" value={data.infoCards.values[2]} icon={AddToQueue}/>
+                </Paper>
+              </Grid>
+
+           
+              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3 }}>
+                <Paper sx={{ padding: 2 }}>
+                  
+                  <InfoCard title="Open Investigations" value={data.infoCards.values[3]} icon={Search}/>
+                </Paper>
+              </Grid>
+
+              
+              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3 }}>
+                <Paper sx={{ padding: 2 }}>
+                 
+                  <InfoCard title="Events per Day" value={data.infoCards.values[4]} icon={EditCalendar}/>
+                </Paper>
+              </Grid>
+
+             
+
+              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3 }}>
+                <Paper sx={{ padding: 2 }}>
+                  
+                  <InfoCard title="Closed Investigations" value={data.infoCards.values[5]} icon={AssignmentTurnedInOutlined}/>
+                </Paper>
+              </Grid>
+
               {/* Graphs Section */}
               <Grid item xs={12} md={6}>
                 <Paper sx={{ padding: 2 }}>
-                  <LogsPerDayChart data={data.graphs.dataBar} />
+                  <LogsPerHourChart data={logsPerHour} />
                 </Paper>
               </Grid>
               

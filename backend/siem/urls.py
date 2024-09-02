@@ -25,7 +25,7 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, Spec
 from siem.views import health_check
 
 from rest_framework.routers import DefaultRouter
-from logs.views import BronzeEventDataViewSet, RouterDataViewSet, LogPercentageViewSet
+from logs.views import BronzeEventDataViewSet, RouterDataViewSet, LogPercentageViewSet, LogPercentageViewSet, LogAggregationViewSet, EventsToday
 from alerts.views import AlertViewSet, InvestigateAlertViewSet
 from reports.views import IncidentReportViewSet
 
@@ -36,6 +36,8 @@ router.register(r'investigate', InvestigateAlertViewSet)
 router.register(r'incident-reports', IncidentReportViewSet)
 router.register(r'router-data', RouterDataViewSet)
 router.register(r'log-percentage', LogPercentageViewSet, basename='log-percentage')
+router.register(r'logs-aggregation', LogAggregationViewSet, basename='logs-aggregation')
+router.register(r'events-today', EventsToday, basename='events-today')
 
 
 urlpatterns = [

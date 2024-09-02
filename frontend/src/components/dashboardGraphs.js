@@ -3,16 +3,13 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, Area
 import { PieChart, Pie, Cell } from 'recharts';
 import { Typography } from '@mui/material';
 
-
-
 const COLORSBAR = ['#0088FE', '#00C49F'];
-
 const COLORSPIE = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
-export const LogsPerDayChart = ({ data }) => (
+export const LogsPerHourChart = ({ data }) => (
   <div>
     <Typography variant="h6" gutterBottom>
-      Logs Per Day
+      Logs Per Hour
     </Typography>
     <ResponsiveContainer width="100%" height={300}>
       <BarChart data={data} margin={{ top: 20, right: 20, bottom: 20, left: 0 }}>

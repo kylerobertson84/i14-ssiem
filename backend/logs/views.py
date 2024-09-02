@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+
+# logs/views.py
+>>>>>>> origin/develop
 from rest_framework import viewsets, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -7,6 +12,13 @@ from .serializers import BronzeEventDataSerializer, RouterDataSerializer, LogCou
 from utils.pagination import StandardResultsSetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
+
+from django.db.models.functions import TruncHour, TruncDay
+from django.db.models import Count
+from django.utils import timezone
+import pytz
+import logging
+
 # from rest_framework.authentication import TokenAuthentication
 
 class BronzeEventDataViewSet(viewsets.ReadOnlyModelViewSet):
@@ -75,4 +87,76 @@ class LogPercentageViewSet(viewsets.ViewSet):
         serializer = self.serializer_class(data)
         return Response(serializer.data)
 
+<<<<<<< HEAD
 
+=======
+class LogAggregationViewSet(viewsets.ViewSet):
+    @action(detail=False, methods=['get'])
+    def logs_per_hour(self, request):
+        # Aggregate BronzeEventData logs per hour
+        bronze_event_data = (
+            BronzeEventData.objects
+            .annotate(hour=TruncHour('created_at'))
+            .values('hour')
+            .annotate(count=Count('id'))
+            .order_by('hour')
+        )
+
+        # Aggregate RouterData logs per hour
+        router_data = (
+            RouterData.objects
+            .annotate(hour=TruncHour('created_at'))
+            .values('hour')
+            .annotate(count=Count('id'))
+            .order_by('hour')
+        )
+
+        # Format data for the chart
+        data = []
+        hours = sorted(set(
+            [entry['hour'] for entry in bronze_event_data] +
+            [entry['hour'] for entry in router_data]
+        ))
+
+        for hour in hours:
+            bronze_count = next((item['count'] for item in bronze_event_data if item['hour'] == hour), 0)
+            router_count = next((item['count'] for item in router_data if item['hour'] == hour), 0)
+            data.append({
+                # 'name': hour.strftime('%Y-%m-%d %H:%M:%S'),
+                'name': hour.strftime('%H:%M:%S'),
+                'Computer': bronze_count,
+                'Networking': router_count,
+            })
+
+        return Response(data)
+    
+logger = logging.getLogger(__name__)
+
+class EventsToday(viewsets.ViewSet):
+    @action(detail=False, methods=['get'])
+    def events_today(self, request):
+        # Define local timezone
+        local_timezone = pytz.timezone('Australia/Melbourne')
+
+        # Get current time in local timezone
+        now_local = timezone.localtime(timezone.now(), local_timezone)
+        today_start_local = now_local.replace(hour=0, minute=0, second=0, microsecond=0)
+        today_end_local = now_local.replace(hour=23, minute=59, second=59, microsecond=999999)
+
+        # Convert local times to UTC
+        today_start_utc = today_start_local.astimezone(pytz.UTC)
+        today_end_utc = today_end_local.astimezone(pytz.UTC)
+
+        # Log the UTC start and end of today
+        logger.debug(f"UTC Start of today: {today_start_utc}")
+        logger.debug(f"UTC End of today: {today_end_utc}")
+
+        # Filter EventData by UTC datetime range
+        event_today_count = EventData.objects.filter(timestamp__range=(today_start_utc, today_end_utc)).count()
+
+        data = {
+            'events_today': event_today_count
+        }
+        return Response(data)
+        
+>>>>>>> origin/develop
