@@ -907,12 +907,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Alert'
           description: ''
-  /api/v1/alerts/{alert_id}/:
+  /api/v1/alerts/{id}/:
     get:
       operationId: v1_alerts_retrieve
       parameters:
       - in: path
-        name: alert_id
+        name: id
         schema:
           type: integer
         description: A unique integer value identifying this alert.
@@ -933,7 +933,7 @@ paths:
       operationId: v1_alerts_update
       parameters:
       - in: path
-        name: alert_id
+        name: id
         schema:
           type: integer
         description: A unique integer value identifying this alert.
@@ -965,7 +965,7 @@ paths:
       operationId: v1_alerts_partial_update
       parameters:
       - in: path
-        name: alert_id
+        name: id
         schema:
           type: integer
         description: A unique integer value identifying this alert.
@@ -997,7 +997,7 @@ paths:
       operationId: v1_alerts_destroy
       parameters:
       - in: path
-        name: alert_id
+        name: id
         schema:
           type: integer
         description: A unique integer value identifying this alert.
@@ -1010,12 +1010,12 @@ paths:
       responses:
         '204':
           description: No response body
-  /api/v1/alerts/{alert_id}/assign/:
+  /api/v1/alerts/{id}/assign/:
     post:
       operationId: v1_alerts_assign_create
       parameters:
       - in: path
-        name: alert_id
+        name: id
         schema:
           type: integer
         description: A unique integer value identifying this alert.
@@ -1179,7 +1179,7 @@ paths:
           * `system_performance` - System Performance
           * `compliance_audit` - Compliance Audit
       - in: query
-        name: user__username
+        name: user__email
         schema:
           type: string
       tags:
@@ -1460,12 +1460,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/InvestigateAlert'
           description: ''
-  /api/v1/investigate/{investigation_id}/:
+  /api/v1/investigate/{id}/:
     get:
       operationId: v1_investigate_retrieve
       parameters:
       - in: path
-        name: investigation_id
+        name: id
         schema:
           type: integer
         description: A unique integer value identifying this investigate alert.
@@ -1486,7 +1486,7 @@ paths:
       operationId: v1_investigate_update
       parameters:
       - in: path
-        name: investigation_id
+        name: id
         schema:
           type: integer
         description: A unique integer value identifying this investigate alert.
@@ -1518,7 +1518,7 @@ paths:
       operationId: v1_investigate_partial_update
       parameters:
       - in: path
-        name: investigation_id
+        name: id
         schema:
           type: integer
         description: A unique integer value identifying this investigate alert.
@@ -1550,7 +1550,7 @@ paths:
       operationId: v1_investigate_destroy
       parameters:
       - in: path
-        name: investigation_id
+        name: id
         schema:
           type: integer
         description: A unique integer value identifying this investigate alert.
@@ -1660,10 +1660,10 @@ components:
     Alert:
       type: object
       properties:
-        alert_id:
+        id:
           type: integer
           readOnly: true
-        event_id:
+        event:
           allOf:
           - $ref: '#/components/schemas/AlertBronzeEventData'
           readOnly: true
@@ -1671,7 +1671,7 @@ components:
           type: string
           format: date-time
           readOnly: true
-        rule_id:
+        rule:
           allOf:
           - $ref: '#/components/schemas/AlertRule'
           readOnly: true
@@ -1681,10 +1681,10 @@ components:
           type: string
           nullable: true
       required:
-      - alert_id
       - created_at
-      - event_id
-      - rule_id
+      - event
+      - id
+      - rule
     AlertBronzeEventData:
       type: object
       properties:
@@ -1709,7 +1709,7 @@ components:
           readOnly: true
         name:
           type: string
-          maxLength: 30
+          maxLength: 255
       required:
       - id
       - name
@@ -1751,8 +1751,6 @@ components:
           maximum: 2147483647
           minimum: -2147483648
           nullable: true
-        processed:
-          type: boolean
         iso_timestamp:
           type: string
           format: date-time
@@ -1963,7 +1961,7 @@ components:
           readOnly: true
         name:
           type: string
-          maxLength: 30
+          maxLength: 255
         description:
           type: string
           maxLength: 255
@@ -2002,7 +2000,7 @@ components:
     InvestigateAlert:
       type: object
       properties:
-        investigation_id:
+        id:
           type: integer
           readOnly: true
         alert:
@@ -2030,7 +2028,7 @@ components:
       - alert
       - assigned_to
       - created_at
-      - investigation_id
+      - id
       - updated_at
     InvestigateAlertStatusEnum:
       enum:
@@ -2174,10 +2172,10 @@ components:
     PatchedAlert:
       type: object
       properties:
-        alert_id:
+        id:
           type: integer
           readOnly: true
-        event_id:
+        event:
           allOf:
           - $ref: '#/components/schemas/AlertBronzeEventData'
           readOnly: true
@@ -2185,7 +2183,7 @@ components:
           type: string
           format: date-time
           readOnly: true
-        rule_id:
+        rule:
           allOf:
           - $ref: '#/components/schemas/AlertRule'
           readOnly: true
@@ -2272,7 +2270,7 @@ components:
     PatchedInvestigateAlert:
       type: object
       properties:
-        investigation_id:
+        id:
           type: integer
           readOnly: true
         alert:

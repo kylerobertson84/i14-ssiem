@@ -64,7 +64,7 @@ class AlertViewSet(BaseAlertViewSet):
     permission_class = AlertPermission
     filterset_class = AlertFilter
     ordering_fields = ['created_at', 'severity']
-    search_fields = ['event__EventID', 'event__UserID', 'rule__name']
+    search_fields = ['event__EventID', 'event__UserID', 'event__hostname', 'rule__name']
 
     @action(detail=True, methods=['post'])
     def assign(self, request, pk=None):

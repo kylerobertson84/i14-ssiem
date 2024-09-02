@@ -1,12 +1,8 @@
-<<<<<<< HEAD
-=======
-
-# logs/views.py
->>>>>>> origin/develop
 from rest_framework import viewsets, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
+from alerts.models import Alert
 from .models import BronzeEventData, RouterData
 from .serializers import BronzeEventDataSerializer, RouterDataSerializer, LogCountSerializer
 from utils.pagination import StandardResultsSetPagination
@@ -87,9 +83,6 @@ class LogPercentageViewSet(viewsets.ViewSet):
         serializer = self.serializer_class(data)
         return Response(serializer.data)
 
-<<<<<<< HEAD
-
-=======
 class LogAggregationViewSet(viewsets.ViewSet):
     @action(detail=False, methods=['get'])
     def logs_per_hour(self, request):
@@ -152,11 +145,10 @@ class EventsToday(viewsets.ViewSet):
         logger.debug(f"UTC End of today: {today_end_utc}")
 
         # Filter EventData by UTC datetime range
-        event_today_count = EventData.objects.filter(timestamp__range=(today_start_utc, today_end_utc)).count()
+        event_today_count = Alert.objects.filter(timestamp__range=(today_start_utc, today_end_utc)).count()
 
         data = {
             'events_today': event_today_count
         }
         return Response(data)
         
->>>>>>> origin/develop

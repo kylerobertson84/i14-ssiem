@@ -108,55 +108,12 @@ const Dashboard = () => {
             {/* Info cards and graph spacing */}
             <Grid container spacing={3} >
               {/* Info cards styling padding and grid items */}
-              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3 }}>
-                <Paper sx={{ padding: 2 }}>
-                  <InfoCard title="Total Devices" value={data.infoCards.values[0]} icon={Devices}/>
-                  
-                </Paper>
-              </Grid>
-              
-              
-              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3 }}>
-                <Paper sx={{ padding: 2 }}>
-
-                  <InfoCard title="Logs" value={recordCount + routerLogCount} icon={Notes}/>
-
-                </Paper>
-              </Grid>
-
-             
-              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3 }}>
-                <Paper sx={{ padding: 2 }}>
-                  
-                  <InfoCard title="New Devices (24hr)" value={data.infoCards.values[2]} icon={AddToQueue}/>
-                </Paper>
-              </Grid>
-
-           
-              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3 }}>
-                <Paper sx={{ padding: 2 }}>
-                  
-                  <InfoCard title="Open Investigations" value={data.infoCards.values[3]} icon={Search}/>
-                </Paper>
-              </Grid>
-
-              
-              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3 }}>
-                <Paper sx={{ padding: 2 }}>
-                 
-                  <InfoCard title="Events per Day" value={data.infoCards.values[4]} icon={EditCalendar}/>
-                </Paper>
-              </Grid>
-
-             
-
-              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3 }}>
-                <Paper sx={{ padding: 2 }}>
-                  
-                  <InfoCard title="Closed Investigations" value={data.infoCards.values[5]} icon={AssignmentTurnedInOutlined}/>
-                </Paper>
-              </Grid>
-
+              <InfoCard title="Total Devices" value={data.infoCards.values[0]} icon={Devices} />
+              <InfoCard title="Logs" value={recordCount + routerLogCount} icon={Notes} />
+              <InfoCard title="New Devices (24hr)" value={data.infoCards.values[2]} icon={AddToQueue} />
+              <InfoCard title="Open Investigations" value={data.infoCards.values[3]} icon={Search} />
+              <InfoCard title="Events per Day" value={data.infoCards.values[4]} icon={EditCalendar} />
+              <InfoCard title="Closed Investigations" value={data.infoCards.values[5]} icon={AssignmentTurnedInOutlined} />
               {/* Graphs Section */}
               <Grid item xs={12} md={6}>
                 <Paper sx={{ padding: 2 }}>

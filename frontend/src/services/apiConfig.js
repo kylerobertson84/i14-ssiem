@@ -9,6 +9,9 @@ const API_ENDPOINTS = {
     logs_per_hour: `${API_BASE_URL}v1/logs-aggregation/logs_per_hour/`,
     events_today: `${API_BASE_URL}v1/events-today/events_today/`,
     
+    
+    alerts: `${API_BASE_URL}v1/alerts`,
+    
     // Add more endpoints here as needed
   };
 

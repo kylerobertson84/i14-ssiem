@@ -8,8 +8,7 @@ class BronzeEventData(BaseModel):
     created_at = models.DateTimeField(auto_now_add=True)
     priority = models.IntegerField(null=True, blank=True)
     h_version = models.IntegerField(null=True, blank=True)
-    ## Better algo dont need this field
-    #processed = models.BooleanField(default=False)
+    processed = models.BooleanField(default=False)
     iso_timestamp = models.DateTimeField(null=True, blank=True)
     hostname = models.CharField(max_length=255,null=True, blank=True)
     app_name = models.CharField(max_length=255,null=True, blank=True)

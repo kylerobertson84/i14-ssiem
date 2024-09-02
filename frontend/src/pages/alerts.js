@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import AlertDetailsDialog from '../components/AlertDetailsDialog';
 import {
   Container,
   Typography,
   TextField,
-  Button,
   Table,
   TableBody,
   TableCell,
@@ -13,10 +13,6 @@ import {
   Paper,
   Chip,
   IconButton,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   Select,
   MenuItem,
   FormControl,
@@ -29,10 +25,9 @@ import {
 } from '@mui/material';
 import {
   Search as SearchIcon,
-  Visibility as ViewIcon,
   Settings as SettingsIcon
 } from '@mui/icons-material';
-import alertsData from '../data/alerts.json';
+const { fetchAlerts, updateAlert } = require('../services/apiService');
 
 const severityColors = {
   info: 'info',
@@ -43,101 +38,34 @@ const severityColors = {
   critical: 'error'
 };
 
-const AlertDetailsDialog = ({ alert, open, onClose, onAssign }) => {
-  const [assignee, setAssignee] = useState(alert?.assigned_to || '');
-  const [comment, setComment] = useState(alert?.comments || '');
-
-  if (!alert) return null;
-
-  const handleAssign = () => {
-    onAssign(alert.id, assignee, comment);
-    onClose();
-  };
-
-  const excludedFields = ['comments', 'assigned_to'];
-  const filteredAlertEntries = Object.entries(alert).filter(([key]) => !excludedFields.includes(key));
-
-  return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle>Alert Details</DialogTitle>
-      <DialogContent>
-        <TableContainer component={Paper}>
-          <Table>
-          <TableBody>
-              {filteredAlertEntries.map(([key, value]) => (
-                <TableRow key={key}>
-                  <TableCell component="th" scope="row" sx={{ fontWeight: 'bold', width: '30%' }}>
-                    {key.charAt(0).toUpperCase() + key.split('_').join(' ').slice(1)}
-                  </TableCell>
-                  <TableCell>{value.toString()}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <Typography variant="h6" gutterBottom>Assignment</Typography>
-        <FormControl fullWidth sx={{ mb: 2 }}>
-          <InputLabel>Assign To</InputLabel>
-          <Select
-            value={assignee}
-            onChange={(e) => setAssignee(e.target.value)}
-            label="Assign To"
-          >
-            <MenuItem value="">Unassigned</MenuItem>
-            <MenuItem value="John Doe">John Doe</MenuItem>
-            <MenuItem value="Jane Smith">Jane Smith</MenuItem>
-            <MenuItem value="Alice Johnson">Alice Johnson</MenuItem>
-          </Select>
-        </FormControl>
-
-        <Typography variant="h6" gutterBottom>Comments</Typography>
-        <TextField
-          fullWidth
-          multiline
-          rows={4}
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-          placeholder="Add a comment..."
-        />
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose}>Close</Button>
-        <Button onClick={handleAssign} color="primary" variant="contained">
-          Save Changes
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
-};
-
 const AlertsPage = () => {
   const theme = useTheme();
   const [alerts, setAlerts] = useState([]);
-  const [filteredAlerts, setFilteredAlerts] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedAlert, setSelectedAlert] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [severityFilter, setSeverityFilter] = useState('');
-  const [orderBy, setOrderBy] = useState('timestamp');
+  const [orderBy, setOrderBy] = useState('created_at');
   const [order, setOrder] = useState('desc');
 
-  useEffect(() => {
-    setAlerts(alertsData);
-    setFilteredAlerts(alertsData);
-  }, []);
+  
+  const loadAlerts = async () => {
+    try {
+      const data = await fetchAlerts(page + 1, rowsPerPage, searchTerm, severityFilter, orderBy, order);
+      console.log('Fetched data:', data);
+      setAlerts(data.results);
+      setTotalCount(data.count);
+    } catch (error) {
+      console.error('Failed to fetch alerts:', error);
+    }
+  };
 
   useEffect(() => {
-    const filtered = alerts.filter(
-      (alert) =>
-        (alert.hostname.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        alert.rule_triggered.toLowerCase().includes(searchTerm.toLowerCase())) &&
-        (severityFilter ? alert.severity === severityFilter : true)
-    );
-    setFilteredAlerts(filtered);
-    setPage(0);
-  }, [searchTerm, severityFilter, alerts]);
+    loadAlerts();
+  }, [page, rowsPerPage, searchTerm, severityFilter, orderBy, order]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -149,7 +77,13 @@ const AlertsPage = () => {
   };
 
   const handleViewDetails = (alert) => {
-    setSelectedAlert(alert);
+    // Ensure all nested objects are present
+    const completeAlert = {
+      ...alert,
+      event: alert.event || {},
+      rule: typeof alert.rule === 'object' ? alert.rule : { name: alert.rule }
+    };
+    setSelectedAlert(completeAlert);
     setOpenDialog(true);
   };
 
@@ -157,25 +91,33 @@ const AlertsPage = () => {
     setOpenDialog(false);
   };
 
-  const handleAssign = (alertId, assignee, comment) => {
-    setAlerts(alerts.map(alert => 
-      alert.id === alertId ? { ...alert, assigned_to: assignee, comments: comment } : alert
-    ));
+  const handleAssign = async (alertId, assignee, comment) => {
+    try {
+      const updatedAlert = await updateAlert(alertId, { assigned_to: assignee, comments: comment });
+      setAlerts(alerts.map(alert => 
+        alert.id === alertId ? updatedAlert : alert
+      ));
+    } catch (error) {
+      console.error('Failed to update alert:', error);
+    }
   };
 
   const handleRequestSort = (property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
+    setPage(0);
   };
 
-  const sortedAlerts = filteredAlerts.sort((a, b) => {
-    if (order === 'desc') {
-      return b[orderBy] < a[orderBy] ? -1 : 1;
-    } else {
-      return a[orderBy] < b[orderBy] ? -1 : 1;
-    }
-  });
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+    setPage(0);
+  };
+
+  const handleSeverityFilter = (event) => {
+    setSeverityFilter(event.target.value);
+    setPage(0);
+  };
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
@@ -190,22 +132,22 @@ const AlertsPage = () => {
           InputProps={{
             startAdornment: <SearchIcon color="action" sx={{ mr: 1 }} />,
           }}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={handleSearch}
           sx={{ flexGrow: 1 }}
         />
         <FormControl sx={{ minWidth: 120 }}>
           <InputLabel>Severity</InputLabel>
           <Select
             value={severityFilter}
-            onChange={(e) => setSeverityFilter(e.target.value)}
+            onChange={handleSeverityFilter}
             label="Severity"
           >
             <MenuItem value="">All</MenuItem>
-            <MenuItem value="info">Info</MenuItem>
-            <MenuItem value="low">Low</MenuItem>
-            <MenuItem value="medium">Medium</MenuItem>
-            <MenuItem value="high">High</MenuItem>
-            <MenuItem value="critical">Critical</MenuItem>
+            <MenuItem value="INFO">Info</MenuItem>
+            <MenuItem value="LOW">Low</MenuItem>
+            <MenuItem value="MEDIUM">Medium</MenuItem>
+            <MenuItem value="HIGH">High</MenuItem>
+            <MenuItem value="CRITICAL">Critical</MenuItem>
           </Select>
         </FormControl>
       </Box>
@@ -216,59 +158,70 @@ const AlertsPage = () => {
             <TableRow sx={{ backgroundColor: theme.palette.primary.main }}>
               <TableCell>
                 <TableSortLabel
-                  active={orderBy === 'timestamp'}
-                  direction={orderBy === 'timestamp' ? order : 'asc'}
-                  onClick={() => handleRequestSort('timestamp')}
+                  active={orderBy === 'id'}
+                  direction={orderBy === 'id' ? order : 'asc'}
+                  onClick={() => handleRequestSort('id')}
+                  sx={{ color: 'white', fontWeight: 'bold' }}
+                >
+                  ID
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={orderBy === 'created_at'}
+                  direction={orderBy === 'created_at' ? order : 'asc'}
+                  onClick={() => handleRequestSort('created_at')}
                   sx={{ color: 'white', fontWeight: 'bold' }}
                 >
                   Time
                 </TableSortLabel>
               </TableCell>
-              <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>
+              <TableCell>
                 <TableSortLabel
-                  active={orderBy === 'hostname'}
-                  direction={orderBy === 'hostname' ? order : 'asc'}
-                  onClick={() => handleRequestSort('hostname')}
+                  active={orderBy === 'event__hostname'}
+                  direction={orderBy === 'event__hostname' ? order : 'asc'}
+                  onClick={() => handleRequestSort('event__hostname')}
+                  sx={{ color: 'white', fontWeight: 'bold' }}
                 >
                   Hostname
                 </TableSortLabel>
               </TableCell>
-              <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>
+              <TableCell>
                 <TableSortLabel
                   active={orderBy === 'severity'}
                   direction={orderBy === 'severity' ? order : 'asc'}
                   onClick={() => handleRequestSort('severity')}
+                  sx={{ color: 'white', fontWeight: 'bold' }}
                 >
                   Severity
                 </TableSortLabel>
               </TableCell>
-              <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Rule Triggered</TableCell>
+              <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Rule</TableCell>
               <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {sortedAlerts
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((alert) => (
-                <TableRow key={alert.id} hover>
-                  <TableCell>{alert.timestamp}</TableCell>
-                  <TableCell>{alert.hostname}</TableCell>
-                  <TableCell>
-                    <Chip 
-                      label={alert.severity.charAt(0).toUpperCase() + alert.severity.slice(1)} 
-                      color={severityColors[alert.severity.toLowerCase()]} 
-                      size="small"
-                    />
-                  </TableCell>
-                  <TableCell><strong>{alert.rule_triggered}</strong></TableCell>
-                  <TableCell>
-                    <Tooltip title="View Details">
-                      <IconButton onClick={() => handleViewDetails(alert)} size="small">
-                        <SettingsIcon />
-                      </IconButton>
-                    </Tooltip>
-                  </TableCell>
-                </TableRow>
+            {alerts.map((alert) => (
+              <TableRow key={alert.id} hover>
+                <TableCell>{alert.id}</TableCell>
+                <TableCell>{new Date(alert.created_at).toLocaleString()}</TableCell>
+                <TableCell>{alert.event?.hostname || 'N/A'}</TableCell>
+                <TableCell>
+                  <Chip 
+                    label={alert.severity} 
+                    color={severityColors[alert.severity.toLowerCase()]} 
+                    size="small"
+                  />
+                </TableCell>
+                <TableCell><strong>{typeof alert.rule === 'object' ? alert.rule.name : alert.rule}</strong></TableCell>
+                <TableCell>
+                  <Tooltip title="View Details">
+                    <IconButton onClick={() => handleViewDetails(alert)} size="small">
+                      <SettingsIcon />
+                    </IconButton>
+                  </Tooltip>
+                </TableCell>
+              </TableRow>
             ))}
           </TableBody>
         </Table>
@@ -276,7 +229,7 @@ const AlertsPage = () => {
       <TablePagination
         rowsPerPageOptions={[10, 25, 50]}
         component="div"
-        count={filteredAlerts.length}
+        count={totalCount}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}

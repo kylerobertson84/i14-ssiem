@@ -5,10 +5,10 @@ const API_URL = process.env.REACT_APP_API_URL
 // const API_URL = 'http://127.0.0.1:8000/api/';
 
 class AuthService {
-    login(username, password) {
+    login(email, password) {
         return axios
             .post(API_URL + 'token/', {
-                username,
+                email,
                 password,
             })
             .then(response => {

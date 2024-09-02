@@ -14,7 +14,7 @@ class AlertUserSerializer(serializers.ModelSerializer):
 class AlertBronzeEventDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = BronzeEventData
-        fields = ['id', 'EventID', 'UserID']
+        fields = ['id', 'EventID', 'UserID', 'hostname']
 
 class AlertRuleSerializer(serializers.ModelSerializer):
     class Meta:
@@ -22,18 +22,19 @@ class AlertRuleSerializer(serializers.ModelSerializer):
         fields = ['id', 'name']
 
 class AlertSerializer(serializers.ModelSerializer):
-    event_id = AlertBronzeEventDataSerializer(source='event', read_only=True)
-    rule_id = AlertRuleSerializer(source='rule', read_only=True)
+    event = AlertBronzeEventDataSerializer(read_only=True)
+    rule = AlertRuleSerializer(read_only=True)
 
     class Meta:
         model = Alert
-        fields = ['alert_id', 'event', 'created_at', 'rule', 'severity', 'comments']
+        fields = ['id', 'event', 'created_at', 'rule', 'severity', 'comments']
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['event'] = {
             'EventID': representation['event']['EventID'],
-            'UserID': representation['event']['UserID']
+            'UserID': representation['event']['UserID'],
+            'hostname': representation['event']['hostname'],
         }
         representation['rule'] = representation['rule']['name']
         return representation
@@ -44,4 +45,4 @@ class InvestigateAlertSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = InvestigateAlert
-        fields = ['investigation_id', 'alert', 'assigned_to', 'status', 'notes', 'created_at', 'updated_at']
+        fields = ['id', 'alert', 'assigned_to', 'status', 'notes', 'created_at', 'updated_at']

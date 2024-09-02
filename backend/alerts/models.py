@@ -18,9 +18,9 @@ class InvestigationStatus(models.TextChoices):
     CLOSED = 'CLOSED', 'Closed'
 
 class Alert(BaseModel):
-    alert_id = models.AutoField(primary_key=True)
-    rule = models.ForeignKey(Rule, on_delete=models.CASCADE)
-    event = models.ForeignKey(BronzeEventData, on_delete=models.CASCADE)
+    id = models.AutoField(primary_key=True)
+    rule = models.ForeignKey(Rule, on_delete=models.CASCADE, default=None)
+    event = models.ForeignKey(BronzeEventData, on_delete=models.CASCADE, default=None)
     severity = models.CharField(
         max_length=20,
         choices=AlertSeverity.choices,
@@ -30,14 +30,14 @@ class Alert(BaseModel):
 
 
     def __str__(self):
-        return f"Alert {self.alert_id} at {self.created_at} with {self.severity}. Triggered by {self.event} with rule {self.rule.name}. Created on {self.created_at} - Last updated on {self.updated_at}"
+        return f"Alert {self.id} at {self.created_at} with {self.severity}. Triggered by {self.event} with rule {self.rule.name}. Created on {self.created_at} - Last updated on {self.updated_at}"
         
     class Meta:
         ordering = ['-created_at']
 
 ## InvestigateAlert model - AssignedAlert
 class InvestigateAlert(BaseModel):
-    investigation_id = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     alert = models.OneToOneField(Alert, on_delete=models.CASCADE, related_name='investigation')
     assigned_to = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     status = models.CharField(
@@ -49,4 +49,4 @@ class InvestigateAlert(BaseModel):
     
 
     def __str__(self):
-        return f"Alert {self.alert_id} assigned to {self.assigned_to} at {self.created_at} with status {self.status}. Investigation ID: {self.investigation_id}, created on {self.created_at} - Last updated on {self.updated_at}"
+        return f"Alert {self.alert} assigned to {self.assigned_to} at {self.created_at} with status {self.status}. Investigation ID: {self.id}, created on {self.created_at} - Last updated on {self.updated_at}"
