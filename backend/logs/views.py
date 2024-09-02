@@ -1,3 +1,11 @@
+from io import BytesIO
+import logging
+import pytz
+
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+from django.http import HttpResponse
+
 from rest_framework import viewsets, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -9,11 +17,11 @@ from utils.pagination import StandardResultsSetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
+
 from django.db.models.functions import TruncHour, TruncDay
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.utils import timezone
-import pytz
-import logging
+from dateutil.parser import parse as parse_datetime
 
 # from rest_framework.authentication import TokenAuthentication
 
@@ -22,19 +30,79 @@ class BronzeEventDataViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = BronzeEventDataSerializer
     pagination_class = StandardResultsSetPagination
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
-    # filterset_fields = ['event_type', 'severity', 'hostname']
-    ordering_fields = ['event_time', 'event_id']
-    search_fields = ['hostname', 'account_name', 'message']
-    permission_classes = [IsAuthenticated] 
-    # authentication_classes = [TokenAuthentication]
+    ordering_fields = ['iso_timestamp', 'event_id']
+    search_fields = ['hostname', 'AccountName', 'message']
 
-    # method to get the total number of rows
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        query = self.request.query_params.get('query')
+        start_time = self.request.query_params.get('start_time')
+        end_time = self.request.query_params.get('end_time')
+        event_type = self.request.query_params.get('event_type')
+
+        if query:
+            queryset = queryset.filter(
+                Q(hostname__icontains=query) |
+                Q(AccountName__icontains=query) |
+                Q(message__icontains=query)
+            )
+        
+        if start_time:
+            start_datetime = parse_datetime(start_time)
+            queryset = queryset.filter(iso_timestamp__gte=start_datetime)
+        
+        if end_time:
+            end_datetime = parse_datetime(end_time)
+            queryset = queryset.filter(iso_timestamp__lte=end_datetime)
+        
+        if event_type:
+            queryset = queryset.filter(EventType=event_type)
+
+        return queryset
+
     @action(detail=False, methods=['get'])
-    def count(self, request):
-        print('Request headers:', request.headers)  # Debugging line
-        print('Request user:', request.user)  # Check the user
-        count = self.queryset.count()
-        return Response({'count': count})
+    def export_pdf(self, request):
+        # Implement PDF export for BronzeEventData
+        pass
+
+class RouterDataViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = RouterData.objects.all()
+    serializer_class = RouterDataSerializer
+    pagination_class = StandardResultsSetPagination
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
+    ordering_fields = ['date_time']
+    search_fields = ['hostname', 'process', 'message']
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        query = self.request.query_params.get('query')
+        start_time = self.request.query_params.get('start_time')
+        end_time = self.request.query_params.get('end_time')
+        process = self.request.query_params.get('process')
+
+        if query:
+            queryset = queryset.filter(
+                Q(hostname__icontains=query) |
+                Q(message__icontains=query)
+            )
+        
+        if start_time:
+            start_datetime = parse_datetime(start_time)
+            queryset = queryset.filter(date_time__gte=start_datetime)
+        
+        if end_time:
+            end_datetime = parse_datetime(end_time)
+            queryset = queryset.filter(date_time__lte=end_datetime)
+        
+        if process:
+            queryset = queryset.filter(process=process)
+
+        return queryset
+
+    @action(detail=False, methods=['get'])
+    def export_pdf(self, request):
+        # Implement PDF export for RouterData
+        pass
 
 # class EventDataViewSet(viewsets.ReadOnlyModelViewSet):
 #     queryset = EventData.objects.all()
@@ -145,10 +213,11 @@ class EventsToday(viewsets.ViewSet):
         logger.debug(f"UTC End of today: {today_end_utc}")
 
         # Filter EventData by UTC datetime range
-        event_today_count = Alert.objects.filter(timestamp__range=(today_start_utc, today_end_utc)).count()
+        event_today_count = Alert.objects.filter(created_at__range=(today_start_utc, today_end_utc)).count()
 
         data = {
             'events_today': event_today_count
         }
         return Response(data)
+
         

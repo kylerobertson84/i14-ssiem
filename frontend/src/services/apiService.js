@@ -44,3 +44,35 @@ export const fetchAlerts = (page = 1, pageSize = 10, search = '', severity = '',
 export const updateAlert = (alertId, data) => {
   return apiRequest(`${API_ENDPOINTS.alerts}/${alertId}/`, 'PATCH', data);
 };
+
+export const fetchComputerLogs = (searchParams, page = 1, pageSize = 10) => {
+  const params = new URLSearchParams({
+    query: searchParams.query,
+    page,
+    page_size: pageSize,
+    start_time: searchParams.startTime ? searchParams.startTime.toISOString() : '',
+    end_time: searchParams.endTime ? searchParams.endTime.toISOString() : '',
+  });
+  return apiRequest(`${API_ENDPOINTS.computerLogs}?${params}`);
+};
+
+export const fetchRouterLogs = (searchParams, page = 1, pageSize = 10) => {
+  const params = new URLSearchParams({
+    query: searchParams.query,
+    page,
+    page_size: pageSize,
+    start_time: searchParams.startTime ? searchParams.startTime.toISOString() : '',
+    end_time: searchParams.endTime ? searchParams.endTime.toISOString() : '',
+  });
+  return apiRequest(`${API_ENDPOINTS.routerLogs}?${params}`);
+};
+
+export const exportPDF = (logType, searchParams) => {
+  const params = new URLSearchParams({
+    query: searchParams.query,
+    start_time: searchParams.startTime ? searchParams.startTime.toISOString() : '',
+    end_time: searchParams.endTime ? searchParams.endTime.toISOString() : '',
+  });
+  const endpoint = logType === 'computer' ? API_ENDPOINTS.computerLogsPDF : API_ENDPOINTS.routerLogsPDF;
+  return apiRequest(`${endpoint}?${params}`, 'GET', null, { responseType: 'blob' });
+};

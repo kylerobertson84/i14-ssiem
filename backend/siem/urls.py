@@ -35,6 +35,7 @@ router.register(r'alerts', AlertViewSet)
 router.register(r'investigate', InvestigateAlertViewSet)
 router.register(r'incident-reports', IncidentReportViewSet)
 router.register(r'router-data', RouterDataViewSet)
+
 router.register(r'log-percentage', LogPercentageViewSet, basename='log-percentage')
 router.register(r'logs-aggregation', LogAggregationViewSet, basename='logs-aggregation')
 router.register(r'events-today', EventsToday, basename='events-today')

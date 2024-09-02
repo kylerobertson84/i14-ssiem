@@ -4,8 +4,12 @@ from .models import BronzeEventData, RouterData
 class BronzeEventDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = BronzeEventData
-        fields = '__all__'
+        fields = ['id', 'iso_timestamp', 'hostname', 'EventType', 'EventID', 'AccountName', 'message']
 
+class RouterDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RouterData
+        fields = ['id', 'date_time', 'hostname', 'process', 'message']
 # class EventDataSerializer(serializers.ModelSerializer):
 #     # source = BronzeEventDataSerializer(read_only=True)
 #     rule = RuleSerializer(read_only=True)
@@ -20,12 +24,6 @@ class BronzeEventDataSerializer(serializers.ModelSerializer):
     #     representation['source'] = BronzeEventDataSerializer(instance.source).data
     #     return representation
 
-class RouterDataSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = RouterData
-        fields = '__all__'
-
-
 class LogCountSerializer(serializers.Serializer):
     windows_os_percentage = serializers.FloatField()
     network_percentage = serializers.FloatField()
@@ -35,3 +33,4 @@ class LogCountSerializer(serializers.Serializer):
         representation['windows_os_percentage'] = round(representation['windows_os_percentage'], 2)
         representation['network_percentage'] = round(representation['network_percentage'], 2)
         return representation
+

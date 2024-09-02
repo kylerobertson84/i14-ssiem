@@ -1105,9 +1105,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/BronzeEventData'
           description: ''
-  /api/v1/bronze-events/count/:
+  /api/v1/bronze-events/export_pdf/:
     get:
-      operationId: v1_bronze_events_count_retrieve
+      operationId: v1_bronze_events_export_pdf_retrieve
       tags:
       - v1
       security:
@@ -1120,6 +1120,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/BronzeEventData'
           description: ''
+  /api/v1/events-today/events_today/:
+    get:
+      operationId: v1_events_today_events_today_retrieve
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
   /api/v1/incident-reports/:
     get:
       operationId: v1_incident_reports_list
@@ -1578,6 +1589,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/LogCount'
           description: ''
+  /api/v1/logs-aggregation/logs_per_hour/:
+    get:
+      operationId: v1_logs_aggregation_logs_per_hour_retrieve
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
   /api/v1/router-data/:
     get:
       operationId: v1_router_data_list
@@ -1699,6 +1721,10 @@ components:
           type: string
           nullable: true
           maxLength: 50
+        hostname:
+          type: string
+          nullable: true
+          maxLength: 255
       required:
       - id
     AlertRule:
@@ -1733,24 +1759,6 @@ components:
         id:
           type: integer
           readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-        priority:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-          nullable: true
-        h_version:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-          nullable: true
         iso_timestamp:
           type: string
           format: date-time
@@ -1759,18 +1767,6 @@ components:
           type: string
           nullable: true
           maxLength: 255
-        app_name:
-          type: string
-          nullable: true
-          maxLength: 255
-        process_id:
-          type: string
-          nullable: true
-          maxLength: 50
-        Keywords:
-          type: string
-          nullable: true
-          maxLength: 50
         EventType:
           type: string
           nullable: true
@@ -1779,88 +1775,15 @@ components:
           type: string
           nullable: true
           maxLength: 50
-        ProviderGuid:
-          type: string
-          nullable: true
-          maxLength: 255
-        Version:
-          type: string
-          nullable: true
-          maxLength: 10
-        Task:
-          type: string
-          nullable: true
-          maxLength: 10
-        OpcodeValue:
-          type: string
-          nullable: true
-          maxLength: 10
-        RecordNumber:
-          type: string
-          nullable: true
-          maxLength: 50
-        ActivityID:
-          type: string
-          nullable: true
-          maxLength: 255
-        ThreadID:
-          type: string
-          nullable: true
-          maxLength: 50
-        Channel:
-          type: string
-          nullable: true
-          maxLength: 255
-        Domain:
-          type: string
-          nullable: true
-          maxLength: 255
         AccountName:
           type: string
           nullable: true
           maxLength: 255
-        UserID:
-          type: string
-          nullable: true
-          maxLength: 50
-        AccountType:
-          type: string
-          nullable: true
-          maxLength: 50
-        Opcode:
-          type: string
-          nullable: true
-          maxLength: 100
-        PackageName:
-          type: string
-          nullable: true
-          maxLength: 255
-        ContainerId:
-          type: string
-          nullable: true
-          maxLength: 255
-        EventReceivedTime:
-          type: string
-          format: date-time
-          nullable: true
-        SourceModuleName:
-          type: string
-          nullable: true
-          maxLength: 50
-        SourceModuleType:
-          type: string
-          nullable: true
-          maxLength: 50
         message:
           type: string
           nullable: true
-        extra_fields:
-          type: string
-          nullable: true
       required:
-      - created_at
       - id
-      - updated_at
     Employee:
       type: object
       properties:
@@ -2404,19 +2327,6 @@ components:
         id:
           type: integer
           readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-        severity:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-          nullable: true
         date_time:
           type: string
           nullable: true
@@ -2433,9 +2343,7 @@ components:
           type: string
           nullable: true
       required:
-      - created_at
       - id
-      - updated_at
     SeverityEnum:
       enum:
       - INFO

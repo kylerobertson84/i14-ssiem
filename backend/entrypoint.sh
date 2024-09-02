@@ -39,6 +39,12 @@ EOF
     fi
 fi
 
+log "Parsing UDP data... Look for UDP data at port 514"
+if !python manage.py udp_parse; then
+    log "Failed to parse UDP data"
+    exit 1
+fi
+
 log "Creating rules..."
 if ! python manage.py create_rules; then
     log "Failed to create rules"
