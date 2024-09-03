@@ -9,6 +9,7 @@ import Queries from './pages/queries';
 import Reports from './pages/reports';
 import Alerts from './pages/alerts';
 import Preferences from './pages/preferences';
+import Admin from './pages/admin';
 
 import PrivateRoute from './components/PrivateRoute';
 import ProtectedLayout from './components/ProtectedLayout';
@@ -25,6 +26,7 @@ const App = () => (
             <Route path="/reports" element={<Reports />} />
             <Route path='/alerts' element={<Alerts/>} />
             <Route path='/preferences' element={<Preferences/>} />
+            <Route path='/admin' element={<Admin/>} />
       </Routes>
   </Router>
 );
