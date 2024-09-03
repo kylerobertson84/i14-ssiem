@@ -24,6 +24,8 @@ import {
   TableRow,
   TableSortLabel,
   TablePagination,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -71,6 +73,11 @@ const LogQueries = () => {
   const [orderBy, setOrderBy] = useState('');
   const [order, setOrder] = useState('asc');
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'info',
+  });
 
   const handleSearch = async () => {
     setLoading(true);
@@ -88,6 +95,15 @@ const LogQueries = () => {
 
   const handleExport = async () => {
     try {
+      if (totalResults === 0) {
+        setSnackbar({
+          open: true,
+          message: 'No data to export. Please perform a search first.',
+          severity: 'warning',
+        });
+        return;
+      }
+
       const response = await exportPDF(activeTab === 0 ? 'computer' : 'router', searchParams);
       const blob = new Blob([response], { type: 'application/pdf' });
       const url = window.URL.createObjectURL(blob);
@@ -99,6 +115,19 @@ const LogQueries = () => {
       link.parentNode.removeChild(link);
     } catch (error) {
       console.error('Error exporting PDF:', error);
+      let errorMessage = 'Failed to export PDF. Please try again.';
+      if (error.response) {
+        if (error.response.status === 404) {
+          errorMessage = 'The requested data for export could not be found.';
+        } else if (error.response.status === 400) {
+          errorMessage = 'Invalid request. Please check your search parameters.';
+        }
+      }
+      setSnackbar({
+        open: true,
+        message: errorMessage,
+        severity: 'error',
+      });
     }
   };
 
@@ -174,6 +203,13 @@ const LogQueries = () => {
     { id: 'process', label: 'Process', minWidth: 100 },
     { id: 'message', label: 'Message', minWidth: 200 },
   ];
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbar({ ...snackbar, open: false });
+  };
 
   const LogDetailDialog = ({ log, open, onClose, isComputerLog }) => {
     const renderLogDetail = (label, value) => (
@@ -324,6 +360,17 @@ const LogQueries = () => {
               </Tooltip>
             </Box>
           </Box>
+
+          <Snackbar 
+            open={snackbar.open} 
+            autoHideDuration={6000} 
+            onClose={handleCloseSnackbar}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          >
+            <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>
+              {snackbar.message}
+            </Alert>
+          </Snackbar>
 
           <TableContainer>
             <Table sx={{ minWidth: 650 }} aria-label="log table">
