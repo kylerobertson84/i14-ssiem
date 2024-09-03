@@ -30,6 +30,8 @@ export const fetchEventsToday = () => {
   return apiRequest(API_ENDPOINTS.events_today)
 };
 
+
+// API services for alerts
 export const fetchAlerts = (page = 1, pageSize = 10, search = '', severity = '', orderBy = 'created_at', order = 'desc') => {
   const params = new URLSearchParams({
     page,
@@ -45,6 +47,7 @@ export const updateAlert = (alertId, data) => {
   return apiRequest(`${API_ENDPOINTS.alerts}/${alertId}/`, 'PATCH', data);
 };
 
+// API services for logs
 export const fetchComputerLogs = (searchParams, page = 1, pageSize = 10) => {
   const params = new URLSearchParams({
     query: searchParams.query,
@@ -73,6 +76,11 @@ export const exportPDF = (logType, searchParams) => {
     start_time: searchParams.startTime ? searchParams.startTime.toISOString() : '',
     end_time: searchParams.endTime ? searchParams.endTime.toISOString() : '',
   });
-  const endpoint = logType === 'computer' ? API_ENDPOINTS.computerLogsPDF : API_ENDPOINTS.routerLogsPDF;
+  let endpoint;
+  if (logType === 'computer') {
+    endpoint = `${API_ENDPOINTS.computerLogs}export_pdf`;
+  } else if (logType === 'router') {
+    endpoint = `${API_ENDPOINTS.routerLogs}export_pdf`;
+  }
   return apiRequest(`${endpoint}?${params}`, 'GET', null, { responseType: 'blob' });
 };

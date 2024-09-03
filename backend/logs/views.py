@@ -1,10 +1,9 @@
 from io import BytesIO
+from datetime import datetime
 import logging
 import pytz
 
-from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import letter
-from django.http import HttpResponse
+from .pdf_exports import generate_pdf_report
 
 from rest_framework import viewsets, filters
 from rest_framework.decorators import action
@@ -15,7 +14,6 @@ from .models import BronzeEventData, RouterData
 from .serializers import BronzeEventDataSerializer, RouterDataSerializer, LogCountSerializer
 from utils.pagination import StandardResultsSetPagination
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.views import APIView
 
 
 from django.db.models.functions import TruncHour, TruncDay
@@ -32,6 +30,7 @@ class BronzeEventDataViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
     ordering_fields = ['iso_timestamp', 'event_id']
     search_fields = ['hostname', 'AccountName', 'message']
+    permission_classes = [IsAuthenticated] 
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -39,6 +38,8 @@ class BronzeEventDataViewSet(viewsets.ReadOnlyModelViewSet):
         start_time = self.request.query_params.get('start_time')
         end_time = self.request.query_params.get('end_time')
         event_type = self.request.query_params.get('event_type')
+        
+
 
         if query:
             queryset = queryset.filter(
@@ -62,8 +63,16 @@ class BronzeEventDataViewSet(viewsets.ReadOnlyModelViewSet):
 
     @action(detail=False, methods=['get'])
     def export_pdf(self, request):
-        # Implement PDF export for BronzeEventData
-        pass
+        queryset = self.filter_queryset(self.get_queryset())
+        columns = [
+            ('Timestamp', 'iso_timestamp'),
+            ('Hostname', 'hostname'),
+            ('Event Type', 'EventType'),
+            ('Event ID', 'EventID'),
+            ('Account Name', 'AccountName'),
+            #('Message', 'message'),
+        ]
+        return generate_pdf_report(queryset, "BronzeEventData", columns)
 
 class RouterDataViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = RouterData.objects.all()
@@ -72,6 +81,7 @@ class RouterDataViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
     ordering_fields = ['date_time']
     search_fields = ['hostname', 'process', 'message']
+    permission_classes = [IsAuthenticated] 
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -98,11 +108,22 @@ class RouterDataViewSet(viewsets.ReadOnlyModelViewSet):
             queryset = queryset.filter(process=process)
 
         return queryset
+    
+    @action(detail=False, methods=['get'])
+    def router_log_count(self, request):
+        router_log_count = self.queryset.count()
+        return Response({'router_log_count': router_log_count})
 
     @action(detail=False, methods=['get'])
     def export_pdf(self, request):
-        # Implement PDF export for RouterData
-        pass
+        queryset = self.filter_queryset(self.get_queryset())
+        columns = [
+            ('Timestamp', 'date_time'),
+            ('Hostname', 'hostname'),
+            ('Process', 'process'),
+            #('Message', 'message'),
+        ]
+        return generate_pdf_report(queryset, "RouterData", columns)
 
 # class EventDataViewSet(viewsets.ReadOnlyModelViewSet):
 #     queryset = EventData.objects.all()
@@ -113,20 +134,6 @@ class RouterDataViewSet(viewsets.ReadOnlyModelViewSet):
 #     ordering_fields = ['timestamp']
 #     search_fields = ['source__hostname', 'source__account_name']
 #     permission_classes = [IsAuthenticated] 
-
-class RouterDataViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = RouterData.objects.all()
-    serializer_class = RouterDataSerializer
-    pagination_class = StandardResultsSetPagination
-    filter_backends =  [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
-    ordering_fields = ['date_time']
-    search_fields = ['severity','hostname']
-    permission_classes = [IsAuthenticated] 
-
-    @action(detail=False, methods=['get'])
-    def router_log_count(self, request):
-        router_log_count = self.queryset.count()
-        return Response({'router_log_count': router_log_count})
 
 class LogPercentageViewSet(viewsets.ViewSet):
     serializer_class = LogCountSerializer

@@ -14,7 +14,6 @@ const API_ENDPOINTS = {
 
     computerLogs: `${API_BASE_URL}v1/bronze-events/`,
     routerLogs: `${API_BASE_URL}v1/router-data/`,
-    exportPDF: `${API_BASE_URL}v1/combined-logs/export_pdf/`,
     
     // Add more endpoints here as needed
   };

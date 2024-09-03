@@ -1662,6 +1662,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/RouterData'
           description: ''
+  /api/v1/router-data/export_pdf/:
+    get:
+      operationId: v1_router_data_export_pdf_retrieve
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RouterData'
+          description: ''
   /api/v1/router-data/router_log_count/:
     get:
       operationId: v1_router_data_router_log_count_retrieve
