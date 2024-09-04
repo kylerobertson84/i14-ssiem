@@ -80,6 +80,17 @@ class AlertViewSet(BaseAlertViewSet):
         if created:
             return Response({'status': 'Alert assigned successfully'}, status=status.HTTP_201_CREATED)
         return Response({'status': 'Alert was already assigned'}, status=status.HTTP_200_OK)
+    
+    @action(detail=False, methods=['get'])
+    def latest_alerts(self, request):
+        latest_alerts = self.queryset.order_by('-created_at')[:4]
+        page = self.paginate_queryset(latest_alerts)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        
+        serializer = self.get_serializer(latest_alerts, many=True)
+        return Response(serializer.data)
 
 class InvestigateAlertViewSet(BaseAlertViewSet):
     queryset = InvestigateAlert.objects.all()
