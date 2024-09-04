@@ -95,8 +95,8 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     # API VERSIONING to allow for future changes
     'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.NamespaceVersioning',
-    'DEFAULT_VERSION': '1.0',
-    'ALLOWED_VERSIONS': ['1.0'],
+    'DEFAULT_VERSION': 'v1',
+    'ALLOWED_VERSIONS': ['v1'],
     'VERSION_PARAM': 'version',
     # DRF-Spectacular settings
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
@@ -105,8 +105,9 @@ REST_FRAMEWORK = {
 SPECTACULAR_SETTINGS = {
     'TITLE': 'SIEM API',
     'DESCRIPTION': 'API for SIEM application',
-    'VERSION': '1.0.0',
+    'VERSION': 'v1',
     'SERVE_INCLUDE_SCHEMA': False,
+    'SCHEMA_PATH_PREFIX': r'/api/v[0-9]',
 }
 
 from datetime import timedelta

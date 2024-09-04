@@ -1,13 +1,10 @@
-
-
 import axios from 'axios';
-const API_URL = process.env.REACT_APP_API_URL 
-// const API_URL = 'http://127.0.0.1:8000/api/';
+import API_ENDPOINTS from './apiConfig';
 
 class AuthService {
     login(email, password) {
         return axios
-            .post(API_URL + 'token/', {
+            .post(API_ENDPOINTS.auth.token, {
                 email,
                 password,
             })
@@ -33,7 +30,7 @@ class AuthService {
     }
 
     refreshToken(refreshToken) {
-        return axios.post(API_URL + 'token/refresh/', {
+        return axios.post(API_ENDPOINTS.auth.refreshToken, {
             refresh: refreshToken,
         }).then(response => {
             if (response.data.access) {

@@ -1,22 +1,34 @@
+const API_BASE_URL = process.env.REACT_APP_API_URL // || 'http://localhost:8000/api';
+const API_VERSION = 'v1';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL 
+const buildUrl = (path, version = API_VERSION) => `${API_BASE_URL}/${version}/${path}`;
 
 const API_ENDPOINTS = {
-    user: `${API_BASE_URL}users/me/`,
-    logCount: `${API_BASE_URL}v1/logs/bronze-events/count/`,
-    routerLogCount: `${API_BASE_URL}v1/logs/router-data/router_log_count/`,
-    log_percentages: `${API_BASE_URL}v1/logs/log-percentage/log_percentages/`,
-    logs_per_hour: `${API_BASE_URL}v1/logs/logs-aggregation/logs_per_hour/`,
-    events_today: `${API_BASE_URL}v1/logs/events-today/events_today/`,
-    
-    
-    alerts: `${API_BASE_URL}v1/alerts/`,
-    latest_alerts: `${API_BASE_URL}v1/alerts/latest_alerts/`,
+  // Authentication Related API Endpoints
+  auth: {
+    user: buildUrl('accounts/users/me/'),
+    token: buildUrl('accounts/token/'),
+    refreshToken: buildUrl('accounts/token/refresh/'),
+  },
 
-    computerLogs: `${API_BASE_URL}v1/bronze-events/`,
-    routerLogs: `${API_BASE_URL}v1/router-data/`,
-    
-    // Add more endpoints here as needed
-  };
+  // Alerts Related API Endpoints
+  alerts: {
+    base: buildUrl('alerts/'),
+    latest: buildUrl('alerts/latest_alerts/'),
+  },
 
-  export default API_ENDPOINTS;
+  // Logs Related API Endpoints
+  logs: {
+    computer: buildUrl('logs/bronze-events/'),
+    router: buildUrl('logs/router-data/'),
+    count: {
+      computer: buildUrl('logs/bronze-events/count/'),
+      router: buildUrl('logs/router-data/router_log_count/'),
+    },
+    percentages: buildUrl('logs/log-percentage/log_percentages/'),
+    perHour: buildUrl('logs/logs-aggregation/logs_per_hour/'),
+    eventsToday: buildUrl('logs/events-today/events_today/'),
+  },
+};
+
+export default API_ENDPOINTS;

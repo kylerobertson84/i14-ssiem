@@ -1,14 +1,14 @@
 openapi: 3.0.3
 info:
   title: SIEM API
-  version: 1.0.0
+  version: v1
   description: API for SIEM application
 paths:
-  /api/employees/:
+  /api/v1/accounts/employees/:
     get:
-      operationId: employees_list
+      operationId: accounts_employees_list
       tags:
-      - employees
+      - accounts
       security:
       - jwtAuth: []
       - cookieAuth: []
@@ -22,9 +22,9 @@ paths:
                   $ref: '#/components/schemas/Employee'
           description: ''
     post:
-      operationId: employees_create
+      operationId: accounts_employees_create
       tags:
-      - employees
+      - accounts
       requestBody:
         content:
           application/json:
@@ -47,9 +47,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Employee'
           description: ''
-  /api/employees/{user}/:
+  /api/v1/accounts/employees/{user}/:
     get:
-      operationId: employees_retrieve
+      operationId: accounts_employees_retrieve
       parameters:
       - in: path
         name: user
@@ -59,7 +59,7 @@ paths:
         description: A unique value identifying this employee.
         required: true
       tags:
-      - employees
+      - accounts
       security:
       - jwtAuth: []
       - cookieAuth: []
@@ -71,7 +71,7 @@ paths:
                 $ref: '#/components/schemas/Employee'
           description: ''
     put:
-      operationId: employees_update
+      operationId: accounts_employees_update
       parameters:
       - in: path
         name: user
@@ -81,7 +81,7 @@ paths:
         description: A unique value identifying this employee.
         required: true
       tags:
-      - employees
+      - accounts
       requestBody:
         content:
           application/json:
@@ -105,7 +105,7 @@ paths:
                 $ref: '#/components/schemas/Employee'
           description: ''
     patch:
-      operationId: employees_partial_update
+      operationId: accounts_employees_partial_update
       parameters:
       - in: path
         name: user
@@ -115,7 +115,7 @@ paths:
         description: A unique value identifying this employee.
         required: true
       tags:
-      - employees
+      - accounts
       requestBody:
         content:
           application/json:
@@ -138,7 +138,7 @@ paths:
                 $ref: '#/components/schemas/Employee'
           description: ''
     delete:
-      operationId: employees_destroy
+      operationId: accounts_employees_destroy
       parameters:
       - in: path
         name: user
@@ -148,18 +148,18 @@ paths:
         description: A unique value identifying this employee.
         required: true
       tags:
-      - employees
+      - accounts
       security:
       - jwtAuth: []
       - cookieAuth: []
       responses:
         '204':
           description: No response body
-  /api/permissions/:
+  /api/v1/accounts/permissions/:
     get:
-      operationId: permissions_list
+      operationId: accounts_permissions_list
       tags:
-      - permissions
+      - accounts
       security:
       - jwtAuth: []
       - cookieAuth: []
@@ -173,9 +173,9 @@ paths:
                   $ref: '#/components/schemas/Permission'
           description: ''
     post:
-      operationId: permissions_create
+      operationId: accounts_permissions_create
       tags:
-      - permissions
+      - accounts
       requestBody:
         content:
           application/json:
@@ -197,9 +197,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Permission'
           description: ''
-  /api/permissions/{permission_id}/:
+  /api/v1/accounts/permissions/{permission_id}/:
     get:
-      operationId: permissions_retrieve
+      operationId: accounts_permissions_retrieve
       parameters:
       - in: path
         name: permission_id
@@ -209,7 +209,7 @@ paths:
         description: A UUID string identifying this permission.
         required: true
       tags:
-      - permissions
+      - accounts
       security:
       - jwtAuth: []
       - cookieAuth: []
@@ -221,7 +221,7 @@ paths:
                 $ref: '#/components/schemas/Permission'
           description: ''
     put:
-      operationId: permissions_update
+      operationId: accounts_permissions_update
       parameters:
       - in: path
         name: permission_id
@@ -231,7 +231,7 @@ paths:
         description: A UUID string identifying this permission.
         required: true
       tags:
-      - permissions
+      - accounts
       requestBody:
         content:
           application/json:
@@ -254,7 +254,7 @@ paths:
                 $ref: '#/components/schemas/Permission'
           description: ''
     patch:
-      operationId: permissions_partial_update
+      operationId: accounts_permissions_partial_update
       parameters:
       - in: path
         name: permission_id
@@ -264,7 +264,7 @@ paths:
         description: A UUID string identifying this permission.
         required: true
       tags:
-      - permissions
+      - accounts
       requestBody:
         content:
           application/json:
@@ -287,7 +287,7 @@ paths:
                 $ref: '#/components/schemas/Permission'
           description: ''
     delete:
-      operationId: permissions_destroy
+      operationId: accounts_permissions_destroy
       parameters:
       - in: path
         name: permission_id
@@ -297,18 +297,18 @@ paths:
         description: A UUID string identifying this permission.
         required: true
       tags:
-      - permissions
+      - accounts
       security:
       - jwtAuth: []
       - cookieAuth: []
       responses:
         '204':
           description: No response body
-  /api/role-permissions/:
+  /api/v1/accounts/role-permissions/:
     get:
-      operationId: role_permissions_list
+      operationId: accounts_role_permissions_list
       tags:
-      - role-permissions
+      - accounts
       security:
       - jwtAuth: []
       - cookieAuth: []
@@ -322,9 +322,9 @@ paths:
                   $ref: '#/components/schemas/RolePermission'
           description: ''
     post:
-      operationId: role_permissions_create
+      operationId: accounts_role_permissions_create
       tags:
-      - role-permissions
+      - accounts
       requestBody:
         content:
           application/json:
@@ -347,9 +347,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/RolePermission'
           description: ''
-  /api/role-permissions/{id}/:
+  /api/v1/accounts/role-permissions/{id}/:
     get:
-      operationId: role_permissions_retrieve
+      operationId: accounts_role_permissions_retrieve
       parameters:
       - in: path
         name: id
@@ -358,7 +358,7 @@ paths:
         description: A unique integer value identifying this role permission.
         required: true
       tags:
-      - role-permissions
+      - accounts
       security:
       - jwtAuth: []
       - cookieAuth: []
@@ -370,7 +370,7 @@ paths:
                 $ref: '#/components/schemas/RolePermission'
           description: ''
     put:
-      operationId: role_permissions_update
+      operationId: accounts_role_permissions_update
       parameters:
       - in: path
         name: id
@@ -379,7 +379,7 @@ paths:
         description: A unique integer value identifying this role permission.
         required: true
       tags:
-      - role-permissions
+      - accounts
       requestBody:
         content:
           application/json:
@@ -403,7 +403,7 @@ paths:
                 $ref: '#/components/schemas/RolePermission'
           description: ''
     patch:
-      operationId: role_permissions_partial_update
+      operationId: accounts_role_permissions_partial_update
       parameters:
       - in: path
         name: id
@@ -412,7 +412,7 @@ paths:
         description: A unique integer value identifying this role permission.
         required: true
       tags:
-      - role-permissions
+      - accounts
       requestBody:
         content:
           application/json:
@@ -435,7 +435,7 @@ paths:
                 $ref: '#/components/schemas/RolePermission'
           description: ''
     delete:
-      operationId: role_permissions_destroy
+      operationId: accounts_role_permissions_destroy
       parameters:
       - in: path
         name: id
@@ -444,18 +444,18 @@ paths:
         description: A unique integer value identifying this role permission.
         required: true
       tags:
-      - role-permissions
+      - accounts
       security:
       - jwtAuth: []
       - cookieAuth: []
       responses:
         '204':
           description: No response body
-  /api/roles/:
+  /api/v1/accounts/roles/:
     get:
-      operationId: roles_list
+      operationId: accounts_roles_list
       tags:
-      - roles
+      - accounts
       security:
       - jwtAuth: []
       - cookieAuth: []
@@ -469,9 +469,9 @@ paths:
                   $ref: '#/components/schemas/Role'
           description: ''
     post:
-      operationId: roles_create
+      operationId: accounts_roles_create
       tags:
-      - roles
+      - accounts
       requestBody:
         content:
           application/json:
@@ -494,9 +494,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Role'
           description: ''
-  /api/roles/{role_id}/:
+  /api/v1/accounts/roles/{role_id}/:
     get:
-      operationId: roles_retrieve
+      operationId: accounts_roles_retrieve
       parameters:
       - in: path
         name: role_id
@@ -506,7 +506,7 @@ paths:
         description: A UUID string identifying this role.
         required: true
       tags:
-      - roles
+      - accounts
       security:
       - jwtAuth: []
       - cookieAuth: []
@@ -518,7 +518,7 @@ paths:
                 $ref: '#/components/schemas/Role'
           description: ''
     put:
-      operationId: roles_update
+      operationId: accounts_roles_update
       parameters:
       - in: path
         name: role_id
@@ -528,7 +528,7 @@ paths:
         description: A UUID string identifying this role.
         required: true
       tags:
-      - roles
+      - accounts
       requestBody:
         content:
           application/json:
@@ -552,7 +552,7 @@ paths:
                 $ref: '#/components/schemas/Role'
           description: ''
     patch:
-      operationId: roles_partial_update
+      operationId: accounts_roles_partial_update
       parameters:
       - in: path
         name: role_id
@@ -562,7 +562,7 @@ paths:
         description: A UUID string identifying this role.
         required: true
       tags:
-      - roles
+      - accounts
       requestBody:
         content:
           application/json:
@@ -585,7 +585,7 @@ paths:
                 $ref: '#/components/schemas/Role'
           description: ''
     delete:
-      operationId: roles_destroy
+      operationId: accounts_roles_destroy
       parameters:
       - in: path
         name: role_id
@@ -595,21 +595,21 @@ paths:
         description: A UUID string identifying this role.
         required: true
       tags:
-      - roles
+      - accounts
       security:
       - jwtAuth: []
       - cookieAuth: []
       responses:
         '204':
           description: No response body
-  /api/token/:
+  /api/v1/accounts/token/:
     post:
-      operationId: token_create
+      operationId: accounts_token_create
       description: |-
         Takes a set of user credentials and returns an access and refresh JSON web
         token pair to prove the authentication of those credentials.
       tags:
-      - token
+      - accounts
       requestBody:
         content:
           application/json:
@@ -629,14 +629,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/TokenObtainPair'
           description: ''
-  /api/token/refresh/:
+  /api/v1/accounts/token/refresh/:
     post:
-      operationId: token_refresh_create
+      operationId: accounts_token_refresh_create
       description: |-
         Takes a refresh type JSON web token and returns an access type JSON web
         token if the refresh token is valid.
       tags:
-      - token
+      - accounts
       requestBody:
         content:
           application/json:
@@ -656,11 +656,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/TokenRefresh'
           description: ''
-  /api/users/:
+  /api/v1/accounts/users/:
     get:
-      operationId: users_list
+      operationId: accounts_users_list
       tags:
-      - users
+      - accounts
       security:
       - jwtAuth: []
       - cookieAuth: []
@@ -674,9 +674,9 @@ paths:
                   $ref: '#/components/schemas/User'
           description: ''
     post:
-      operationId: users_create
+      operationId: accounts_users_create
       tags:
-      - users
+      - accounts
       requestBody:
         content:
           application/json:
@@ -699,9 +699,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
           description: ''
-  /api/users/{user_id}/:
+  /api/v1/accounts/users/{user_id}/:
     get:
-      operationId: users_retrieve
+      operationId: accounts_users_retrieve
       parameters:
       - in: path
         name: user_id
@@ -711,7 +711,7 @@ paths:
         description: A UUID string identifying this user.
         required: true
       tags:
-      - users
+      - accounts
       security:
       - jwtAuth: []
       - cookieAuth: []
@@ -723,7 +723,7 @@ paths:
                 $ref: '#/components/schemas/User'
           description: ''
     put:
-      operationId: users_update
+      operationId: accounts_users_update
       parameters:
       - in: path
         name: user_id
@@ -733,7 +733,7 @@ paths:
         description: A UUID string identifying this user.
         required: true
       tags:
-      - users
+      - accounts
       requestBody:
         content:
           application/json:
@@ -757,7 +757,7 @@ paths:
                 $ref: '#/components/schemas/User'
           description: ''
     patch:
-      operationId: users_partial_update
+      operationId: accounts_users_partial_update
       parameters:
       - in: path
         name: user_id
@@ -767,7 +767,7 @@ paths:
         description: A UUID string identifying this user.
         required: true
       tags:
-      - users
+      - accounts
       requestBody:
         content:
           application/json:
@@ -790,7 +790,7 @@ paths:
                 $ref: '#/components/schemas/User'
           description: ''
     delete:
-      operationId: users_destroy
+      operationId: accounts_users_destroy
       parameters:
       - in: path
         name: user_id
@@ -800,18 +800,18 @@ paths:
         description: A UUID string identifying this user.
         required: true
       tags:
-      - users
+      - accounts
       security:
       - jwtAuth: []
       - cookieAuth: []
       responses:
         '204':
           description: No response body
-  /api/users/me/:
+  /api/v1/accounts/users/me/:
     get:
-      operationId: users_me_retrieve
+      operationId: accounts_users_me_retrieve
       tags:
-      - users
+      - accounts
       security:
       - jwtAuth: []
       - cookieAuth: []
@@ -824,7 +824,7 @@ paths:
           description: ''
   /api/v1/alerts/:
     get:
-      operationId: v1_alerts_list
+      operationId: alerts_list
       parameters:
       - name: ordering
         required: false
@@ -871,7 +871,7 @@ paths:
           * `HIGH` - High
           * `CRITICAL` - Critical
       tags:
-      - v1
+      - alerts
       security:
       - jwtAuth: []
       - cookieAuth: []
@@ -883,9 +883,9 @@ paths:
                 $ref: '#/components/schemas/PaginatedAlertList'
           description: ''
     post:
-      operationId: v1_alerts_create
+      operationId: alerts_create
       tags:
-      - v1
+      - alerts
       requestBody:
         content:
           application/json:
@@ -909,7 +909,7 @@ paths:
           description: ''
   /api/v1/alerts/{id}/:
     get:
-      operationId: v1_alerts_retrieve
+      operationId: alerts_retrieve
       parameters:
       - in: path
         name: id
@@ -918,7 +918,7 @@ paths:
         description: A unique integer value identifying this alert.
         required: true
       tags:
-      - v1
+      - alerts
       security:
       - jwtAuth: []
       - cookieAuth: []
@@ -930,7 +930,7 @@ paths:
                 $ref: '#/components/schemas/Alert'
           description: ''
     put:
-      operationId: v1_alerts_update
+      operationId: alerts_update
       parameters:
       - in: path
         name: id
@@ -939,7 +939,7 @@ paths:
         description: A unique integer value identifying this alert.
         required: true
       tags:
-      - v1
+      - alerts
       requestBody:
         content:
           application/json:
@@ -962,7 +962,7 @@ paths:
                 $ref: '#/components/schemas/Alert'
           description: ''
     patch:
-      operationId: v1_alerts_partial_update
+      operationId: alerts_partial_update
       parameters:
       - in: path
         name: id
@@ -971,7 +971,7 @@ paths:
         description: A unique integer value identifying this alert.
         required: true
       tags:
-      - v1
+      - alerts
       requestBody:
         content:
           application/json:
@@ -994,7 +994,7 @@ paths:
                 $ref: '#/components/schemas/Alert'
           description: ''
     delete:
-      operationId: v1_alerts_destroy
+      operationId: alerts_destroy
       parameters:
       - in: path
         name: id
@@ -1003,7 +1003,7 @@ paths:
         description: A unique integer value identifying this alert.
         required: true
       tags:
-      - v1
+      - alerts
       security:
       - jwtAuth: []
       - cookieAuth: []
@@ -1012,7 +1012,7 @@ paths:
           description: No response body
   /api/v1/alerts/{id}/assign/:
     post:
-      operationId: v1_alerts_assign_create
+      operationId: alerts_assign_create
       parameters:
       - in: path
         name: id
@@ -1021,7 +1021,7 @@ paths:
         description: A unique integer value identifying this alert.
         required: true
       tags:
-      - v1
+      - alerts
       requestBody:
         content:
           application/json:
@@ -1043,9 +1043,214 @@ paths:
               schema:
                 $ref: '#/components/schemas/Alert'
           description: ''
-  /api/v1/bronze-events/:
+  /api/v1/alerts/latest_alerts/:
     get:
-      operationId: v1_bronze_events_list
+      operationId: alerts_latest_alerts_retrieve
+      tags:
+      - alerts
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alert'
+          description: ''
+  /api/v1/investigate/:
+    get:
+      operationId: investigate_list
+      parameters:
+      - in: query
+        name: alert__severity
+        schema:
+          type: string
+      - in: query
+        name: assigned_to__email
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - CLOSED
+          - NEW
+          - PENDING
+          - RESOLVED
+        description: |-
+          * `NEW` - New
+          * `PENDING` - Pending
+          * `RESOLVED` - Resolved
+          * `CLOSED` - Closed
+      tags:
+      - investigate
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedInvestigateAlertList'
+          description: ''
+    post:
+      operationId: investigate_create
+      tags:
+      - investigate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvestigateAlert'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/InvestigateAlert'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/InvestigateAlert'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvestigateAlert'
+          description: ''
+  /api/v1/investigate/{id}/:
+    get:
+      operationId: investigate_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this investigate alert.
+        required: true
+      tags:
+      - investigate
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvestigateAlert'
+          description: ''
+    put:
+      operationId: investigate_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this investigate alert.
+        required: true
+      tags:
+      - investigate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvestigateAlert'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/InvestigateAlert'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/InvestigateAlert'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvestigateAlert'
+          description: ''
+    patch:
+      operationId: investigate_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this investigate alert.
+        required: true
+      tags:
+      - investigate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedInvestigateAlert'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedInvestigateAlert'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedInvestigateAlert'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvestigateAlert'
+          description: ''
+    delete:
+      operationId: investigate_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this investigate alert.
+        required: true
+      tags:
+      - investigate
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/logs/bronze-events/:
+    get:
+      operationId: logs_bronze_events_list
       parameters:
       - name: ordering
         required: false
@@ -1072,7 +1277,7 @@ paths:
         schema:
           type: string
       tags:
-      - v1
+      - logs
       security:
       - jwtAuth: []
       - cookieAuth: []
@@ -1083,9 +1288,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedBronzeEventDataList'
           description: ''
-  /api/v1/bronze-events/{id}/:
+  /api/v1/logs/bronze-events/{id}/:
     get:
-      operationId: v1_bronze_events_retrieve
+      operationId: logs_bronze_events_retrieve
       parameters:
       - in: path
         name: id
@@ -1094,7 +1299,7 @@ paths:
         description: A unique integer value identifying this bronze event data.
         required: true
       tags:
-      - v1
+      - logs
       security:
       - jwtAuth: []
       - cookieAuth: []
@@ -1105,11 +1310,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/BronzeEventData'
           description: ''
-  /api/v1/bronze-events/export_pdf/:
+  /api/v1/logs/bronze-events/count/:
     get:
-      operationId: v1_bronze_events_export_pdf_retrieve
+      operationId: logs_bronze_events_count_retrieve
       tags:
-      - v1
+      - logs
       security:
       - jwtAuth: []
       - cookieAuth: []
@@ -1120,20 +1325,153 @@ paths:
               schema:
                 $ref: '#/components/schemas/BronzeEventData'
           description: ''
-  /api/v1/events-today/events_today/:
+  /api/v1/logs/bronze-events/export_pdf/:
     get:
-      operationId: v1_events_today_events_today_retrieve
+      operationId: logs_bronze_events_export_pdf_retrieve
       tags:
-      - v1
+      - logs
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BronzeEventData'
+          description: ''
+  /api/v1/logs/events-today/events_today/:
+    get:
+      operationId: logs_events_today_events_today_retrieve
+      tags:
+      - logs
       security:
       - jwtAuth: []
       - cookieAuth: []
       responses:
         '200':
           description: No response body
-  /api/v1/incident-reports/:
+  /api/v1/logs/log-percentage/log_percentages/:
     get:
-      operationId: v1_incident_reports_list
+      operationId: logs_log_percentage_log_percentages_retrieve
+      tags:
+      - logs
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogCount'
+          description: ''
+  /api/v1/logs/logs-aggregation/logs_per_hour/:
+    get:
+      operationId: logs_logs_aggregation_logs_per_hour_retrieve
+      tags:
+      - logs
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/logs/router-data/:
+    get:
+      operationId: logs_router_data_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - logs
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRouterDataList'
+          description: ''
+  /api/v1/logs/router-data/{id}/:
+    get:
+      operationId: logs_router_data_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this router data.
+        required: true
+      tags:
+      - logs
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RouterData'
+          description: ''
+  /api/v1/logs/router-data/export_pdf/:
+    get:
+      operationId: logs_router_data_export_pdf_retrieve
+      tags:
+      - logs
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RouterData'
+          description: ''
+  /api/v1/logs/router-data/router_log_count/:
+    get:
+      operationId: logs_router_data_router_log_count_retrieve
+      tags:
+      - logs
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RouterData'
+          description: ''
+  /api/v1/reports/incident-reports/:
+    get:
+      operationId: reports_incident_reports_list
       parameters:
       - name: ordering
         required: false
@@ -1194,7 +1532,7 @@ paths:
         schema:
           type: string
       tags:
-      - v1
+      - reports
       security:
       - jwtAuth: []
       - cookieAuth: []
@@ -1206,9 +1544,9 @@ paths:
                 $ref: '#/components/schemas/PaginatedIncidentReportList'
           description: ''
     post:
-      operationId: v1_incident_reports_create
+      operationId: reports_incident_reports_create
       tags:
-      - v1
+      - reports
       requestBody:
         content:
           application/json:
@@ -1231,9 +1569,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/IncidentReport'
           description: ''
-  /api/v1/incident-reports/{id}/:
+  /api/v1/reports/incident-reports/{id}/:
     get:
-      operationId: v1_incident_reports_retrieve
+      operationId: reports_incident_reports_retrieve
       parameters:
       - in: path
         name: id
@@ -1242,7 +1580,7 @@ paths:
         description: A unique integer value identifying this incident report.
         required: true
       tags:
-      - v1
+      - reports
       security:
       - jwtAuth: []
       - cookieAuth: []
@@ -1254,7 +1592,7 @@ paths:
                 $ref: '#/components/schemas/IncidentReport'
           description: ''
     put:
-      operationId: v1_incident_reports_update
+      operationId: reports_incident_reports_update
       parameters:
       - in: path
         name: id
@@ -1263,7 +1601,7 @@ paths:
         description: A unique integer value identifying this incident report.
         required: true
       tags:
-      - v1
+      - reports
       requestBody:
         content:
           application/json:
@@ -1287,7 +1625,7 @@ paths:
                 $ref: '#/components/schemas/IncidentReport'
           description: ''
     patch:
-      operationId: v1_incident_reports_partial_update
+      operationId: reports_incident_reports_partial_update
       parameters:
       - in: path
         name: id
@@ -1296,7 +1634,7 @@ paths:
         description: A unique integer value identifying this incident report.
         required: true
       tags:
-      - v1
+      - reports
       requestBody:
         content:
           application/json:
@@ -1319,7 +1657,7 @@ paths:
                 $ref: '#/components/schemas/IncidentReport'
           description: ''
     delete:
-      operationId: v1_incident_reports_destroy
+      operationId: reports_incident_reports_destroy
       parameters:
       - in: path
         name: id
@@ -1328,16 +1666,16 @@ paths:
         description: A unique integer value identifying this incident report.
         required: true
       tags:
-      - v1
+      - reports
       security:
       - jwtAuth: []
       - cookieAuth: []
       responses:
         '204':
           description: No response body
-  /api/v1/incident-reports/{id}/generate_pdf/:
+  /api/v1/reports/incident-reports/{id}/generate_pdf/:
     post:
-      operationId: v1_incident_reports_generate_pdf_create
+      operationId: reports_incident_reports_generate_pdf_create
       parameters:
       - in: path
         name: id
@@ -1346,7 +1684,7 @@ paths:
         description: A unique integer value identifying this incident report.
         required: true
       tags:
-      - v1
+      - reports
       requestBody:
         content:
           application/json:
@@ -1369,11 +1707,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/IncidentReport'
           description: ''
-  /api/v1/incident-reports/get_rules/:
+  /api/v1/reports/incident-reports/get_rules/:
     get:
-      operationId: v1_incident_reports_get_rules_retrieve
+      operationId: reports_incident_reports_get_rules_retrieve
       tags:
-      - v1
+      - reports
       security:
       - jwtAuth: []
       - cookieAuth: []
@@ -1383,314 +1721,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/IncidentReport'
-          description: ''
-  /api/v1/investigate/:
-    get:
-      operationId: v1_investigate_list
-      parameters:
-      - in: query
-        name: alert__severity
-        schema:
-          type: string
-      - in: query
-        name: assigned_to__email
-        schema:
-          type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
-      - in: query
-        name: status
-        schema:
-          type: string
-          enum:
-          - CLOSED
-          - NEW
-          - PENDING
-          - RESOLVED
-        description: |-
-          * `NEW` - New
-          * `PENDING` - Pending
-          * `RESOLVED` - Resolved
-          * `CLOSED` - Closed
-      tags:
-      - v1
-      security:
-      - jwtAuth: []
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedInvestigateAlertList'
-          description: ''
-    post:
-      operationId: v1_investigate_create
-      tags:
-      - v1
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/InvestigateAlert'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/InvestigateAlert'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/InvestigateAlert'
-      security:
-      - jwtAuth: []
-      - cookieAuth: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/InvestigateAlert'
-          description: ''
-  /api/v1/investigate/{id}/:
-    get:
-      operationId: v1_investigate_retrieve
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this investigate alert.
-        required: true
-      tags:
-      - v1
-      security:
-      - jwtAuth: []
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/InvestigateAlert'
-          description: ''
-    put:
-      operationId: v1_investigate_update
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this investigate alert.
-        required: true
-      tags:
-      - v1
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/InvestigateAlert'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/InvestigateAlert'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/InvestigateAlert'
-      security:
-      - jwtAuth: []
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/InvestigateAlert'
-          description: ''
-    patch:
-      operationId: v1_investigate_partial_update
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this investigate alert.
-        required: true
-      tags:
-      - v1
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedInvestigateAlert'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedInvestigateAlert'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PatchedInvestigateAlert'
-      security:
-      - jwtAuth: []
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/InvestigateAlert'
-          description: ''
-    delete:
-      operationId: v1_investigate_destroy
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this investigate alert.
-        required: true
-      tags:
-      - v1
-      security:
-      - jwtAuth: []
-      - cookieAuth: []
-      responses:
-        '204':
-          description: No response body
-  /api/v1/log-percentage/log_percentages/:
-    get:
-      operationId: v1_log_percentage_log_percentages_retrieve
-      tags:
-      - v1
-      security:
-      - jwtAuth: []
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LogCount'
-          description: ''
-  /api/v1/logs-aggregation/logs_per_hour/:
-    get:
-      operationId: v1_logs_aggregation_logs_per_hour_retrieve
-      tags:
-      - v1
-      security:
-      - jwtAuth: []
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/router-data/:
-    get:
-      operationId: v1_router_data_list
-      parameters:
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
-      tags:
-      - v1
-      security:
-      - jwtAuth: []
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedRouterDataList'
-          description: ''
-  /api/v1/router-data/{id}/:
-    get:
-      operationId: v1_router_data_retrieve
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this router data.
-        required: true
-      tags:
-      - v1
-      security:
-      - jwtAuth: []
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RouterData'
-          description: ''
-  /api/v1/router-data/export_pdf/:
-    get:
-      operationId: v1_router_data_export_pdf_retrieve
-      tags:
-      - v1
-      security:
-      - jwtAuth: []
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RouterData'
-          description: ''
-  /api/v1/router-data/router_log_count/:
-    get:
-      operationId: v1_router_data_router_log_count_retrieve
-      tags:
-      - v1
-      security:
-      - jwtAuth: []
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RouterData'
           description: ''
 components:
   schemas:
