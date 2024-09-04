@@ -30,7 +30,7 @@ const Dashboard = () => {
   const [routerLogCount, setRouterLogCount] = useState(0);
   const [logPercentages, setLogPercentages] = useState({});
   const [logsPerHour, setLogsPerHour] = useState([]);
-  const [eventsToday, setEventsToday] = useState({});
+  
 
   const logsByDeviceData = [
     { name: 'Windows OS', value: logPercentages.windows_os_percentage },
@@ -40,13 +40,13 @@ const Dashboard = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [userData, logCountData, routerLogCountData, logPercentages, logsPerHour, eventsToday] = await Promise.all([
+        const [userData, logCountData, routerLogCountData, logPercentages, logsPerHour] = await Promise.all([
           fetchUser(),
           fetchLogCount(),
           fetchRouterLogCount(),
           fetchLogPercentages(),
           fetchLogsPerHour(),
-          fetchEventsToday(),
+          
         ]);
 
         setUser(userData);
@@ -54,7 +54,7 @@ const Dashboard = () => {
         setRouterLogCount(routerLogCountData.router_log_count);
         setLogPercentages(logPercentages);
         setLogsPerHour(logsPerHour);
-        setEventsToday(eventsToday);
+        
 
         console.log("logPercentages",logPercentages);
       } catch (error) {

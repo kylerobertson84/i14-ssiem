@@ -73,6 +73,13 @@ class BronzeEventDataViewSet(viewsets.ReadOnlyModelViewSet):
             #('Message', 'message'),
         ]
         return generate_pdf_report(queryset, "BronzeEventData", columns)
+    
+    @action(detail=False, methods=['get'])
+    def count(self, request):
+        print('Request headers:', request.headers)  # Debugging line
+        print('Request user:', request.user)  # Check the user
+        count = self.queryset.count()
+        return Response({'count': count})
 
 class RouterDataViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = RouterData.objects.all()

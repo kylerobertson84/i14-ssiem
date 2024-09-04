@@ -26,9 +26,9 @@ export const fetchLogsPerHour = () => {
   return apiRequest(API_ENDPOINTS.logs_per_hour)
 };
 
-export const fetchEventsToday = () => {
-  return apiRequest(API_ENDPOINTS.events_today)
-};
+// export const fetchEventsToday = () => {
+//   return apiRequest(API_ENDPOINTS.events_today)
+// };
 
 
 // API services for alerts
