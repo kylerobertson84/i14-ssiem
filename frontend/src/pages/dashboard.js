@@ -11,13 +11,12 @@ import {
   MonitorHeartOutlined,
   MemoryOutlined,
   DeveloperBoardOutlined,
-  SaveOutlined
+  SaveOutlined,
+  WarningAmber,
 }
-  from '@mui/icons-material';
+from '@mui/icons-material';
 
-
-import { Link } from 'react-router-dom';
-import { Grid, Paper, Typography, Box, useTheme } from '@mui/material';
+import { Grid, Paper, Typography, Box, useTheme, Chip, IconButton } from '@mui/material';
 import { LogsPerHourChart, LogsByDeviceChart, CpuLoadChart, RamUsageChart, DiskUsageChart } from '../components/dashboardGraphs.js';
 
 import { fetchUser, fetchLogCount, fetchRouterLogCount, fetchLogPercentages, fetchLogsPerHour, fetchEventsToday, fetchLatestAlerts } from '../services/apiService.js';
@@ -38,6 +37,14 @@ const Dashboard = () => {
     { name: 'Windows OS', value: logPercentages.windows_os_percentage },
     { name: 'Network', value: logPercentages.network_percentage }
   ];
+
+  const severityColors = {
+    INFO: '#2196f3',    // Blue
+    LOW: '#4caf50',     // Green
+    MEDIUM: '#ff9800',  // Orange
+    HIGH: '#f44336',    // Red
+    CRITICAL: '#9c27b0' // Purple
+  };
 
   useEffect(() => {
     const loadData = async () => {
@@ -94,6 +101,60 @@ const Dashboard = () => {
     return <div>Error loading data.</div>;
   }
 
+  const LatestAlertsSection = () => (
+    <Paper elevation={3} sx={{ overflow: 'hidden', borderRadius: 2 }}>
+      <Box sx={{ p: 2, bgcolor: '#1976d2', color: 'white', display: 'flex', alignItems: 'center' }}>
+        <WarningAmber sx={{ mr: 1 }} />
+        <Typography variant="h6" component="h2" fontWeight="bold">
+          Latest Alerts
+        </Typography>
+      </Box>
+      <Box sx={{ maxHeight: 400, overflowY: 'auto' }}>
+        {latestAlerts.results && latestAlerts.results.map((alert, index) => (
+          <Box
+            key={index}
+            sx={{
+              p: 2,
+              borderBottom: index < latestAlerts.results.length - 1 ? '1px solid #e0e0e0' : 'none',
+              '&:hover': { bgcolor: '#f5f5f5' },
+              transition: 'background-color 0.3s'
+            }}
+          >
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+              <Typography variant="subtitle1" fontWeight="medium">
+                Device: {alert.event.hostname}
+              </Typography>
+              <Chip
+                label={alert.severity}
+                size="small"
+                sx={{
+                  bgcolor: severityColors[alert.severity],
+                  color: 'white',
+                  fontWeight: 'bold'
+                }}
+              />
+            </Box>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+              <strong>{alert.rule}</strong>
+            </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Typography variant="caption" color="text.secondary">
+                {new Date(alert.created_at).toLocaleString()}
+              </Typography>
+              <IconButton size="small" color="primary" aria-label="investigate">
+                <Search />
+              </IconButton>
+            </Box>
+          </Box>
+        ))}
+      </Box>
+      <Box sx={{ p: 1, textAlign: 'right' }}>
+        <Typography variant="body2" color="primary" sx={{ cursor: 'pointer' }}>
+          View more &gt;
+        </Typography>
+      </Box>
+    </Paper>
+  );
 
   return (
     <div>
@@ -146,46 +207,7 @@ const Dashboard = () => {
           {/* Alerts Section */}
           <Grid item xs={12} md={4}>
             {/* Latest Alerts Section */}
-            <Paper sx={{ overflow: 'hidden', marginBottom: 3 }}>
-              <Typography
-                variant="h6"
-                sx={{
-                  p: 2,
-                  backgroundColor: theme.palette.primary.main,
-                  color: 'white',
-                  fontWeight: 'bold'
-                }}
-              >
-                Latest Alerts
-              </Typography>
-              <Box sx={{ p: 2 }}>
-                {latestAlerts && latestAlerts.results && latestAlerts.results.length > 0 ? (
-                  latestAlerts.results.slice(0, 4).map((alert, index) => (
-                    <Alert
-                      key={alert.id}
-                      hostname={alert.event.hostname}
-                      message={`${alert.rule} - Severity: ${alert.severity}`}
-                    />
-                  ))
-                ) : (
-                  <Typography>No alerts available</Typography>
-                )}
-                <Typography variant="body2">
-                  <Link
-                    style={{
-                      width: "100%",
-                      display: 'flex',
-                      justifyContent: 'right',
-                      textDecoration: 'none',
-                      color: 'black'
-                    }}
-                    to="/alerts"
-                  >
-                    View more &gt;
-                  </Link>
-                </Typography>
-              </Box>
-            </Paper>
+            <LatestAlertsSection />
 
             {/* System Stats Section */}
             <Paper sx={{ overflow: 'hidden' }}>
