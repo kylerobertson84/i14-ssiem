@@ -19,7 +19,7 @@ from '@mui/icons-material';
 import { Grid, Paper, Typography, Box, useTheme, Chip, IconButton } from '@mui/material';
 import { LogsPerHourChart, LogsByDeviceChart, CpuLoadChart, RamUsageChart, DiskUsageChart } from '../components/dashboardGraphs.js';
 
-import { fetchUser, fetchLogCount, fetchRouterLogCount, fetchLogPercentages, fetchLogsPerHour, fetchEventsToday, fetchLatestAlerts } from '../services/apiService.js';
+import { fetchUser, fetchLogCount, fetchRouterLogCount, fetchLogPercentages, fetchLogsPerHour, fetchEventsToday, fetchLatestAlerts, fetchHostnameCount } from '../services/apiService.js';
 
 const Dashboard = () => {
   const theme = useTheme();
@@ -32,6 +32,7 @@ const Dashboard = () => {
   const [logsPerHour, setLogsPerHour] = useState([]);
   const [eventsToday, setEventsToday] = useState({});
   const [latestAlerts, setLatestAlerts] = useState({});
+  const [hostnameCount, setHostnameCount] = useState({});
 
   const logsByDeviceData = [
     { name: 'Windows OS', value: logPercentages.windows_os_percentage },
@@ -49,7 +50,7 @@ const Dashboard = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [userData, logCountData, routerLogCountData, logPercentages, logsPerHour, fetchedEventsToday, fetchedLatestAlerts] = await Promise.all([
+        const [userData, logCountData, routerLogCountData, logPercentages, logsPerHour, fetchedEventsToday, fetchedLatestAlerts, fetchedHostnameCount] = await Promise.all([
           fetchUser(),
           fetchLogCount(),
           fetchRouterLogCount(),
@@ -57,6 +58,8 @@ const Dashboard = () => {
           fetchLogsPerHour(),
           fetchEventsToday(),
           fetchLatestAlerts(),
+          fetchHostnameCount(),
+          fetchHostnameCount(),
 
         ]);
 
@@ -67,6 +70,7 @@ const Dashboard = () => {
         setLogsPerHour(logsPerHour);
         setEventsToday(fetchedEventsToday);
         setLatestAlerts(fetchedLatestAlerts);
+        setHostnameCount(fetchedHostnameCount);
 
         console.log("latest alerts", fetchedLatestAlerts);
 
@@ -177,7 +181,7 @@ const Dashboard = () => {
             {/* Info cards and graph spacing */}
             <Grid container spacing={3} >
               {/* Info cards styling padding and grid items */}
-              <InfoCard title="Total Devices" value={data.infoCards.values[0]} icon={Devices} />
+              <InfoCard title="Total Devices" value={hostnameCount.total_devices} icon={Devices} />
               <InfoCard title="Logs" value={recordCount + routerLogCount} icon={Notes} />
               <InfoCard title="New Devices (24hr)" value={data.infoCards.values[2]} icon={AddToQueue} />
               <InfoCard title="Open Investigations" value={data.infoCards.values[3]} icon={Search} />

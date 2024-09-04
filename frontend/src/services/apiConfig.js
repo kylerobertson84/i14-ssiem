@@ -28,6 +28,7 @@ const API_ENDPOINTS = {
     percentages: buildUrl('logs/log-percentage/log_percentages/'),
     perHour: buildUrl('logs/logs-aggregation/logs_per_hour/'),
     eventsToday: buildUrl('logs/events-today/events_today/'),
+    hostname_count: buildUrl('logs/hostname-count/'),
   },
 };
 

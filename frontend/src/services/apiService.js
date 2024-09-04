@@ -31,6 +31,11 @@ export const fetchLatestAlerts = () => {
   return apiRequest(API_ENDPOINTS.alerts.latest);
 }
 
+export const fetchHostnameCount = () => {
+  return apiRequest(API_ENDPOINTS.logs.hostname_count);
+}
+
+
 // API services for alerts
 export const fetchAlerts = (page = 1, pageSize = 10, search = '', severity = '', orderBy = 'created_at', order = 'desc') => {
   const params = new URLSearchParams({
