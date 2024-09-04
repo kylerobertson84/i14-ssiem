@@ -10,7 +10,8 @@ const API_ENDPOINTS = {
     events_today: `${API_BASE_URL}v1/logs/events-today/events_today/`,
     
     
-    alerts: `${API_BASE_URL}v1/alerts`,
+    alerts: `${API_BASE_URL}v1/alerts/`,
+    latest_alerts: `${API_BASE_URL}v1/alerts/latest_alerts/`,
 
     computerLogs: `${API_BASE_URL}v1/bronze-events/`,
     routerLogs: `${API_BASE_URL}v1/router-data/`,

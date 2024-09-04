@@ -1,25 +1,26 @@
 import React, { useEffect, useState } from 'react';
 
 /* Icons */
-import { 
-  EditCalendar, 
-  Search, 
-  Notes, 
-  Devices, 
-  AddToQueue, 
-  AssignmentTurnedInOutlined, 
-  MonitorHeartOutlined, 
-  MemoryOutlined, 
+import {
+  EditCalendar,
+  Search,
+  Notes,
+  Devices,
+  AddToQueue,
+  AssignmentTurnedInOutlined,
+  MonitorHeartOutlined,
+  MemoryOutlined,
   DeveloperBoardOutlined,
-  SaveOutlined } 
-from '@mui/icons-material';
+  SaveOutlined
+}
+  from '@mui/icons-material';
 
 
 import { Link } from 'react-router-dom';
 import { Grid, Paper, Typography, Box, useTheme } from '@mui/material';
 import { LogsPerHourChart, LogsByDeviceChart, CpuLoadChart, RamUsageChart, DiskUsageChart } from '../components/dashboardGraphs.js';
 
-import { fetchUser, fetchLogCount, fetchRouterLogCount, fetchLogPercentages, fetchLogsPerHour, fetchEventsToday } from '../services/apiService.js';
+import { fetchUser, fetchLogCount, fetchRouterLogCount, fetchLogPercentages, fetchLogsPerHour, fetchEventsToday, fetchLatestAlerts } from '../services/apiService.js';
 
 const Dashboard = () => {
   const theme = useTheme();
@@ -31,7 +32,7 @@ const Dashboard = () => {
   const [logPercentages, setLogPercentages] = useState({});
   const [logsPerHour, setLogsPerHour] = useState([]);
   const [eventsToday, setEventsToday] = useState({});
-  
+  const [latestAlerts, setLatestAlerts] = useState({});
 
   const logsByDeviceData = [
     { name: 'Windows OS', value: logPercentages.windows_os_percentage },
@@ -41,14 +42,15 @@ const Dashboard = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [userData, logCountData, routerLogCountData, logPercentages, logsPerHour, fetchedEventsToday] = await Promise.all([
+        const [userData, logCountData, routerLogCountData, logPercentages, logsPerHour, fetchedEventsToday, fetchedLatestAlerts] = await Promise.all([
           fetchUser(),
           fetchLogCount(),
           fetchRouterLogCount(),
           fetchLogPercentages(),
           fetchLogsPerHour(),
           fetchEventsToday(),
-          
+          fetchLatestAlerts(),
+
         ]);
 
         setUser(userData);
@@ -57,9 +59,12 @@ const Dashboard = () => {
         setLogPercentages(logPercentages);
         setLogsPerHour(logsPerHour);
         setEventsToday(fetchedEventsToday);
-        
+        setLatestAlerts(fetchedLatestAlerts);
 
-        console.log("logPercentages",logPercentages);
+        console.log("latest alerts", fetchedLatestAlerts);
+
+
+        console.log("logPercentages", logPercentages);
       } catch (error) {
         console.error('Error loading dashboard data', error);
       }
@@ -102,10 +107,10 @@ const Dashboard = () => {
         }}>
 
         <Title />
-        
+
         {/* Alerts, database stats and graph grids */}
         <Grid container spacing={3}>
-          
+
           {/* Info cards and two graph grid */}
           <Grid item xs={12} md={8}>
             {/* Info cards and graph spacing */}
@@ -123,21 +128,21 @@ const Dashboard = () => {
                   <LogsPerHourChart data={logsPerHour} />
                 </Paper>
               </Grid>
-              
+
 
               <Grid item xs={12} md={6}>
                 <Paper sx={{ padding: 2 }}>
-                  
-                  <LogsByDeviceChart data={logsByDeviceData}/>
+
+                  <LogsByDeviceChart data={logsByDeviceData} />
                 </Paper>
               </Grid>
-              
+
 
             </Grid>
-          
+
           </Grid>
 
-         
+
           {/* Alerts Section */}
           <Grid item xs={12} md={4}>
             {/* Latest Alerts Section */}
@@ -154,10 +159,17 @@ const Dashboard = () => {
                 Latest Alerts
               </Typography>
               <Box sx={{ p: 2 }}>
-                <Alert hostname={data.alerts.hostName[0]} message={data.alerts.message[0]} />
-                <Alert hostname={data.alerts.hostName[1]} message={data.alerts.message[1]} />
-                <Alert hostname={data.alerts.hostName[2]} message={data.alerts.message[2]} />
-                <Alert hostname={data.alerts.hostName[3]} message={data.alerts.message[3]} />
+                {latestAlerts.results.length > 0 ? (
+                  latestAlerts.results.slice(0, 4).map((alert, index) => (
+                    <Alert 
+                      key={alert.id} 
+                      hostname={alert.event.hostname} 
+                      message={`${alert.rule} - Severity: ${alert.severity}`} 
+                    />
+                  ))
+                ) : (
+                  <Typography>No alerts available</Typography>
+                )}
                 <Typography variant="body2">
                   <Link 
                     style={{ 
@@ -188,7 +200,7 @@ const Dashboard = () => {
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
                   SIEM Database Server Status
                 </Typography>
-                <MonitorHeartOutlined sx={{ fontSize: 40, color: 'white' }}/>
+                <MonitorHeartOutlined sx={{ fontSize: 40, color: 'white' }} />
               </Box>
               <Box sx={{ p: 2 }}>
                 <SystemStat
@@ -198,7 +210,7 @@ const Dashboard = () => {
                 />
               </Box>
             </Paper>
-</Grid>
+          </Grid>
         </Grid>
       </Box>
     </div>
@@ -211,11 +223,11 @@ export default Dashboard;
 
 function Title() {
   return (
-  <div className='title'>
+    <div className='title'>
       <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 4, fontWeight: 'bold' }}>
         Dashboard
       </Typography>
-  </div>
+    </div>
   );
 }
 
@@ -247,31 +259,31 @@ function Alert(
   }
 ) {
   return (
-    <Paper sx={{ 
-      padding: 0, 
+    <Paper sx={{
+      padding: 0,
       margin: 1.5,
       borderRadius: 5,
       backgroundColor: 'rgb(197,217,226)'
-      }}>
-    
+    }}>
+
       <Box
-      sx={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: 0,
-      }}>
-    
-        <Box 
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: 0,
+        }}>
+
+        <Box
           sx={{
             paddingLeft: 2.5,
             paddingTop: .25,
             paddingBottom: .25,
           }}>
-        
-            <p><strong>Device: {hostname}</strong></p>
-            <p><strong>{message}</strong></p>
-        
+
+          <p><strong>Device: {hostname}</strong></p>
+          <p><strong>{message}</strong></p>
+
         </Box>
 
         <Box
@@ -281,13 +293,13 @@ function Alert(
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-        
+
           <Search />
-        
+
         </Box>
 
       </Box>
-    
+
     </Paper>
   );
 
@@ -313,7 +325,7 @@ function SystemStat({
           </Typography>
         </Box>
 
-        <DiskUsageChart data={dataDisk}/>
+        <DiskUsageChart data={dataDisk} />
       </Box>
 
       {/* RAM Usage */}
@@ -324,7 +336,7 @@ function SystemStat({
             RAM Load: {dataRam[5].value}%
           </Typography>
         </Box>
-        <RamUsageChart data={dataRam}/>
+        <RamUsageChart data={dataRam} />
       </Box>
 
       {/* CPU Load */}
@@ -336,7 +348,7 @@ function SystemStat({
 
           </Typography>
         </Box>
-        <CpuLoadChart data={dataCpu}/>
+        <CpuLoadChart data={dataCpu} />
 
       </Box>
     </Box>

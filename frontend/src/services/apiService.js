@@ -30,6 +30,9 @@ export const fetchEventsToday = () => {
   return apiRequest(API_ENDPOINTS.events_today)
 };
 
+export const fetchLatestAlerts = () => {
+  return apiRequest(API_ENDPOINTS.latest_alerts)
+}
 
 // API services for alerts
 export const fetchAlerts = (page = 1, pageSize = 10, search = '', severity = '', orderBy = 'created_at', order = 'desc') => {
