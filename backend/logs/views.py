@@ -235,3 +235,15 @@ class EventsToday(viewsets.ViewSet):
         return Response(data)
 
         
+class HostnameCountViewSet(viewsets.ViewSet):
+
+    def list(self, request):
+    
+        bronze_event_hostnames = BronzeEventData.objects.values('hostname').distinct().count()
+        router_data_hostnames = RouterData.objects.values('hostname').distinct().count()
+        total_devices = bronze_event_hostnames + router_data_hostnames
+        
+        # Return the counts
+        return Response({
+            'total_devices': total_devices
+        })
