@@ -147,38 +147,38 @@ const Dashboard = () => {
           <Grid item xs={12} md={4}>
             {/* Latest Alerts Section */}
             <Paper sx={{ overflow: 'hidden', marginBottom: 3 }}>
-              <Typography 
-                variant="h6" 
-                sx={{ 
-                  p: 2, 
-                  backgroundColor: theme.palette.primary.main, 
-                  color: 'white', 
-                  fontWeight: 'bold' 
+              <Typography
+                variant="h6"
+                sx={{
+                  p: 2,
+                  backgroundColor: theme.palette.primary.main,
+                  color: 'white',
+                  fontWeight: 'bold'
                 }}
               >
                 Latest Alerts
               </Typography>
               <Box sx={{ p: 2 }}>
-                {latestAlerts.results.length > 0 ? (
+                {latestAlerts && latestAlerts.results && latestAlerts.results.length > 0 ? (
                   latestAlerts.results.slice(0, 4).map((alert, index) => (
-                    <Alert 
-                      key={alert.id} 
-                      hostname={alert.event.hostname} 
-                      message={`${alert.rule} - Severity: ${alert.severity}`} 
+                    <Alert
+                      key={alert.id}
+                      hostname={alert.event.hostname}
+                      message={`${alert.rule} - Severity: ${alert.severity}`}
                     />
                   ))
                 ) : (
                   <Typography>No alerts available</Typography>
                 )}
                 <Typography variant="body2">
-                  <Link 
-                    style={{ 
-                      width: "100%", 
-                      display: 'flex', 
-                      justifyContent: 'right', 
-                      textDecoration: 'none', 
-                      color: 'black' 
-                    }} 
+                  <Link
+                    style={{
+                      width: "100%",
+                      display: 'flex',
+                      justifyContent: 'right',
+                      textDecoration: 'none',
+                      color: 'black'
+                    }}
                     to="/alerts"
                   >
                     View more &gt;
