@@ -22,7 +22,7 @@ docker exec -it i14-ssiem-db-1 /bin/bash
 
 2. To enter the database:
 ```
-mysql -u seim_user -p
+mysql -u siem_user -p
 ```
 3. Password:
 ```
