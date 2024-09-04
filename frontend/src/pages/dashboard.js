@@ -30,6 +30,7 @@ const Dashboard = () => {
   const [routerLogCount, setRouterLogCount] = useState(0);
   const [logPercentages, setLogPercentages] = useState({});
   const [logsPerHour, setLogsPerHour] = useState([]);
+  const [eventsToday, setEventsToday] = useState({});
   
 
   const logsByDeviceData = [
@@ -40,12 +41,13 @@ const Dashboard = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [userData, logCountData, routerLogCountData, logPercentages, logsPerHour] = await Promise.all([
+        const [userData, logCountData, routerLogCountData, logPercentages, logsPerHour, fetchedEventsToday] = await Promise.all([
           fetchUser(),
           fetchLogCount(),
           fetchRouterLogCount(),
           fetchLogPercentages(),
           fetchLogsPerHour(),
+          fetchEventsToday(),
           
         ]);
 
@@ -54,6 +56,7 @@ const Dashboard = () => {
         setRouterLogCount(routerLogCountData.router_log_count);
         setLogPercentages(logPercentages);
         setLogsPerHour(logsPerHour);
+        setEventsToday(fetchedEventsToday);
         
 
         console.log("logPercentages",logPercentages);
@@ -112,7 +115,7 @@ const Dashboard = () => {
               <InfoCard title="Logs" value={recordCount + routerLogCount} icon={Notes} />
               <InfoCard title="New Devices (24hr)" value={data.infoCards.values[2]} icon={AddToQueue} />
               <InfoCard title="Open Investigations" value={data.infoCards.values[3]} icon={Search} />
-              <InfoCard title="Events per Day" value={data.infoCards.values[4]} icon={EditCalendar} />
+              <InfoCard title="Events per Day" value={eventsToday.events_today} icon={EditCalendar} />
               <InfoCard title="Closed Investigations" value={data.infoCards.values[5]} icon={AssignmentTurnedInOutlined} />
               {/* Graphs Section */}
               <Grid item xs={12} md={6}>

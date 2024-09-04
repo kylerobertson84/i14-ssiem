@@ -7,7 +7,7 @@ const API_ENDPOINTS = {
     routerLogCount: `${API_BASE_URL}v1/logs/router-data/router_log_count/`,
     log_percentages: `${API_BASE_URL}v1/logs/log-percentage/log_percentages/`,
     logs_per_hour: `${API_BASE_URL}v1/logs/logs-aggregation/logs_per_hour/`,
-    // events_today: `${API_BASE_URL}v1/events-today/events_today/`,
+    events_today: `${API_BASE_URL}v1/logs/events-today/events_today/`,
     
     
     alerts: `${API_BASE_URL}v1/alerts`,
