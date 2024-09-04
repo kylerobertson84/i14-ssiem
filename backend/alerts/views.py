@@ -27,7 +27,7 @@ class InvestigateAlertFilter(FilterSet):
 class AlertPermission(HasRolePermission):
     def has_permission(self, request, view):
         # Allow read-only access for all users
-        if view.action in ['list', 'retrieve']:
+        if view.action in ['list', 'retrieve', 'latest_alerts']:
             return True
         
         # For other actions, use the existing role-based permissions
