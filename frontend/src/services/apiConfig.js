@@ -17,6 +17,12 @@ const API_ENDPOINTS = {
     latest: buildUrl('alerts/latest_alerts/'),
   },
 
+  // investigations Related API Endpoints
+  investigate: {
+    base: buildUrl('investigate/'),
+    count: buildUrl('investigation_status_count/'),
+  },
+
   // Logs Related API Endpoints
   logs: {
     computer: buildUrl('logs/bronze-events/'),

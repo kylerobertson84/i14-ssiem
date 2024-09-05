@@ -55,9 +55,9 @@ class BaseAlertViewSet(BaseViewThrottleSet):
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
 
     def get_permissions(self):
-        permission_classes = self.permission_classes or [IsAuthenticated]  # Use permission_classes
+        permission_classes = self.permission_classes or [IsAuthenticated] 
         return [permission() for permission in permission_classes]
-
+    
 
 class AlertViewSet(BaseAlertViewSet):
     queryset = Alert.objects.all()
