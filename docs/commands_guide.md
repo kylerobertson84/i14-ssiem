@@ -36,3 +36,9 @@ FLUSH PRIVILEGES;
 Then repeat steps 2 and 3.
 
 ## React commands
+
+## Temp commands to using while developing
+```
+insert into alerts_investigatealert (created_at, updated_at, status, notes, alert_id, assigned_to_id) values ('2024-09-04 08:54:11.809303','2024-09-04 08:54:11.809303','RESOVLED','some closed notes', 4, '2c7a9f32e3b94c2aa70741fca73ed142');
+```
+

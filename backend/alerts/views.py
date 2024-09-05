@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet, CharFilter
 from utils.baseViewThrottle import BaseViewThrottleSet
-from .models import Alert, InvestigateAlert
+from .models import Alert, InvestigateAlert, InvestigationStatus
 from .serializers import AlertSerializer, InvestigateAlertSerializer
 from utils.pagination import StandardResultsSetPagination
 from accounts.permissions import HasRolePermission, IsAdminUser
@@ -44,7 +44,7 @@ class InvestigateAlertPermission(HasRolePermission):
         if not super().has_permission(request, view):
             return False
         
-        if view.action in ['list', 'retrieve']:
+        if view.action in ['list', 'retrieve', 'investigation_status_count']:
             return request.user.role.has_permission('view_reports')
         elif view.action in ['create', 'update', 'partial_update', 'destroy']:
             return request.user.role.has_permission('create_reports')
@@ -55,8 +55,9 @@ class BaseAlertViewSet(BaseViewThrottleSet):
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
 
     def get_permissions(self):
-        permission_classes = [IsAuthenticated, self.permission_class]
+        permission_classes = self.permission_classes or [IsAuthenticated]  # Use permission_classes
         return [permission() for permission in permission_classes]
+
 
 class AlertViewSet(BaseAlertViewSet):
     queryset = Alert.objects.all()
@@ -95,9 +96,21 @@ class AlertViewSet(BaseAlertViewSet):
 class InvestigateAlertViewSet(BaseAlertViewSet):
     queryset = InvestigateAlert.objects.all()
     serializer_class = InvestigateAlertSerializer
-    permission_class = InvestigateAlertPermission
+    permission_classes = [IsAuthenticated]
     filterset_class = InvestigateAlertFilter 
     ordering_fields = ['created_at', 'updated_at']
+
+
+    @action(detail=False, methods=['get'])
+    def investigation_status_count(self, request):
+
+        closed_count = InvestigateAlert.objects.filter(status=InvestigationStatus.CLOSED).count()
+        other_status_count = InvestigateAlert.objects.exclude(status=InvestigationStatus.CLOSED).count()
+
+        return Response({
+            'closed_count': closed_count,
+            'other_status_count': other_status_count
+        })
 
 # Additional utility functions for checking permissions
 def user_can_view_alerts(user):
