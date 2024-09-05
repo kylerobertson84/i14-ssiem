@@ -19,7 +19,7 @@ from '@mui/icons-material';
 import { Grid, Paper, Typography, Box, useTheme, Chip, IconButton } from '@mui/material';
 import { LogsPerHourChart, LogsByDeviceChart, CpuLoadChart, RamUsageChart, DiskUsageChart } from '../components/dashboardGraphs.js';
 
-import { fetchUser, fetchLogCount, fetchRouterLogCount, fetchLogPercentages, fetchLogsPerHour, fetchEventsToday, fetchLatestAlerts, fetchHostnameCount } from '../services/apiService.js';
+import { fetchUser, fetchLogCount, fetchRouterLogCount, fetchLogPercentages, fetchLogsPerHour, fetchEventsToday, fetchLatestAlerts, fetchHostnameCount, fetchInvestigationsCount } from '../services/apiService.js';
 
 const Dashboard = () => {
   const theme = useTheme();
@@ -33,6 +33,7 @@ const Dashboard = () => {
   const [eventsToday, setEventsToday] = useState({});
   const [latestAlerts, setLatestAlerts] = useState({});
   const [hostnameCount, setHostnameCount] = useState({});
+  const [investigationCount, setInvestigationCount] = useState({});
 
   const logsByDeviceData = [
     { name: 'Windows OS', value: logPercentages.windows_os_percentage },
@@ -50,7 +51,7 @@ const Dashboard = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [userData, logCountData, routerLogCountData, logPercentages, logsPerHour, fetchedEventsToday, fetchedLatestAlerts, fetchedHostnameCount] = await Promise.all([
+        const [userData, logCountData, routerLogCountData, logPercentages, logsPerHour, fetchedEventsToday, fetchedLatestAlerts, fetchedHostnameCount, fetchedInvestigationCount] = await Promise.all([
           fetchUser(),
           fetchLogCount(),
           fetchRouterLogCount(),
@@ -59,7 +60,7 @@ const Dashboard = () => {
           fetchEventsToday(),
           fetchLatestAlerts(),
           fetchHostnameCount(),
-          fetchHostnameCount(),
+          fetchInvestigationsCount(),
 
         ]);
 
@@ -71,6 +72,9 @@ const Dashboard = () => {
         setEventsToday(fetchedEventsToday);
         setLatestAlerts(fetchedLatestAlerts);
         setHostnameCount(fetchedHostnameCount);
+        setInvestigationCount(fetchedInvestigationCount);
+
+        console.log("investigations", fetchedInvestigationCount);
 
         console.log("latest alerts", fetchedLatestAlerts);
 
@@ -184,9 +188,9 @@ const Dashboard = () => {
               <InfoCard title="Total Devices" value={hostnameCount.total_devices} icon={Devices} />
               <InfoCard title="Logs" value={recordCount + routerLogCount} icon={Notes} />
               <InfoCard title="New Devices (24hr)" value={data.infoCards.values[2]} icon={AddToQueue} />
-              <InfoCard title="Open Investigations" value={data.infoCards.values[3]} icon={Search} />
+              <InfoCard title="Open Investigations" value={investigationCount.other_status_count} icon={Search} />
               <InfoCard title="Events per Day" value={eventsToday.events_today} icon={EditCalendar} />
-              <InfoCard title="Closed Investigations" value={data.infoCards.values[5]} icon={AssignmentTurnedInOutlined} />
+              <InfoCard title="Closed Investigations" value={investigationCount.closed_count} icon={AssignmentTurnedInOutlined} />
               {/* Graphs Section */}
               <Grid item xs={12} md={6}>
                 <Paper sx={{ padding: 2 }}>

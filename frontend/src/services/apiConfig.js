@@ -20,7 +20,7 @@ const API_ENDPOINTS = {
   // investigations Related API Endpoints
   investigate: {
     base: buildUrl('investigate/'),
-    count: buildUrl('investigation_status_count/'),
+    count: buildUrl('investigate/investigation_status_count/'),
   },
 
   // Logs Related API Endpoints

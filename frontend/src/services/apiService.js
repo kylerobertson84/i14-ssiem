@@ -35,6 +35,9 @@ export const fetchHostnameCount = () => {
   return apiRequest(API_ENDPOINTS.logs.hostname_count);
 }
 
+export const fetchInvestigationsCount = () => {
+  return apiRequest(API_ENDPOINTS.investigate.count)
+}
 
 // API services for alerts
 export const fetchAlerts = (page = 1, pageSize = 10, search = '', severity = '', orderBy = 'created_at', order = 'desc') => {

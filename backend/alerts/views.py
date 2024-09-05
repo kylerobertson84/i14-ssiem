@@ -62,7 +62,7 @@ class BaseAlertViewSet(BaseViewThrottleSet):
 class AlertViewSet(BaseAlertViewSet):
     queryset = Alert.objects.all()
     serializer_class = AlertSerializer
-    permission_class = AlertPermission
+    permission_class = [AlertPermission]
     filterset_class = AlertFilter
     ordering_fields = ['created_at', 'severity']
     search_fields = ['event__EventID', 'event__UserID', 'event__hostname', 'rule__name']
