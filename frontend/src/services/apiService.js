@@ -92,3 +92,9 @@ export const exportPDF = (logType, searchParams) => {
   }
   return apiRequest(`${endpoint}?${params}`, 'GET', null, { responseType: 'blob' });
 };
+
+// API services investigations page
+
+export const fetchInvestigations = () => {
+  return apiRequest(API_ENDPOINTS.investigate.base)
+}
