@@ -12,9 +12,8 @@ class AlertSeverity(models.TextChoices):
     CRITICAL = 'CRITICAL', 'Critical'
     
 class InvestigationStatus(models.TextChoices):
-    NEW = 'NEW', 'New'
-    PENDING = 'PENDING', 'Pending'
-    RESOLVED = 'RESOLVED', 'Resolved'
+    OPEN = 'OPEN', 'Open'
+    IN_PROGRESS = 'IN PROGRESS', 'In Progress'
     CLOSED = 'CLOSED', 'Closed'
 
 class Alert(BaseModel):
@@ -43,7 +42,7 @@ class InvestigateAlert(BaseModel):
     status = models.CharField(
         max_length=20,
         choices=InvestigationStatus.choices,
-        default=InvestigationStatus.NEW
+        default=InvestigationStatus.OPEN
     )
     notes = models.TextField(null=True, blank=True)
     
