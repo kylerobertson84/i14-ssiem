@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Container, 
   Typography, 
@@ -27,6 +27,8 @@ import {
 import { Search, CheckCircle, Error } from '@mui/icons-material';
 import '../Design/Investigation.css'
 
+import { fetchInvestigations } from '../services/apiService';
+
 const mockAlerts = [
   { id: 1, device: 'WDT-01', type: 'Failed Login Attempt', status: 'Open', timestamp: '2024-08-28 10:15:23', assignedTo: 'John Doe' },
   { id: 2, device: 'WDT-01', type: 'New User Account Created', status: 'In Progress', timestamp: '2024-08-28 11:30:45', assignedTo: 'Jane Smith' },
@@ -44,6 +46,7 @@ const InvestigationPage = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedAlert, setSelectedAlert] = useState(null);
+  const [investigations, setInvestigations] = useState({});
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -66,6 +69,28 @@ const InvestigationPage = () => {
   const handleStatusChange = (event) => {
     setAlertStatus(event.target.value);
   }
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [ fetchedInvestigations ] = await Promise.all([
+          fetchInvestigations(),
+
+        ]);
+
+        setInvestigations(fetchedInvestigations);
+
+        console.log(fetchedInvestigations.results)
+        
+      } catch (error) {
+        console.error('Error loading dashboard data', error);
+      }
+    };
+
+    loadData();
+  }, []);
+
+
 
   return (
     <Container maxWidth="xlg" className="investigation-page">

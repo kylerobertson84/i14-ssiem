@@ -153,3 +153,9 @@ export const generateReportPDF = (reportId) => {
 export const deleteReport = (reportId) => {
   return apiRequest(`${API_ENDPOINTS.reports.base}${reportId}/delete_report/`, 'DELETE');
 };
+
+// API services investigations page
+
+export const fetchInvestigations = () => {
+  return apiRequest(API_ENDPOINTS.investigate.base)
+}
