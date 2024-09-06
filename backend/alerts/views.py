@@ -8,6 +8,7 @@ from .models import Alert, InvestigateAlert, InvestigationStatus
 from .serializers import AlertSerializer, InvestigateAlertSerializer
 from utils.pagination import StandardResultsSetPagination
 from accounts.permissions import HasRolePermission, IsAdminUser
+from accounts.models import User
 
 class AlertFilter(FilterSet):
     rule__name = CharFilter(field_name='rule__name', lookup_expr='icontains')
@@ -67,20 +68,36 @@ class AlertViewSet(BaseAlertViewSet):
     ordering_fields = ['created_at', 'severity']
     search_fields = ['event__EventID', 'event__UserID', 'event__hostname', 'rule__name']
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=['post'], permission_classes=[IsAdminUser])
     def assign(self, request, pk=None):
-        if not request.user.role.has_permission('create_reports'):
-            return Response({'status': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
-        
+        # Only allow admins to assign alerts
         alert = self.get_object()
-        user = request.user
+        
+        # Retrieve the analyst ID from the request data
+        assigned_to_id = request.data.get('assigned_to')
+        if not assigned_to_id:
+            return Response({'error': 'No analyst ID provided'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            # Get the analyst user object
+            assigned_to = User.objects.get(pk=assigned_to_id)
+        except User.DoesNotExist:
+            return Response({'error': 'Analyst not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        # Create or update InvestigateAlert for the alert
         investigate_alert, created = InvestigateAlert.objects.get_or_create(
             alert=alert,
-            defaults={'assigned_to': user}
+            defaults={'assigned_to': assigned_to}
         )
+        
         if created:
             return Response({'status': 'Alert assigned successfully'}, status=status.HTTP_201_CREATED)
-        return Response({'status': 'Alert was already assigned'}, status=status.HTTP_200_OK)
+        else:
+            # Update the assignment if already exists
+            investigate_alert.assigned_to = assigned_to
+            investigate_alert.save()
+            return Response({'status': 'Alert reassigned successfully'}, status=status.HTTP_200_OK)
+
     
     @action(detail=False, methods=['get'])
     def latest_alerts(self, request):
