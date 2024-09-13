@@ -130,7 +130,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-
+.env
 .venv
 env/
 venv/
@@ -170,3 +170,12 @@ cython_debug/
 #.idea/
 
 .DS_Store
+
+#
+#
+# Stops ssl data from being 
+#
+#
+data/
+letsencrypt/
+acmedata/

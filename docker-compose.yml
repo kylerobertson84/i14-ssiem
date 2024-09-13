@@ -114,7 +114,7 @@ services:
     depends_on:
       - redis
       - celery
-      
+
 volumes:
   mariadb_data:
   log_files:

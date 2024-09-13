@@ -45,7 +45,7 @@ class SyslogUDPServer:
                     parse_router_line(syslog_message)
 
                 # Print to the terminal
-                print(f"Received message from {addr}: {syslog_message}")
+                #print(f"Received message from {addr}: {syslog_message}")
 
         except KeyboardInterrupt:
             print("\nServer stopped.")
