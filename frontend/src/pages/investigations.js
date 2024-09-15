@@ -104,9 +104,9 @@ const InvestigationPage = () => {
                       <TableCell>{results.alert.event.hostname}</TableCell>
                       <TableCell><strong>{results.alert.rule}</strong></TableCell>
                       <TableCell>
-                        {results.status === 'Open' && <Error color="error" />}
-                        {results.status === 'In Progress' && <Search color="warning" />}
-                        {results.status === 'Closed' && <CheckCircle color="success" />}
+                        {results.status === 'Open' || results.status === 'OPEN' && <Error color="error" />}
+                        {results.status === 'In Progress' || results.status === 'IN PROGRESS' && <Search color="warning" />}
+                        {results.status === 'Closed' || results.status === 'CLOSED' && <CheckCircle color="success" />}
                         {' '}{results.status}
                       </TableCell>
                       <TableCell>{results.alert.created_at}</TableCell>
