@@ -6,7 +6,9 @@ from django.conf import settings
 class BronzeEventData(BaseModel):
     priority = models.IntegerField(null=True, blank=True)
     h_version = models.IntegerField(null=True, blank=True)
+    processed = models.BooleanField(default=False)
     iso_timestamp = models.DateTimeField(null=True, blank=True)
+    #iso_timestamp = models.CharField(max_length=100,null=True,blank=True)
     hostname = models.CharField(max_length=255,null=True, blank=True)
     app_name = models.CharField(max_length=255,null=True, blank=True)
     process_id = models.CharField(max_length=50,null=True, blank=True)
