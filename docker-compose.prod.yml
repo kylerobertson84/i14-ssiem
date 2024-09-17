@@ -7,9 +7,9 @@ services:
       - /frontend/node_modules
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.ssiem.rule=Host(`ssiem.dev`)"
-      - "traefik.http.routers.ssiem.entrypoints=websecure"
-      - "traefik.http.routers.ssiem.tls.certresolver=myresolver"
+      - "traefik.http.routers.frontend.rule=Host(`ssiem.dev`)"
+      - "traefik.http.routers.frontend.entrypoints=websecure"
+      - "traefik.http.routers.frontend.tls.certresolver=myresolver"
       - "traefik.http.services.frontend.loadbalancer.server.port=3000"
     
     environment:
