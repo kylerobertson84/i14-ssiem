@@ -52,20 +52,23 @@ const AlertDetailsDialog = ({ alert, open, onClose, onAssign }) => {
   if (!alert) return null;
 
   const handleAssign = () => {
+    // Find the selected user by user_id
+    const selectedUser = users.find(user => user.email === assignee);
+    
     const payload = {
       alert: alert.id,          
-      assigned_to: assignee,    
+      assigned_to: selectedUser ? selectedUser.user_id : '', // Get user_id instead of email
       notes: comment,           
       status: 'OPEN'             
     };
-
-    console.log(payload)
   
+    console.log(selectedUser ? selectedUser.user_id : 'No assignee selected');
+    
     // Send the request to create the InvestigateAlert
     apiRequest(API_ENDPOINTS.investigate.create, 'POST', payload)
       .then((response) => {
         console.log('InvestigateAlert created successfully:', response);
-        onAssign(alert.id, assignee, comment);  // Update the UI
+        onAssign(alert.id, selectedUser ? selectedUser.user_id : '', comment);  // Update the UI
         onClose();  // Close the dialog
       })
       .catch((error) => {
