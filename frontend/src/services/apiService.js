@@ -159,3 +159,10 @@ export const deleteReport = (reportId) => {
 export const fetchInvestigations = () => {
   return apiRequest(API_ENDPOINTS.investigate.base)
 }
+
+// API services for creating a user
+
+export const createUser = (userData) => {
+  return apiRequest(API_ENDPOINTS.auth.createUser, 'POST', userData);
+};
+
