@@ -3,104 +3,79 @@
 
 import React, { useEffect, useState } from 'react';
 import Navbar from '../components/NavBar';
+import '../Design/ProfileStyle.css';
 import PreferencesForm from '../components/PreferencesForm.js';
-import { fetchUser } from '../services/apiService.js';
+import axios from 'axios';
+import AuthService from '../services/AuthService.js';
+import API_ENDPOINTS from '../services/apiConfig.js';
+import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
+import { Box, Typography, CircularProgress } from '@mui/material';
 
-//import {IoPersonCirculeOutline} from "react-icons/io5"; 
 
 const Preferences = () => {
   const [user, setUser] = useState(null);
-  
+  const [error, setError] = useState(null);
+
   useEffect(() => {
-    const loadData = async () => {
-      try {
-        const [userData] = await Promise.all([
-          fetchUser(),
-        ]);
-
-        setUser(userData);
-        
-      } catch (error) {
-        console.error('Error loading dashboard data', error);
+    const fetchUser = async () => {
+      // const token = localStorage.getItem('token');
+      const token = AuthService.getToken();
+      if (token) {
+        console.log('Authorization header:', `Bearer ${token}`);
+        try {
+          const response = await axios.get(API_ENDPOINTS.user, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          setUser(response.data);
+        } catch (error) {
+          console.error('Error fetching user data', error);
+          setError('Failed to fetch user data');
+        }
+      } else {
+        setError('No token found');
       }
-    };
-
-    loadData();
+    }
+    fetchUser();
   }, []);
 
-  
+  if (error) {
+    return <div>{error}</div>;
+  }
+
   return (
-    <div className='profile'>
-      <Navbar />
-      <h1>Preferences Page</h1>
-      <div className='avatar'>
-        {/* <div className='avatar-wrapper'>
-            {user.avatar (
-              <IoPersonCirculeOutline/>
-            )}
-          </div>
-          */}
-      </div>
-      <div className='body'>
-        {!user ? (
-          <p>Loading user data...</p>
-        ) : (
-          <>
-            <p>Username: {user.username}</p>
-            <p>Email: {user.email || 'No email provided'}</p>
-            
-            <p>Roles: {user.role ? user.role.name : 'No role assigned'}</p>
-          </>
-        )}
-      </div>
-      <div>
-        <PreferencesForm />
-      </div>
-      <div>
-        <SearchBar />
-      </div>
+    <div>
+    <Navbar />
+    <Box className="preferences">
+      <Typography variant="h4" sx={{ textAlign: 'center', mb: 4, fontWeight: 'bold', color: '#333' }}>
+        Preferences Page
+      </Typography>
+      
+      <Box className="profile">
+        <Box className="avatar">
+          <AccountCircleRoundedIcon fontSize="large" />
+        </Box>
+        
+        <Box className="body">
+          {!user ? (
+            <CircularProgress />
+          ) : (
+            <>
+              <Typography variant="body1">Username: {user.username}</Typography>
+              <Typography variant="body1">Email: {user.email || 'No email provided'}</Typography>
+              <Typography variant="body1">Roles: {user.role ? user.role.name : 'No role assigned'}</Typography>
+            </>
+          )}
+        </Box>
 
-    </div>
-
-  );
+        <Box className="preferences-form">
+          <PreferencesForm />
+        </Box>
+      </Box>
+    </Box>
+  </div>
+);
 };
 
 export default Preferences;
-
-
-function SearchBar() {
-  const [query, setQuery] = useState("");
-  const [results, setResults] = useState([]);
-  return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-        flexDirection: "column",
-      }}
-    >
-      <div style={{
-        position: "absolute",
-        top: "25%",
-        left: "5%",
-        transform: "translate(-50% )",
-        fontSize: '2em'
-      }}>
-        <span style={{ color: "#4285F4" }}>Search For User</span>
-      </div>
-      <div
-        style={{
-          position: "absolute",
-          top: "40%",
-          left: "50%",
-          transform: "translate(-50% )",
-        }}
-      >
-        {/*<SearchBar query={query} setQuery={setQuery}/>*/} {/* causes the page not to load*/}
-      </div>
-    </div>
-  );
-}
-{/* */ }
