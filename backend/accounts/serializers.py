@@ -1,3 +1,6 @@
+
+# accounts/serializers.py
+
 from rest_framework import serializers
 from .models import User, Role, Employee, Permission, RolePermission
 from typing import List, Optional
