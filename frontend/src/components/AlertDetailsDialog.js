@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import {
   Dialog,
@@ -16,9 +17,30 @@ import {
   Box,
 } from '@mui/material';
 
+import apiRequest from '../services/apiRequest';
+import API_ENDPOINTS from '../services/apiConfig';
+
 const AlertDetailsDialog = ({ alert, open, onClose, onAssign }) => {
   const [assignee, setAssignee] = useState('');
   const [comment, setComment] = useState('');
+  const [users, setUsers] = useState([]); 
+  const [loadingUsers, setLoadingUsers] = useState(true); 
+  const [error, setError] = useState(''); 
+
+  useEffect(() => {
+    if (open) {
+      // Fetch users when the dialog opens
+      apiRequest(API_ENDPOINTS.auth.createUser) 
+        .then((response) => {
+          setUsers(response);
+          setLoadingUsers(false);
+        })
+        .catch(() => {
+          setError('Failed to fetch users');
+          setLoadingUsers(false);
+        });
+    }
+  }, [open]);
 
   useEffect(() => {
     if (alert) {
@@ -44,6 +66,24 @@ const AlertDetailsDialog = ({ alert, open, onClose, onAssign }) => {
       </Typography>
     </Box>
   );
+
+  // Render Select options based on state
+  const renderSelectOptions = () => {
+    if (loadingUsers) {
+      return <MenuItem value="">Loading...</MenuItem>;
+    }
+    if (error) {
+      return <MenuItem value="">Error fetching users</MenuItem>;
+    }
+    return [
+      <MenuItem key="unassigned" value="">Unassigned</MenuItem>,
+      ...users.map(user => (
+        <MenuItem key={user.user_id} value={user.email}>
+          {user.email}
+        </MenuItem>
+      ))
+    ];
+  };
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
@@ -74,11 +114,9 @@ const AlertDetailsDialog = ({ alert, open, onClose, onAssign }) => {
             value={assignee}
             onChange={(e) => setAssignee(e.target.value)}
             label="Assign To"
+            disabled={loadingUsers} // Disable Select while loading
           >
-            <MenuItem value="">Unassigned</MenuItem>
-            <MenuItem value="John Doe">John Doe</MenuItem>
-            <MenuItem value="Jane Smith">Jane Smith</MenuItem>
-            <MenuItem value="Alice Johnson">Alice Johnson</MenuItem>
+            {renderSelectOptions()}
           </Select>
         </FormControl>
 
