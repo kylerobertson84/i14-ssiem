@@ -1,3 +1,5 @@
+
+
 const API_BASE_URL = process.env.REACT_APP_API_URL // || 'http://localhost:8000/api';
 const API_VERSION = 'v1';
 
@@ -9,6 +11,7 @@ const API_ENDPOINTS = {
     user: buildUrl('accounts/users/me/'),
     token: buildUrl('accounts/token/'),
     refreshToken: buildUrl('accounts/token/refresh/'),
+    createUser: buildUrl('accounts/users/'),
   },
 
   // Alerts Related API Endpoints
