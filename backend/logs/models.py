@@ -38,7 +38,7 @@ class BronzeEventData(BaseModel):
     SourceModuleType = models.CharField(max_length=50,null=True, blank=True)
     message = models.TextField(null=True, blank=True)
     extra_fields = models.TextField(null=True, blank=True)
-    
+    #processed = models.IntegerField(default=0)
 
     def __str__(self):
         return f"{self.iso_timestamp} - {self.app_name} - {self.EventType}"

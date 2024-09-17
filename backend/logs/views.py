@@ -10,8 +10,11 @@ from utils.pagination import StandardResultsSetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from django.db.models.functions import TruncHour
+from django.db.models.functions import TruncHour, TruncDay
 from django.db.models import Count
+from django.utils import timezone
+import pytz
+import logging
 
 # from rest_framework.authentication import TokenAuthentication
 
@@ -119,3 +122,33 @@ class LogAggregationViewSet(viewsets.ViewSet):
             })
 
         return Response(data)
+    
+logger = logging.getLogger(__name__)
+
+class EventsToday(viewsets.ViewSet):
+    @action(detail=False, methods=['get'])
+    def events_today(self, request):
+        # Define local timezone
+        local_timezone = pytz.timezone('Australia/Melbourne')
+
+        # Get current time in local timezone
+        now_local = timezone.localtime(timezone.now(), local_timezone)
+        today_start_local = now_local.replace(hour=0, minute=0, second=0, microsecond=0)
+        today_end_local = now_local.replace(hour=23, minute=59, second=59, microsecond=999999)
+
+        # Convert local times to UTC
+        today_start_utc = today_start_local.astimezone(pytz.UTC)
+        today_end_utc = today_end_local.astimezone(pytz.UTC)
+
+        # Log the UTC start and end of today
+        logger.debug(f"UTC Start of today: {today_start_utc}")
+        logger.debug(f"UTC End of today: {today_end_utc}")
+
+        # Filter EventData by UTC datetime range
+        event_today_count = EventData.objects.filter(timestamp__range=(today_start_utc, today_end_utc)).count()
+
+        data = {
+            'events_today': event_today_count
+        }
+        return Response(data)
+        
