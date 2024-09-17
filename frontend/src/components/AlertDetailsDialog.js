@@ -52,8 +52,26 @@ const AlertDetailsDialog = ({ alert, open, onClose, onAssign }) => {
   if (!alert) return null;
 
   const handleAssign = () => {
-    onAssign(alert.id, assignee, comment);
-    onClose();
+    const payload = {
+      alert: alert.id,          
+      assigned_to: assignee,    
+      notes: comment,           
+      status: 'OPEN'             
+    };
+
+    console.log(payload)
+  
+    // Send the request to create the InvestigateAlert
+    apiRequest(API_ENDPOINTS.investigate.create, 'POST', payload)
+      .then((response) => {
+        console.log('InvestigateAlert created successfully:', response);
+        onAssign(alert.id, assignee, comment);  // Update the UI
+        onClose();  // Close the dialog
+      })
+      .catch((error) => {
+        console.error('Failed to create InvestigateAlert:', error);
+        // Handle error (e.g., show a message to the user)
+      });
   };
 
   const renderAlertDetail = (label, value) => (
