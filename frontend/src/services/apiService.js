@@ -101,18 +101,19 @@ export const fetchRules = () => {
 // API services for investigations
 
 // API services for reports
-export const fetchReports = (page = 1, pageSize = 10, search = '', type = '', status = '', orderBy = 'created_at', order = 'desc') => {
+export const fetchReports = (page = 1, pageSize = 10, search = '', type = '', status = '', lastUpdate = '', orderBy = 'updated_at', order = 'desc') => {
   const params = new URLSearchParams({
     page,
     page_size: pageSize,
     search,
     type,
     status,
+    last_update: lastUpdate,
     ordering: order === 'desc' ? `-${orderBy}` : orderBy
   });
+
   return apiRequest(`${API_ENDPOINTS.reports.base}?${params}`)
     .then(response => {
-      // If using pagination
       return {
         results: response.results || [],
         count: response.count || 0,
@@ -135,5 +136,20 @@ export const updateReport = (reportId, data) => {
 };
 
 export const generateReportPDF = (reportId) => {
-  return apiRequest(`${API_ENDPOINTS.reports.base}${reportId}/generate_pdf/`, 'POST');
+  return apiRequest(`${API_ENDPOINTS.reports.base}${reportId}/generate_pdf/`, 'GET', null, { responseType: 'blob' })
+    .then(response => {
+      const file = new Blob([response], { type: 'application/pdf' });
+      const fileURL = URL.createObjectURL(file);
+      const link = document.createElement('a');
+      link.href = fileURL;
+      link.download = `incident_report_${reportId}.pdf`;
+      link.click();
+    })
+    .catch(error => {
+      console.error('Error downloading PDF:', error);
+    });
+};
+
+export const deleteReport = (reportId) => {
+  return apiRequest(`${API_ENDPOINTS.reports.base}${reportId}/delete_report/`, 'DELETE');
 };

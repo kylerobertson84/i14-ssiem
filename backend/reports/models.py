@@ -12,6 +12,7 @@ class IncidentReport(BaseModel):
         COMPLIANCE_AUDIT = 'compliance_audit', ('Compliance Audit')
 
     class ReportStatus(models.TextChoices):
+        DRAFT = 'draft', ('Draft')
         OPEN = 'open', ('Open')
         PENDING = 'pending', ('Pending')
         APPROVED = 'approved', ('Approved')

@@ -10,19 +10,6 @@ class RouterDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = RouterData
         fields = ['id', 'date_time', 'hostname', 'process', 'message']
-# class EventDataSerializer(serializers.ModelSerializer):
-#     # source = BronzeEventDataSerializer(read_only=True)
-#     rule = RuleSerializer(read_only=True)
-    
-#     class Meta:
-#         model = EventData
-#         fields = '__all__'
-
-    # Omit this method for now due to source not using
-    # def to_representation(self, instance):
-    #     representation = super().to_representation(instance)
-    #     representation['source'] = BronzeEventDataSerializer(instance.source).data
-    #     return representation
 
 class LogCountSerializer(serializers.Serializer):
     windows_os_percentage = serializers.FloatField()

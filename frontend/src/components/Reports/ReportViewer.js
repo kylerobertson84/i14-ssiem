@@ -26,8 +26,9 @@ const reportTypes = [
 ];
 
 const reportStatuses = [
+  'Open',
   'Draft',
-  'Pending Review',
+  'Pending',
   'Approved',
   'Rejected',
   'Archived'
@@ -43,7 +44,10 @@ const typeMapping = {
 
 const statusMapping = {
   'draft': 'Draft',
-  'ongoing': 'Pending Review',
+  'pending': 'Pending',
+  'open': 'Open',
+  'approved': 'Approved',
+  'rejected': 'Rejected',
   'closed': 'Approved',
   'archived': 'Archived'
 };
@@ -53,7 +57,7 @@ const ReportViewer = ({ report, onUpdate, rules }) => {
     ...report,
     type: typeMapping[report.type] || '',
     status: statusMapping[report.status] || '',
-    rule_ids: Array.isArray(report.rule_ids) ? report.rule_ids : []
+    rules: report.rules || []
   });
 
   const theme = useTheme();
@@ -63,7 +67,7 @@ const ReportViewer = ({ report, onUpdate, rules }) => {
       ...report,
       type: typeMapping[report.type] || '',
       status: statusMapping[report.status] || '',
-      rule_ids: Array.isArray(report.rule_ids) ? report.rule_ids : []
+      rules: report.rules || []
     });
   }, [report]);
 
@@ -78,7 +82,7 @@ const ReportViewer = ({ report, onUpdate, rules }) => {
   const handleRuleChange = (event, newValue) => {
     setEditedReport(prev => ({
       ...prev,
-      rule_ids: newValue.map(rule => rule.id)
+      rules: newValue
     }));
   };
 
@@ -88,6 +92,7 @@ const ReportViewer = ({ report, onUpdate, rules }) => {
       ...editedReport,
       type: Object.keys(typeMapping).find(key => typeMapping[key] === editedReport.type) || editedReport.type,
       status: Object.keys(statusMapping).find(key => statusMapping[key] === editedReport.status) || editedReport.status,
+      rule_ids: editedReport.rules.map(rule => rule.id)
     };
     onUpdate(updatedReport);
   };
@@ -147,14 +152,13 @@ const ReportViewer = ({ report, onUpdate, rules }) => {
               id="rules-select"
               options={rules}
               getOptionLabel={(option) => `${option.id}: ${option.name}`}
-              value={rules.filter(rule => editedReport.rule_ids.includes(rule.id))}
+              value={editedReport.rules}
               onChange={handleRuleChange}
               renderInput={(params) => (
                 <TextField
                   {...params}
                   variant="outlined"
                   label="Rules"
-                  placeholder="Select rules"
                 />
               )}
               renderTags={(value, getTagProps) =>
@@ -167,7 +171,7 @@ const ReportViewer = ({ report, onUpdate, rules }) => {
                 ))
               }
             />
-          </Grid>
+        </Grid>
           <Grid item xs={12}>
             <TextField
               name="description"

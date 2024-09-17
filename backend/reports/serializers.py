@@ -29,7 +29,7 @@ class IncidentReportSerializer(serializers.ModelSerializer):
     user = IncidentReportUserSerializer(read_only=True)
     rules = IncidentReportRuleSerializer(many=True, read_only=True)
     pdf_url = serializers.SerializerMethodField()
-    rule_ids = serializers.ListField(child=serializers.IntegerField(), write_only=True, required=False)
+    rule_ids = serializers.PrimaryKeyRelatedField(many=True, queryset=Rule.objects.all(), write_only=True, source='rules')
 
     class Meta:
         model = IncidentReport
@@ -42,13 +42,13 @@ class IncidentReportSerializer(serializers.ModelSerializer):
         return None
 
     def create(self, validated_data):
-        rule_ids = validated_data.pop('rule_ids', [])
+        rules = validated_data.pop('rules', [])
         incident_report = IncidentReport.objects.create(**validated_data)
-        incident_report.rules.set(Rule.objects.filter(id__in=rule_ids))
+        incident_report.rules.set(rules)
         return incident_report
 
     def update(self, instance, validated_data):
-        rule_ids = validated_data.pop('rule_ids', None)
-        if rule_ids is not None:
-            instance.rules.set(Rule.objects.filter(id__in=rule_ids))
+        rules = validated_data.pop('rules', None)
+        if rules is not None:
+            instance.rules.set(rules)
         return super().update(instance, validated_data)

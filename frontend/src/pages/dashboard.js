@@ -229,7 +229,7 @@ const Dashboard = () => {
             <LatestAlertsSection />
 
             {/* System Stats Section */}
-            <Paper sx={{ overflow: 'hidden' }}>
+            <Paper elevation={3} sx={{ overflow: 'hidden', borderRadius: 2 }}>
               <Box sx={{
                 p: 2,
                 backgroundColor: theme.palette.primary.main,

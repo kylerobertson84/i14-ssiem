@@ -6,16 +6,18 @@ import {
   Paper,
   Box,
   CircularProgress,
-  Snackbar,
-  Alert,
-  useTheme,
-  useMediaQuery
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Button
 } from '@mui/material';
 import ReportGenerator from '../components/Reports/ReportGenerator';
 import ReportList from '../components/Reports/ReportList';
 import ReportViewer from '../components/Reports/ReportViewer';
 import ReportExporter from '../components/Reports/ReportExporter';
-import { fetchReports, createReport, updateReport, generateReportPDF, fetchRules } from '../services/apiService';
+import { fetchReports, createReport, updateReport, generateReportPDF, fetchRules, deleteReport } from '../services/apiService';
 
 const ReportsPage = () => {
   const [reports, setReports] = useState([]);
@@ -23,10 +25,8 @@ const ReportsPage = () => {
   const [rules, setRules] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'info' });
-
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [reportToDelete, setReportToDelete] = useState(null);
 
   useEffect(() => {
     loadReports();
@@ -39,7 +39,8 @@ const ReportsPage = () => {
       const response = await fetchReports();
       setReports(response.results || response);
     } catch (err) {
-      showSnackbar('Failed to load reports', 'error');
+      setError('Failed to load reports');
+      setReports([]);
     } finally {
       setLoading(false);
     }
@@ -50,7 +51,7 @@ const ReportsPage = () => {
       const response = await fetchRules();
       setRules(response.results || response);
     } catch (err) {
-      showSnackbar('Failed to load rules', 'error');
+      setError('Failed to load rules');
     }
   };
 
@@ -58,9 +59,8 @@ const ReportsPage = () => {
     try {
       const createdReport = await createReport(newReport);
       setReports([createdReport, ...reports]);
-      showSnackbar('Report created successfully', 'success');
     } catch (err) {
-      showSnackbar('Failed to create report', 'error');
+      setError('Failed to create report');
     }
   };
 
@@ -73,79 +73,93 @@ const ReportsPage = () => {
       const updated = await updateReport(updatedReport.id, updatedReport);
       setReports(reports.map(r => r.id === updated.id ? updated : r));
       setSelectedReport(updated);
-      showSnackbar('Report updated successfully', 'success');
     } catch (err) {
-      showSnackbar('Failed to update report', 'error');
+      setError('Failed to update report');
     }
   };
 
   const handleExportPDF = async (reportId) => {
     try {
       await generateReportPDF(reportId);
-      showSnackbar('PDF generated successfully', 'success');
+      const updatedReport = await fetchReports(reportId);
+      setSelectedReport(updatedReport);
     } catch (err) {
-      showSnackbar('Failed to generate PDF', 'error');
+      setError('Failed to generate PDF');
     }
   };
 
-  const showSnackbar = (message, severity) => {
-    setSnackbar({ open: true, message, severity });
+  const handleDeleteReport = (report) => {
+    setReportToDelete(report);
+    setDeleteDialogOpen(true);
   };
 
-  const handleCloseSnackbar = (event, reason) => {
-    if (reason === 'clickaway') return;
-    setSnackbar({ ...snackbar, open: false });
+  const confirmDeleteReport = async () => {
+    try {
+      await deleteReport(reportToDelete.id);
+      setReports(reports.filter(r => r.id !== reportToDelete.id));
+      if (selectedReport && selectedReport.id === reportToDelete.id) {
+        setSelectedReport(null);
+      }
+      setDeleteDialogOpen(false);
+    } catch (err) {
+      setError('Failed to delete report');
+    }
   };
 
-  if (loading) return (
-    <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
-      <CircularProgress />
-    </Box>
-  );
+  if (loading) return <CircularProgress />;
+  if (error) return <Typography color="error">{error}</Typography>;
 
   return (
     <Container maxWidth="lg">
-      <Typography variant="h4" component="h1" gutterBottom sx={{ my: 4, fontWeight: 'bold', color: 'primary.main' }}>
+      <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 4, fontWeight: 'bold', color: 'primary.main' }}>
         Reports Management
       </Typography>
-
       <Grid container spacing={4}>
         <Grid item xs={12}>
-          <ReportGenerator onGenerate={handleGenerate} rules={rules} />       
+          <ReportGenerator onGenerate={handleGenerate} rules={rules} />
         </Grid>
-
         <Grid item xs={12} md={6}>
-          
-          <ReportList reports={reports} onSelect={handleSelectReport} />
-          
+          {reports.length > 0 && (
+            <ReportList 
+              reports={reports} 
+              onSelect={handleSelectReport}
+              onDelete={handleDeleteReport}
+            />
+          )}
         </Grid>
-
         <Grid item xs={12} md={6}>
-          <Paper elevation={3} sx={{ p: 3, borderRadius: 2, height: '100%' }}>
-            {selectedReport ? (
-              <>
-                <Typography variant="h5" component="h2" gutterBottom sx={{ mb: 4, fontWeight: 'bold', color: 'primary.main' }}>
-                  Selected Reports
-                </Typography>
-                <ReportViewer report={selectedReport} onUpdate={handleUpdateReport} rules={rules} />
-                <Box sx={{ mt: 2 }}>
-                  <ReportExporter report={selectedReport} onExport={() => handleExportPDF(selectedReport.id)} />
-                </Box>
-              </>
-            ) : (
-              <Typography variant="body1" color="text.secondary" align="center">
-                Select a report to view details
+          {selectedReport && (
+            <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
+              <Typography variant="h5" component="h2" gutterBottom sx={{ mb: 4, fontWeight: 'bold', color: 'primary.main' }}>
+                Selected Report
               </Typography>
-            )}
-          </Paper>
+              <ReportViewer report={selectedReport} onUpdate={handleUpdateReport} rules={rules} />
+              <Box sx={{ mt: 2 }}>
+                <ReportExporter report={selectedReport} onExport={() => handleExportPDF(selectedReport.id)} />
+              </Box>
+            </Paper>
+          )}
         </Grid>
       </Grid>
-
-      <Snackbar open={snackbar.open} autoHideDuration={6000} onClose={handleCloseSnackbar}>
-        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Confirm Delete"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete this report? This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
+          <Button onClick={confirmDeleteReport} color="error" autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };
