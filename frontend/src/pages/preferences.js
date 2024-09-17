@@ -9,6 +9,7 @@ import axios from 'axios';
 import AuthService from '../services/AuthService.js';
 import API_ENDPOINTS from '../services/apiConfig.js';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
+import { Box, Typography, CircularProgress } from '@mui/material';
 
 
 const Preferences = () => {
@@ -44,35 +45,35 @@ const Preferences = () => {
   }
 
   return (
-    <div classname='preferences'>
-      <Navbar />
-      <h1>Preferences Page</h1>
-        <div className='profile'>
-          <div className='avatar'>
-            <AccountCircleRoundedIcon fontSize='large'/>
-          </div>
-          <div className='body'>
-            {!user ? (
-              <p>Loading user data...</p>
-            ) : (
-              <>
-                <p>Username: {user.username}</p>
-                <p>Email: {user.email || 'No email provided'}</p>
-                
-                <p>Roles: {user.role ? user.role.name : 'No role assigned'}</p>
-              </>
-            )}
-          </div>
-          <div>
-            <PreferencesForm />
-          </div>
-          <div>
-          </div>
+    <div className="preferences">
+    <Navbar />
+    <Typography variant="h4" sx={{ textAlign: 'center', mb: 4, fontWeight: 'bold', color: '#333' }}>
+      Preferences Page
+    </Typography>
+    
+    <Box className="profile">
+      <Box className="avatar">
+        <AccountCircleRoundedIcon fontSize="large" />
+      </Box>
+      
+      <Box className="body">
+        {!user ? (
+          <CircularProgress />
+        ) : (
+          <>
+            <Typography variant="body1">Username: {user.username}</Typography>
+            <Typography variant="body1">Email: {user.email || 'No email provided'}</Typography>
+            <Typography variant="body1">Roles: {user.role ? user.role.name : 'No role assigned'}</Typography>
+          </>
+        )}
+      </Box>
 
-        </div>
-    </div>
-
-  );
+      <Box className="preferences-form">
+        <PreferencesForm />
+      </Box>
+    </Box>
+  </div>
+);
 };
 
 export default Preferences;
