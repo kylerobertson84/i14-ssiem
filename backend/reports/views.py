@@ -23,6 +23,9 @@ class IncidentReportViewSet(BaseViewThrottleSet):
     filterset_class = IncidentReportFilter
     ordering_fields = ['created_at']
     search_fields = ['description', 'source__hostname', 'rules__name', 'custom_rules']
+    
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
     @action(detail=True, methods=['post'])
     def generate_pdf(self, request, pk=None):
@@ -31,9 +34,3 @@ class IncidentReportViewSet(BaseViewThrottleSet):
         incident_report.pdf_file = pdf_file
         incident_report.save()
         return Response({'message': 'PDF generated successfully'}, status=status.HTTP_200_OK)
-
-    @action(detail=False, methods=['get'])
-    def get_rules(self, request):
-        rules = Rule.objects.all()
-        serializer = RuleSerializer(rules, many=True)
-        return Response(serializer.data)

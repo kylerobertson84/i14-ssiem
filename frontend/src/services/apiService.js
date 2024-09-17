@@ -92,3 +92,48 @@ export const exportPDF = (logType, searchParams) => {
   }
   return apiRequest(`${endpoint}?${params}`, 'GET', null, { responseType: 'blob' });
 };
+
+// API services for rules
+export const fetchRules = () => {
+  return apiRequest(API_ENDPOINTS.rules.base);
+};
+
+// API services for investigations
+
+// API services for reports
+export const fetchReports = (page = 1, pageSize = 10, search = '', type = '', status = '', orderBy = 'created_at', order = 'desc') => {
+  const params = new URLSearchParams({
+    page,
+    page_size: pageSize,
+    search,
+    type,
+    status,
+    ordering: order === 'desc' ? `-${orderBy}` : orderBy
+  });
+  return apiRequest(`${API_ENDPOINTS.reports.base}?${params}`)
+    .then(response => {
+      // If using pagination
+      return {
+        results: response.results || [],
+        count: response.count || 0,
+        next: response.next,
+        previous: response.previous
+      };
+    })
+    .catch(error => {
+      console.error('Error fetching reports:', error);
+      return { results: [], count: 0, next: null, previous: null };
+    });
+};
+
+export const createReport = (reportData) => {
+  return apiRequest(API_ENDPOINTS.reports.base, 'POST', reportData);
+};
+
+export const updateReport = (reportId, data) => {
+  return apiRequest(`${API_ENDPOINTS.reports.base}${reportId}/`, 'PATCH', data);
+};
+
+export const generateReportPDF = (reportId) => {
+  return apiRequest(`${API_ENDPOINTS.reports.base}${reportId}/generate_pdf/`, 'POST');
+};

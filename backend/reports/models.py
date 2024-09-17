@@ -4,23 +4,23 @@ from core.models import Rule
 from django.conf import settings
 
 class IncidentReport(BaseModel):
-    TYPE_CHOICES = [
-        ('security_incident', 'Security Incident'),
-        ('network_traffic', 'Network Traffic'),
-        ('user_activity', 'User Activity'),
-        ('system_performance', 'System Performance'),
-        ('compliance_audit', 'Compliance Audit'),
-    ]
-    STATUS_CHOICES = [
-        ('draft', 'Draft'),
-        ('ongoing', 'Ongoing'),
-        ('closed', 'Closed'),
-        ('archived', 'Archived'),
-    ]
+    class ReportType(models.TextChoices):
+        SECURITY_INCIDENT = 'security_incident', ('Security Incident')
+        NETWORK_TRAFFIC = 'network_traffic', ('Network Traffic')
+        USER_ACTIVITY = 'user_activity', ('User Activity')
+        SYSTEM_PERFORMANCE = 'system_performance', ('System Performance')
+        COMPLIANCE_AUDIT = 'compliance_audit', ('Compliance Audit')
 
-    type = models.CharField(max_length=20, choices=TYPE_CHOICES)
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES)
-    source = models.ForeignKey('logs.BronzeEventData', on_delete=models.CASCADE)
+    class ReportStatus(models.TextChoices):
+        OPEN = 'open', ('Open')
+        PENDING = 'pending', ('Pending')
+        APPROVED = 'approved', ('Approved')
+        REJECTED = 'rejected', ('Rejected')
+        ARCHIVED = 'archived',('Archived')
+    title = models.CharField(max_length=255, blank=True)
+    type = models.CharField(max_length=20, choices=ReportType.choices)
+    status = models.CharField(max_length=10, choices=ReportStatus.choices, default=ReportStatus.OPEN)
+    # source = models.ForeignKey('logs.BronzeEventData', on_delete=models.CASCADE)
     rules = models.ManyToManyField(Rule, related_name='incident_reports', blank=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     description = models.TextField()
