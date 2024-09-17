@@ -12,7 +12,7 @@ const CreateAnalystUserForm = () => {
         lastName: '',
         department: '',
         jobTitle: '',
-        role_id: '', // This will store the role ID for Analyst
+        role_id: '', 
     });
 
     const [roles, setRoles] = useState([]);
