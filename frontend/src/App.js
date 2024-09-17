@@ -10,6 +10,7 @@ import Alerts from './pages/alerts';
 import Preferences from './pages/preferences';
 import Footer from './components/Footer';
 import Navbar from './components/NavBar';
+import AdminPage from './pages/admin.js';
 import theme from './Design/Theme.js';
 
 const App = () => (
@@ -26,6 +27,7 @@ const App = () => (
             <Route path="/reports" element={<Reports />} />
             <Route path='/alerts' element={<Alerts/>} />
             <Route path='/preferences' element={<Preferences/>} />
+            <Route path="/admin" element={<AdminPage />} />
             <Route path="/" element={<Navigate replace to="/login" />} />
           </Routes>
         <Footer />

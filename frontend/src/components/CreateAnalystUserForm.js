@@ -1,9 +1,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { TextField, Button } from '@mui/material';
-import { createUser } from './services'; // Import the user creation service
-import apiRequest from './apiRequest'; // For making requests
-import API_ENDPOINTS from './apiConfig'; // Import API endpoints config
+import { createUser } from '../services/apiService';
+import apiRequest from '../services/apiRequest';
+import API_ENDPOINTS from '../services/apiConfig';
+// import { createUser } from './services'; // Import the user creation service
+// import apiRequest from './apiRequest'; // For making requests
+// import API_ENDPOINTS from './apiConfig'; // Import API endpoints config
 
 const CreateAnalystUserForm = () => {
     const [formData, setFormData] = useState({
