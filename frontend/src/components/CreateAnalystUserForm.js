@@ -1,8 +1,8 @@
+
 import React, { useState, useEffect } from 'react';
 import { TextField, Button } from '@mui/material';
 import apiRequest from '../services/apiRequest';
 import API_ENDPOINTS from '../services/apiConfig';
-
 
 const CreateAnalystUserForm = () => {
     const [formData, setFormData] = useState({
@@ -25,9 +25,11 @@ const CreateAnalystUserForm = () => {
             .then((response) => {
                 setRoles(response);
                 const analystRole = response.find(role => role.name === 'ANALYST');
-                setFormData((prevData) => ({ ...prevData, role_id: analystRole?.id || '' }));
+                if (analystRole) {
+                    setFormData(prevData => ({ ...prevData, role_id: analystRole.role_id }));
+                }
             })
-            .catch((err) => setError('Failed to fetch roles'));
+            .catch(() => setError('Failed to fetch roles'));
     }, []);
 
     const handleChange = (e) => {
@@ -37,7 +39,7 @@ const CreateAnalystUserForm = () => {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         const userData = {
@@ -46,28 +48,26 @@ const CreateAnalystUserForm = () => {
             role_id: formData.role_id,
         };
 
-        const employeeData = {
-            user_id: '', // Will be set after user creation
-            first_name: formData.firstName,
-            last_name: formData.lastName,
-            department: formData.department,
-            job_title: formData.jobTitle,
-        };
+        try {
+            // Create the user
+            const userResponse = await apiRequest(API_ENDPOINTS.auth.createUser, 'POST', userData);
+            const userId = userResponse.user_id;
 
-        // Create the user
-        apiRequest(API_ENDPOINTS.auth.createUser, 'POST', userData)
-            .then((response) => {
-                const userId = response.user_id;
-                employeeData.user_id = userId;
+            // Create the employee profile
+            const employeeData = {
+                user_id: userId,
+                first_name: formData.firstName,
+                last_name: formData.lastName,
+                department: formData.department,
+                job_title: formData.jobTitle,
+            };
+            await apiRequest(API_ENDPOINTS.employee.create, 'POST', employeeData);
 
-                // Create the employee profile
-                return apiRequest(API_ENDPOINTS.auth.createUser, 'POST', employeeData);
-            })
-            .then(() => {
-                setSuccess('Analyst created successfully');
-                setError('');
-            })
-            .catch((err) => setError('Failed to create analyst user'));
+            setSuccess('Analyst created successfully');
+            setError('');
+        } catch {
+            setError('Failed to create analyst user');
+        }
     };
 
     return (
@@ -127,7 +127,6 @@ const CreateAnalystUserForm = () => {
                     fullWidth
                     margin="normal"
                 />
-
                 <Button type="submit" variant="contained" color="primary">
                     Create Analyst
                 </Button>

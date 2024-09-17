@@ -17,6 +17,10 @@ const API_ENDPOINTS = {
   // Roles Related API Endpoints
   roles: buildUrl('accounts/roles/'),
 
+  employee: {
+    create: buildUrl('accounts/employees/'),
+  },
+
   // Alerts Related API Endpoints
   alerts: {
     base: buildUrl('alerts/'),
