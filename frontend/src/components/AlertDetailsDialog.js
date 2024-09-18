@@ -61,6 +61,7 @@ const AlertDetailsDialog = ({ alert, open, onClose, onAssign }) => {
       notes: comment,           
       status: 'OPEN'             
     };
+    console.log("alert id", alert.id)
   
     console.log(selectedUser ? selectedUser.user_id : 'No assignee selected');
     
