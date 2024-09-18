@@ -1,4 +1,5 @@
 
+// src/services/apiConfig.js
 
 const API_BASE_URL = process.env.REACT_APP_API_URL // || 'http://localhost:8000/api';
 const API_VERSION = 'v1';
@@ -9,6 +10,7 @@ const API_ENDPOINTS = {
   // Authentication Related API Endpoints
   auth: {
     user: buildUrl('accounts/users/me/'),
+    users: buildUrl('accounts/users/'),
     token: buildUrl('accounts/token/'),
     refreshToken: buildUrl('accounts/token/refresh/'),
     createUser: buildUrl('accounts/users/'),
@@ -25,6 +27,7 @@ const API_ENDPOINTS = {
   alerts: {
     base: buildUrl('alerts/'),
     latest: buildUrl('alerts/latest_alerts/'),
+    assign: (alertId) => buildUrl(`alerts/${alertId}/assign/`),
   },
 
   // investigations Related API Endpoints
@@ -32,6 +35,7 @@ const API_ENDPOINTS = {
     base: buildUrl('investigate/'),
     count: buildUrl('investigate/investigation_status_count/'),
     create: buildUrl('investigate/'),
+     
   },
 
   // Logs Related API Endpoints

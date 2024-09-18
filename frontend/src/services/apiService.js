@@ -1,3 +1,6 @@
+
+// src/services/apiService.js
+
 import apiRequest from './apiRequest';
 import API_ENDPOINTS from './apiConfig';
 
@@ -39,21 +42,7 @@ export const fetchInvestigationsCount = () => {
   return apiRequest(API_ENDPOINTS.investigate.count)
 }
 
-// API services for alerts
-export const fetchAlerts = (page = 1, pageSize = 10, search = '', severity = '', orderBy = 'created_at', order = 'desc') => {
-  const params = new URLSearchParams({
-    page,
-    page_size: pageSize,
-    search,
-    severity,
-    ordering: order === 'desc' ? `-${orderBy}` : orderBy
-  });
-  return apiRequest(`${API_ENDPOINTS.alerts.base}?${params}`);
-};
 
-export const updateAlert = (alertId, data) => {
-  return apiRequest(`${API_ENDPOINTS.alerts.base}/${alertId}/`, 'PATCH', data);
-};
 
 // API services for logs
 export const fetchComputerLogs = (searchParams, page = 1, pageSize = 10) => {
@@ -166,3 +155,23 @@ export const createUser = (userData) => {
   return apiRequest(API_ENDPOINTS.auth.createUser, 'POST', userData);
 };
 
+export const fetchAlerts = (page = 1, pageSize = 10, search = '', severity = '', orderBy = 'created_at', order = 'desc') => {
+  const params = new URLSearchParams({
+    page,
+    page_size: pageSize,
+    search,
+    severity,
+    ordering: order === 'desc' ? `-${orderBy}` : orderBy
+  });
+  return apiRequest(`${API_ENDPOINTS.alerts.base}?${params}`);
+};
+
+// Assuming `alertId` is defined and has a valid value
+export const updateAlert = (alertId, data) => {
+  return apiRequest(`${API_ENDPOINTS.alerts.base}${alertId}/`, 'PATCH', data);
+};
+
+// New API service for assigning alerts
+export const assignAlert = (alertId, data) => {
+  return apiRequest(API_ENDPOINTS.alerts.assign(alertId), 'POST', data);
+};
