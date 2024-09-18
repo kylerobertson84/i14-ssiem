@@ -46,3 +46,5 @@ class InvestigateAlertSerializer(serializers.ModelSerializer):
     class Meta:
         model = InvestigateAlert
         fields = ['id', 'alert', 'assigned_to', 'status', 'notes', 'created_at', 'updated_at']
+    
+    
