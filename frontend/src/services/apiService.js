@@ -115,3 +115,67 @@ export const updateAlert = (alertId, data) => {
 export const assignAlert = (alertId, data) => {
   return apiRequest(API_ENDPOINTS.alerts.assign(alertId), 'POST', data);
 };
+
+// ===============
+
+
+// API services for rules
+export const fetchRules = () => {
+  return apiRequest(API_ENDPOINTS.rules.base);
+};
+
+// API services for investigations
+
+// API services for reports
+export const fetchReports = (page = 1, pageSize = 10, search = '', type = '', status = '', lastUpdate = '', orderBy = 'updated_at', order = 'desc') => {
+  const params = new URLSearchParams({
+    page,
+    page_size: pageSize,
+    search,
+    type,
+    status,
+    last_update: lastUpdate,
+    ordering: order === 'desc' ? `-${orderBy}` : orderBy
+  });
+
+  return apiRequest(`${API_ENDPOINTS.reports.base}?${params}`)
+    .then(response => {
+      return {
+        results: response.results || [],
+        count: response.count || 0,
+        next: response.next,
+        previous: response.previous
+      };
+    })
+    .catch(error => {
+      console.error('Error fetching reports:', error);
+      return { results: [], count: 0, next: null, previous: null };
+    });
+};
+
+export const createReport = (reportData) => {
+  return apiRequest(API_ENDPOINTS.reports.base, 'POST', reportData);
+};
+
+export const updateReport = (reportId, data) => {
+  return apiRequest(`${API_ENDPOINTS.reports.base}${reportId}/`, 'PATCH', data);
+};
+
+export const generateReportPDF = (reportId) => {
+  return apiRequest(`${API_ENDPOINTS.reports.base}${reportId}/generate_pdf/`, 'GET', null, { responseType: 'blob' })
+    .then(response => {
+      const file = new Blob([response], { type: 'application/pdf' });
+      const fileURL = URL.createObjectURL(file);
+      const link = document.createElement('a');
+      link.href = fileURL;
+      link.download = `incident_report_${reportId}.pdf`;
+      link.click();
+    })
+    .catch(error => {
+      console.error('Error downloading PDF:', error);
+    });
+};
+
+export const deleteReport = (reportId) => {
+  return apiRequest(`${API_ENDPOINTS.reports.base}${reportId}/delete_report/`, 'DELETE');
+};
