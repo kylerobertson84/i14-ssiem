@@ -84,6 +84,7 @@ class Employee(BaseModel):
                 # Basically, 6 digits for internal use like HR stuff increment by 1
                 # Extract the numeric part and increment by 1
                 next_id = int(max_id.replace(' ', '')) + 1
+            # self.employee_id = f"{next_id:06d}"[:3] + ' ' + f"{next_id:06d}"[3:]
             self.employee_id = f"{next_id:06d}"[:3] + ' ' + f"{next_id:06d}"[3:]
 
         super().save(*args, **kwargs)
