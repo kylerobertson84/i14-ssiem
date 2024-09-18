@@ -132,15 +132,6 @@ class RouterDataViewSet(viewsets.ReadOnlyModelViewSet):
         ]
         return generate_pdf_report(queryset, "RouterData", columns)
 
-# class EventDataViewSet(viewsets.ReadOnlyModelViewSet):
-#     queryset = EventData.objects.all()
-#     serializer_class = EventDataSerializer
-#     pagination_class = StandardResultsSetPagination
-#     filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
-#     # filterset_fields = ['source__event_type', 'rule__rule_name']
-#     ordering_fields = ['timestamp']
-#     search_fields = ['source__hostname', 'source__account_name']
-#     permission_classes = [IsAuthenticated] 
 
 class LogPercentageViewSet(viewsets.ViewSet):
     serializer_class = LogCountSerializer

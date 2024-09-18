@@ -51,6 +51,17 @@ const API_ENDPOINTS = {
     eventsToday: buildUrl('logs/events-today/events_today/'),
     hostname_count: buildUrl('logs/hostname-count/'),
   },
+
+  // Rules Related API Endpoints
+  rules: {
+    base: buildUrl('rules/'),
+  
+  },
+  // Reports Related API Endpoints
+  reports: {
+    base: buildUrl('reports/incident-reports/'),
+    rules: buildUrl('reports/incident-reports/get_rules/'),
+  },
 };
 
 export default API_ENDPOINTS;

@@ -1,28 +1,39 @@
 from django.core.management.base import BaseCommand
 from django.db import connection
 from core.models import Rule
+from accounts.models import User
+from reports.models import IncidentReport
+
 import json
+import random
 
 class Command(BaseCommand):
     help = 'Creating Rules for the SIEM system'
 
     def handle(self, *args, **kwargs):
-        # Check if the Rule table exists
         if not self.table_exists('core_rule'):
             self.stdout.write(self.style.ERROR("The Rule table does not exist. Please run migrations first."))
             return
 
+        if not self.table_exists('reports_incidentreport'):
+            self.stdout.write(self.style.ERROR("The IncidentReport table does not exist. Please run migrations first."))
+            return
+
+        self.create_rules()
+        self.create_sample_reports()
+
+    def create_rules(self):
         rules = [
             {
                 "name": "Multiple Failed Logins",
-                "description": "Detects multiple failed login attempts from the same source",
+                "description": "Detects multiple failed login attempts within a short timeframe in either Application or Security channels",
                 "conditions": json.dumps({
-                    "EventID": 4625,
+                    "EventID": "4625",
                     "frequency": {
                         "count": 5,
                         "timeframe": "5m"
                     },
-                    "Channel": "Security"
+                    "Channel": ["Application", "Security"]
                 }),
                 "severity": "HIGH"
             },
@@ -153,6 +164,40 @@ class Command(BaseCommand):
         for rule_data in rules:
             Rule.objects.create(**rule_data)
             self.stdout.write(self.style.SUCCESS(f"Created rule: {rule_data['name']}"))
+
+    def table_exists(self, table_name):
+        with connection.cursor() as cursor:
+            cursor.execute(f"SELECT COUNT(*) FROM information_schema.tables WHERE table_name = '{table_name}'")
+            return cursor.fetchone()[0] == 1
+        
+    def create_sample_reports(self):
+        # Ensure we have a user
+        user, created = User.objects.get_or_create(
+            email="admin@example.com",
+            defaults={'is_staff': True, 'is_superuser': True}
+        )
+        if created:
+            user.set_password('adminpassword')
+            user.save()
+
+        # Get all rules
+        rules = list(Rule.objects.all())
+
+        # Create sample reports
+        report_types = IncidentReport.ReportType.choices
+        report_statuses = IncidentReport.ReportStatus.choices
+
+        for i in range(20):  # Create 10 sample reports
+            report = IncidentReport.objects.create(
+                title=f"Sample Incident Report {i+1}",
+                type=random.choice(report_types)[0],
+                status=random.choice(report_statuses)[0],
+                user=user,
+                description=f"This is a sample incident report description for report {i+1}.",
+            )
+            # Assign 1-3 random rules to each report
+            report.rules.set(random.sample(rules, random.randint(1, 4)))
+            self.stdout.write(self.style.SUCCESS(f"Created sample report: {report.title}"))
 
     def table_exists(self, table_name):
         with connection.cursor() as cursor:

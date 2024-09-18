@@ -1,6 +1,3 @@
-
-# logs/models.py
-
 from django.db import models
 from utils.models import BaseModel
 
@@ -41,17 +38,6 @@ class BronzeEventData(BaseModel):
     def __str__(self):
         return f"{self.iso_timestamp} - {self.app_name} - {self.EventType}"
     
-## Duplicate why do we even need this one? Doesn't make sense
-## We can just use the BronzeEventData model
-## and add a field to indicate if the data has been processed
-# class EventData(BaseModel):
-#     event_id = models.AutoField(primary_key=True)
-#     timestamp = models.DateTimeField()
-#     # source = models.ForeignKey(BronzeEventData, on_delete=models.CASCADE)
-#     # rule = models.ForeignKey(Rule, on_delete=models.CASCADE)
-
-#     def __str__(self):
-#         return f"Event {self.id} - {self.timestamp}"
 
 class RouterData(BaseModel):
     created_at = models.DateTimeField(auto_now_add=True)

@@ -1,88 +1,215 @@
-import React from 'react';
-import {
+import React, { useState, useEffect } from 'react';
+import { 
   Typography,
+  TextField, 
+  Button, 
+  Chip, 
+  Select, 
+  MenuItem, 
+  FormControl, 
+  InputLabel,
+  Grid,
   Paper,
   Box,
-  Grid
+  Autocomplete,
+  useTheme
 } from '@mui/material';
+import { Save as SaveIcon } from '@mui/icons-material';
+import { format } from 'date-fns';
 
-const ReportViewer = ({ report }) => {
-  if (!report) return (
-    <Typography variant="body1">Select a report to view its details.</Typography>
-  );
+const reportTypes = [
+  'Security Incident',
+  'Network Traffic Analysis',
+  'User Activity',
+  'System Performance',
+  'Compliance Audit'
+];
 
+const reportStatuses = [
+  'Open',
+  'Draft',
+  'Pending',
+  'Approved',
+  'Rejected',
+  'Archived'
+];
 
-    const generatedDate = new Date().toLocaleString();
-
-  return (
-    <Paper elevation={0} id="report-content" sx={{ p: 3 }}>
-      <Typography 
-        variant="h4" 
-        sx={{ fontWeight: 'bold', color: 'primary.main' }}
-        gutterBottom>
-            {report.reportName}
-        </Typography>
-        <hr/>
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={6}>
-          <Box sx={{ mb: 2 }}>
-            <Typography variant="subtitle2">Status</Typography>
-            <Typography variant="body1" color={getStatusColor(report.status)}>
-              {report.status}
-            </Typography>
-          </Box>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Box sx={{ mb: 2 }}>
-            <Typography variant="subtitle2">Report Type</Typography>
-            <Typography variant="body1">{report.reportType}</Typography>
-          </Box>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Box sx={{ mb: 2 }}>
-            <Typography variant="subtitle2">Data Source</Typography>
-            <Typography variant="body1">{report.dataSource}</Typography>
-          </Box>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Box sx={{ mb: 2 }}>
-            <Typography variant="subtitle2">Rule ID</Typography>
-            <Typography variant="body1">{report.ruleId}</Typography>
-          </Box>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Box sx={{ mb: 2 }}>
-            <Typography variant="subtitle2">User ID</Typography>
-            <Typography variant="body1">{report.userId}</Typography>
-          </Box>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Box sx={{ mb: 2 }}>
-            <Typography variant="subtitle2">Generated at</Typography>
-            <Typography variant="body1">
-              {generatedDate}
-            </Typography>
-          </Box>
-        </Grid>
-        
-      </Grid>
-      <Box sx={{ mt: 2 }}>
-        <Typography variant="subtitle2">Description</Typography>
-        <Typography variant="body1">{report.description}</Typography>
-      </Box>
-    </Paper>
-  );
+const typeMapping = {
+  'security_incident': 'Security Incident',
+  'network_traffic': 'Network Traffic Analysis',
+  'user_activity': 'User Activity',
+  'system_performance': 'System Performance',
+  'compliance_audit': 'Compliance Audit'
 };
 
-const getStatusColor = (status) => {
-  switch (status.toLowerCase()) {
-    case 'draft': return 'textSecondary';
-    case 'pending review': return 'warning.main';
-    case 'approved': return 'success.main';
-    case 'rejected': return 'error.main';
-    case 'archived': return 'secondary.main';
-    default: return 'textPrimary';
-  }
+const statusMapping = {
+  'draft': 'Draft',
+  'pending': 'Pending',
+  'open': 'Open',
+  'approved': 'Approved',
+  'rejected': 'Rejected',
+  'closed': 'Approved',
+  'archived': 'Archived'
+};
+
+const ReportViewer = ({ report, onUpdate, rules }) => {
+  const [editedReport, setEditedReport] = useState({
+    ...report,
+    type: typeMapping[report.type] || '',
+    status: statusMapping[report.status] || '',
+    rules: report.rules || []
+  });
+
+  const theme = useTheme();
+
+  useEffect(() => {
+    setEditedReport({
+      ...report,
+      type: typeMapping[report.type] || '',
+      status: statusMapping[report.status] || '',
+      rules: report.rules || []
+    });
+  }, [report]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setEditedReport(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleRuleChange = (event, newValue) => {
+    setEditedReport(prev => ({
+      ...prev,
+      rules: newValue
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const updatedReport = {
+      ...editedReport,
+      type: Object.keys(typeMapping).find(key => typeMapping[key] === editedReport.type) || editedReport.type,
+      status: Object.keys(statusMapping).find(key => statusMapping[key] === editedReport.status) || editedReport.status,
+      rule_ids: editedReport.rules.map(rule => rule.id)
+    };
+    onUpdate(updatedReport);
+  };
+
+  return (
+    <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
+      <form onSubmit={handleSubmit}>
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <Typography variant="h5" color="primary" gutterBottom>
+              Report Details
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant="h6" color="text.primary">
+              ID: {report.id} - {report.title}
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant="body2" color="text.secondary">
+              Last Updated: {format(new Date(report.updated_at), 'PPP')}
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <FormControl fullWidth variant="outlined">
+              <InputLabel>Type</InputLabel>
+              <Select
+                name="type"
+                value={editedReport.type || ''}
+                onChange={handleChange}
+                label="Type"
+              >
+                {reportTypes.map((type) => (
+                  <MenuItem key={type} value={type}>{type}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <FormControl fullWidth variant="outlined">
+              <InputLabel>Status</InputLabel>
+              <Select
+                name="status"
+                value={editedReport.status || ''}
+                onChange={handleChange}
+                label="Status"
+              >
+                {reportStatuses.map((status) => (
+                  <MenuItem key={status} value={status}>{status}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12}>
+            <Autocomplete
+              multiple
+              id="rules-select"
+              options={rules}
+              getOptionLabel={(option) => `${option.id}: ${option.name}`}
+              value={editedReport.rules}
+              onChange={handleRuleChange}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  label="Rules"
+                />
+              )}
+              renderTags={(value, getTagProps) =>
+                value.map((option, index) => (
+                  <Chip
+                    variant="outlined"
+                    label={`${option.id}: ${option.name}`}
+                    {...getTagProps({ index })}
+                  />
+                ))
+              }
+            />
+        </Grid>
+          <Grid item xs={12}>
+            <TextField
+              name="description"
+              label="Description"
+              value={editedReport.description || ''}
+              onChange={handleChange}
+              fullWidth
+              multiline
+              rows={4}
+              variant="outlined"
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <Button 
+                type="submit" 
+                variant="contained" 
+                color="primary"
+                startIcon={<SaveIcon />}
+                sx={{
+                  mt: 2,
+                  px: 4,
+                  py: 1,
+                  borderRadius: 2,
+                  boxShadow: theme.shadows[2],
+                  '&:hover': {
+                    boxShadow: theme.shadows[4],
+                  },
+                }}
+              >
+                Update Report
+              </Button>
+            </Box>
+          </Grid>
+        </Grid>
+      </form>
+    </Paper>
+  );
 };
 
 export default ReportViewer;

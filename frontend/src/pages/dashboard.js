@@ -15,6 +15,7 @@ import {
   WarningAmber,
 }
 from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 import { Grid, Paper, Typography, Box, useTheme, Chip, IconButton } from '@mui/material';
 import { LogsPerHourChart, LogsByDeviceChart, CpuLoadChart, RamUsageChart, DiskUsageChart } from '../components/dashboardGraphs.js';
@@ -101,6 +102,11 @@ const Dashboard = () => {
       });
   }, []);
 
+  const navigate = useNavigate();
+  const handleViewMoreClick = () => {
+    navigate('/alerts');
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -157,7 +163,12 @@ const Dashboard = () => {
         ))}
       </Box>
       <Box sx={{ p: 1, textAlign: 'right' }}>
-        <Typography variant="body2" color="primary" sx={{ cursor: 'pointer' }}>
+        <Typography
+          variant="body2"
+          color="primary"
+          sx={{ cursor: 'pointer' }}
+          onClick={handleViewMoreClick}
+        >
           View more &gt;
         </Typography>
       </Box>
@@ -218,7 +229,7 @@ const Dashboard = () => {
             <LatestAlertsSection />
 
             {/* System Stats Section */}
-            <Paper sx={{ overflow: 'hidden' }}>
+            <Paper elevation={3} sx={{ overflow: 'hidden', borderRadius: 2 }}>
               <Box sx={{
                 p: 2,
                 backgroundColor: theme.palette.primary.main,

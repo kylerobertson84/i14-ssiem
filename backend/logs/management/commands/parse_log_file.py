@@ -179,17 +179,11 @@ def separate_head_body_msg_when_bug_in_log(line, char):
 def parse_line(line):
 
     try:
-        
-        
         if re.search(r'(?<!\S)-(?!\S)', line):
-
             separate_head_body_msg(line, ' - ')
-        
         else:
-
             separate_head_body_msg_when_bug_in_log(line, '} ')
             
-
     except Exception as e:
         print(f"Error processing line: {line}\nError: {e}")
 

@@ -12,7 +12,6 @@ dist
 
 # Log Processing Pipeline
 ## Setting default that all example log should be in preprocess_log_file
-preprocess_log_files/
 log_files/
 processed_log_files/
 
