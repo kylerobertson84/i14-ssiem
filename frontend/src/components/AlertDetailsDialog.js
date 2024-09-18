@@ -1,4 +1,7 @@
 
+
+// src/components/AlertDetailsDialog.js
+
 import React, { useState, useEffect } from 'react';
 import {
   Dialog,
@@ -19,6 +22,7 @@ import {
 
 import apiRequest from '../services/apiRequest';
 import API_ENDPOINTS from '../services/apiConfig';
+import { assignAlert } from '../services/apiService';
 
 const AlertDetailsDialog = ({ alert, open, onClose, onAssign }) => {
   const [assignee, setAssignee] = useState('');
@@ -29,8 +33,7 @@ const AlertDetailsDialog = ({ alert, open, onClose, onAssign }) => {
 
   useEffect(() => {
     if (open) {
-      // Fetch users when the dialog opens
-      apiRequest(API_ENDPOINTS.auth.createUser) 
+      apiRequest(API_ENDPOINTS.auth.users) // Fetch users endpoint
         .then((response) => {
           setUsers(response);
           setLoadingUsers(false);
@@ -52,29 +55,24 @@ const AlertDetailsDialog = ({ alert, open, onClose, onAssign }) => {
   if (!alert) return null;
 
   const handleAssign = () => {
-    // Find the selected user by user_id
-    const selectedUser = users.find(user => user.email === assignee);
-    
-    const payload = {
-      alert: alert.id,          
-      assigned_to: selectedUser ? selectedUser.user_id : '', // Get user_id instead of email
-      notes: comment,           
-      status: 'OPEN'             
-    };
-    console.log("alert id", alert.id)
+    const selectedUser = users.find(users => users.email === assignee);
   
-    console.log(selectedUser ? selectedUser.user_id : 'No assignee selected');
+    const payload = {
+      assigned_to: selectedUser ? selectedUser.user_id : '',
+      notes: comment
+    };
     
-    // Send the request to create the InvestigateAlert
-    apiRequest(API_ENDPOINTS.investigate.create, 'POST', payload)
+    console.log('Assign URL:', API_ENDPOINTS.alerts.assign(alert.id)); // Debug URL
+    console.log('Payload:', payload); // Debug payload
+
+    assignAlert(alert.id, payload)
       .then((response) => {
-        console.log('InvestigateAlert created successfully:', response);
-        onAssign(alert.id, selectedUser ? selectedUser.user_id : '', comment);  // Update the UI
-        onClose();  // Close the dialog
+        console.log('Alert assigned successfully:', response);
+        onAssign(alert.id, selectedUser ? selectedUser.user_id : '', comment);
+        onClose();
       })
       .catch((error) => {
-        console.error('Failed to create InvestigateAlert:', error);
-        // Handle error (e.g., show a message to the user)
+        console.error('Failed to assign alert:', error);
       });
   };
 
@@ -89,7 +87,6 @@ const AlertDetailsDialog = ({ alert, open, onClose, onAssign }) => {
     </Box>
   );
 
-  // Render Select options based on state
   const renderSelectOptions = () => {
     if (loadingUsers) {
       return <MenuItem value="">Loading...</MenuItem>;
@@ -99,9 +96,9 @@ const AlertDetailsDialog = ({ alert, open, onClose, onAssign }) => {
     }
     return [
       <MenuItem key="unassigned" value="">Unassigned</MenuItem>,
-      ...users.map(user => (
-        <MenuItem key={user.user_id} value={user.email}>
-          {user.email}
+      ...users.map(users => (
+        <MenuItem key={users.user_id} value={users.email}>
+          {users.email}
         </MenuItem>
       ))
     ];
@@ -136,7 +133,7 @@ const AlertDetailsDialog = ({ alert, open, onClose, onAssign }) => {
             value={assignee}
             onChange={(e) => setAssignee(e.target.value)}
             label="Assign To"
-            disabled={loadingUsers} // Disable Select while loading
+            disabled={loadingUsers}
           >
             {renderSelectOptions()}
           </Select>
