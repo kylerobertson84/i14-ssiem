@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import {
   Container,
@@ -22,34 +21,66 @@ import {
   Select,
   MenuItem,
   Grid,
-  Divider,
   Box
 } from '@mui/material';
 import { Search, CheckCircle, Error } from '@mui/icons-material';
-import '../Design/Investigation.css'
-
+import '../Design/Investigation.css';
 import { fetchInvestigations, updateInvestigationStatus } from '../services/apiService';
 
-const InvestigationPage = (alert) => {
+const InvestigationPage = () => {
   const theme = useTheme();
-  const [alertStatus, setAlertStatus] = useState('Open');
+  const [investigations, setInvestigations] = useState({ results: [], count: 0 });
+  const [alertStatus, setAlertStatus] = useState('OPEN');
   const [notes, setNotes] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedAlert, setSelectedAlert] = useState(null);
-  const [investigations, setInvestigations] = useState({ results: [], count: 0 });
 
-  const renderAlertDetail = (label, value) => (
-    <Box sx={{ mb: 2 }}>
-      <Typography variant="subtitle2" color="text.secondary">
-        {label}
-      </Typography>
-      <Typography variant="body1">
-        {value !== null && value !== undefined && value !== "" ? value.toString() : 'N/A'}
-      </Typography>
-    </Box>
-  );
+  useEffect(() => {
+    const loadInvestigations = async () => {
+      try {
+        const fetchedInvestigations = await fetchInvestigations();
+        console.log("Fetched Investigations: ", fetchedInvestigations.results);
+        setInvestigations(fetchedInvestigations);
+      } catch (error) {
+        console.error('Error loading investigations data', error);
+      }
+    };
+    loadInvestigations();
+  }, []);
+
+  useEffect(() => {
+    if (selectedAlert) {
+      console.log("Selected Alert:", selectedAlert);
+    }
+  }, [selectedAlert]);
+
+  const handleOpenDialog = (alert) => {
+    console.log('Opening Dialog with Alert:', alert);
+    setSelectedAlert(alert);
+    setAlertStatus(alert.status);
+    setNotes(alert.notes || '');
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
+  const handleStatusChange = (event) => {
+    const statusValue = event.target.value;
+    const mappedStatus = {
+      'Open': 'OPEN',
+      'In Progress': 'IN PROGRESS',
+      'Closed': 'CLOSED'
+    }[statusValue] || statusValue;
+    setAlertStatus(mappedStatus);
+  };
+
+  const handleNotesChange = (event) => {
+    setNotes(event.target.value);
+  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -60,77 +91,36 @@ const InvestigationPage = (alert) => {
     setPage(0);
   };
 
-  const handleOpenDialog = (alert) => {
-    setSelectedAlert(alert);
-    setAlertStatus(alert.status);
-    setNotes(alert.notes || '')
-    setOpenDialog(true);
-  };
-
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-  };
-
-  const handleStatusChange = (event) => {
-    const statusValue = event.target.value;
-    // Map display value to the backend value
-    const mappedStatus = {
-      'Open': 'OPEN',
-      'In Progress': 'IN PROGRESS',
-      'Closed': 'CLOSED'
-    }[statusValue] || statusValue;
-
-    setAlertStatus(mappedStatus);
-  };
-
-  const handleNotesChange = (event) => {
-    setNotes(event.target.value);
-  };
-
-  // Function to load investigation data
-  const loadData = async () => {
-    try {
-      const fetchedInvestigations = await fetchInvestigations();
-      setInvestigations(fetchedInvestigations);
-      console.log(fetchedInvestigations.results);
-    } catch (error) {
-      console.error('Error loading investigations data', error);
-    }
-  };
-
   const handleUpdateStatus = async () => {
     if (selectedAlert) {
       try {
-        await updateInvestigationStatus(selectedAlert.id, { status: alertStatus, notes: notes });
+        await updateInvestigationStatus(selectedAlert.id, { status: alertStatus, notes });
         setOpenDialog(false);
-        loadData();
+        const updatedInvestigations = await fetchInvestigations();
+        setInvestigations(updatedInvestigations);
       } catch (error) {
         console.error('Error updating status', error);
       }
     }
   };
 
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const fetchedInvestigations = await fetchInvestigations();
-        setInvestigations(fetchedInvestigations);
-        console.log(fetchedInvestigations.results);
-      } catch (error) {
-        console.error('Error loading investigations data', error);
-      }
-    };
-
-    loadData();
-  }, []);
-
-  
+  const renderAlertDetail = (label, value) => (
+    <Box sx={{ mb: 2 }}>
+      <Typography variant="subtitle2" color="text.secondary">
+        {label}
+      </Typography>
+      <Typography variant="body1">
+        {value || 'N/A'}
+      </Typography>
+    </Box>
+  );
 
   return (
     <Container maxWidth="xlg" className="investigation-page">
       <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 4, fontWeight: 'bold' }}>
         Investigations
       </Typography>
+
       <Paper elevation={3}>
         <TableContainer>
           <Table>
@@ -145,25 +135,26 @@ const InvestigationPage = (alert) => {
                 <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Action</TableCell>
               </TableRow>
             </TableHead>
+
             <TableBody>
-              {investigations.results && investigations.results.length > 0 ? (
+              {investigations.results.length > 0 ? (
                 investigations.results
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((results) => (
-                    <TableRow key={results.id}>
-                      <TableCell>{results.id}</TableCell>
-                      <TableCell>{results.alert.event.hostname}</TableCell>
-                      <TableCell><strong>{results.alert.rule}</strong></TableCell>
+                  .map((result) => (
+                    <TableRow key={result.id}>
+                      <TableCell>{result.id}</TableCell>
+                      <TableCell>{result.alert?.event?.hostname || 'N/A'}</TableCell>
+                      <TableCell>{result.alert?.rule || 'N/A'}</TableCell>
                       <TableCell>
-                        {results.status === 'Open' || results.status === 'OPEN' && <Error color="error" />}
-                        {results.status === 'In Progress' || results.status === 'IN PROGRESS' && <Search color="warning" />}
-                        {results.status === 'Closed' || results.status === 'CLOSED' && <CheckCircle color="success" />}
-                        {' '}{results.status}
+                        {result.status === 'OPEN' && <Error color="error" />}
+                        {result.status === 'IN PROGRESS' && <Search color="warning" />}
+                        {result.status === 'CLOSED' && <CheckCircle color="success" />}
+                        {' '}{result.status}
                       </TableCell>
-                      <TableCell>{results.alert.created_at}</TableCell>
-                      <TableCell>{results.assigned_to?.email || 'Unassigned'}</TableCell>
+                      <TableCell>{new Date(result.alert?.created_at).toLocaleString()}</TableCell>
+                      <TableCell>{result.assigned_to?.email || 'Unassigned'}</TableCell>
                       <TableCell>
-                        <Button variant="contained" color="primary" onClick={() => handleOpenDialog(results)}>
+                        <Button variant="contained" color="primary" onClick={() => handleOpenDialog(result)}>
                           Investigate
                         </Button>
                       </TableCell>
@@ -177,6 +168,7 @@ const InvestigationPage = (alert) => {
             </TableBody>
           </Table>
         </TableContainer>
+
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
@@ -190,64 +182,52 @@ const InvestigationPage = (alert) => {
 
       {/* Dialog for investigation */}
       <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="md" fullWidth>
-        <DialogTitle>
-          <Typography variant="h5" component="div" gutterBottom>
-            Investigate Alert
-          </Typography>
-        </DialogTitle>
+        <DialogTitle>Investigate Alert</DialogTitle>
         <DialogContent>
-        <Paper sx={{ p: 2, mb: 2 }}>
-      <Grid container spacing={2}>
-        <Grid item xs={12} md={6}>
-          {renderAlertDetail("Alert ID", selectedAlert?.id)}
-          {renderAlertDetail("Created At", new Date(selectedAlert?.created_at).toLocaleString())}
-          {renderAlertDetail("Severity", selectedAlert?.severity)}
-        </Grid>
-        <Grid item xs={12} md={6}>
-          {renderAlertDetail("Hostname", selectedAlert?.event?.hostname)}
-          {renderAlertDetail("Event ID", selectedAlert?.event?.EventID)}
-          {renderAlertDetail("User ID", selectedAlert?.event?.UserID)}
-        </Grid>
-        <Grid item xs={12}>
-          {renderAlertDetail("Rule", selectedAlert?.rule?.name || selectedAlert?.rule)}
-        </Grid>
-      </Grid>
-    </Paper>
-          {selectedAlert && (
-            <Box sx={{ mt: 2 }}>
-              <FormControl fullWidth>
-                <Typography variant="subtitle1" sx={{ mb: 2 }}>Change Status</Typography>
-                <Select value={alertStatus} onChange={handleStatusChange}>
-                  <MenuItem value="OPEN">Open</MenuItem>
-                  <MenuItem value="IN PROGRESS">In Progress</MenuItem>
-                  <MenuItem value="CLOSED">Closed</MenuItem>
-                </Select>
+          <Paper sx={{ p: 2, mb: 2 }}>
+            <Grid container spacing={2}>
+              <Grid item xs={12} md={6}>
+                {renderAlertDetail("Alert ID", selectedAlert?.alert?.id)}
+                {renderAlertDetail("Created At", new Date(selectedAlert?.alert?.created_at).toLocaleString())}
+                {renderAlertDetail("Severity", selectedAlert?.alert?.severity)}
+              </Grid>
+              <Grid item xs={12} md={6}>
+                {renderAlertDetail("Hostname", selectedAlert?.alert?.event?.hostname)}
+                {renderAlertDetail("Event ID", selectedAlert?.alert?.event?.EventID)}
+                {renderAlertDetail("User ID", selectedAlert?.alert?.event?.UserID || "N/A")}
+              </Grid>
+              <Grid item xs={12}>
+                {renderAlertDetail("Rule", selectedAlert?.alert?.rule)}
+              </Grid>
+            </Grid>
+          </Paper>
 
-              </FormControl>
-              {/* TextField for editing notes */}
-              <FormControl fullWidth sx={{ mt: 4 }}>
-                <Typography variant="subtitle1" sx={{ mb: 2 }}>Notes</Typography>
-                <TextField
-                  multiline
-                  minRows={3}
-                  value={notes} // Bind notes to the TextField
-                  onChange={handleNotesChange} // Update notes on change
-                  placeholder="Add investigation notes here"
-                />
-              </FormControl>
-            </Box>
-          )}
+          <FormControl fullWidth sx={{ mt: 2 }}>
+            <Typography variant="subtitle1" sx={{ mb: 2 }}>Change Status</Typography>
+            <Select value={alertStatus} onChange={handleStatusChange}>
+              <MenuItem value="OPEN">Open</MenuItem>
+              <MenuItem value="IN PROGRESS">In Progress</MenuItem>
+              <MenuItem value="CLOSED">Closed</MenuItem>
+            </Select>
+          </FormControl>
+
+          <FormControl fullWidth sx={{ mt: 4 }}>
+            <Typography variant="subtitle1" sx={{ mb: 2 }}>Notes</Typography>
+            <TextField
+              multiline
+              minRows={3}
+              value={notes}
+              onChange={handleNotesChange}
+              placeholder="Add investigation notes here"
+            />
+          </FormControl>
         </DialogContent>
+
         <DialogActions>
-          <Button onClick={handleCloseDialog} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleUpdateStatus} color="primary" variant="contained">
-            Update
-          </Button>
+          <Button onClick={handleCloseDialog} color="primary">Cancel</Button>
+          <Button onClick={handleUpdateStatus} color="primary" variant="contained">Update</Button>
         </DialogActions>
       </Dialog>
-
     </Container>
   );
 };
