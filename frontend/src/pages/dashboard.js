@@ -200,8 +200,8 @@ const Dashboard = () => {
               <InfoCard title="Logs" value={recordCount + routerLogCount} icon={Notes} />
               <InfoCard title="Events per Day" value={eventsToday.events_today} icon={EditCalendar} />
 
-              <InfoCard title="Open Investigations" value={investigationCount.other_status_count} icon={Search} />
-              <InfoCard title="In Progress Investigations" value={investigationCount.other_status_count} icon={Search} />
+              <InfoCard title="Open Investigations" value={investigationCount.open_count} icon={Search} />
+              <InfoCard title="In Progress Investigations" value={investigationCount.in_progress_count} icon={Search} />
               <InfoCard title="Closed Investigations" value={investigationCount.closed_count} icon={AssignmentTurnedInOutlined} />
               {/* Graphs Section */}
               <Grid item xs={12} md={6}>
