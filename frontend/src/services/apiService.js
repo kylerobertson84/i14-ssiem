@@ -1,7 +1,3 @@
-
-
-// src/services/apiService.js
-
 import apiRequest from './apiRequest';
 import API_ENDPOINTS from './apiConfig';
 
@@ -42,8 +38,6 @@ export const fetchHostnameCount = () => {
 export const fetchInvestigationsCount = () => {
   return apiRequest(API_ENDPOINTS.investigate.count)
 }
-
-
 
 // API services for logs
 export const fetchComputerLogs = (searchParams, page = 1, pageSize = 10) => {
@@ -116,15 +110,10 @@ export const assignAlert = (alertId, data) => {
   return apiRequest(API_ENDPOINTS.alerts.assign(alertId), 'POST', data);
 };
 
-// ===============
-
-
 // API services for rules
 export const fetchRules = () => {
   return apiRequest(API_ENDPOINTS.rules.base);
 };
-
-// API services for investigations
 
 // API services for reports
 export const fetchReports = (page = 1, pageSize = 10, search = '', type = '', status = '', lastUpdate = '', orderBy = 'updated_at', order = 'desc') => {

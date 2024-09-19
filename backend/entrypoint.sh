@@ -39,14 +39,18 @@ EOF
     fi
 fi
 
-log "Parsing UDP data... Look for UDP data at port 514"
-# if ! python manage.py udp_parse; then
-#     log "Failed to parse UDP data"
-#     exit 1
-# fi
+# Create superuser if it doesn't exist
+log "Creating superuser..."
+if ! python manage.py create_superuser; then
+    log "Superuser creation failed or already exists."
+fi
+
+# Start UDP parser in the background
+log "Starting UDP parser..."
+python manage.py udp_parse &
 
 log "Creating rules..."
-if ! python manage.py create_rules; then
+if ! python manage.py create_rules_preload_reports; then
     log "Failed to create rules"
     exit 1
 fi
@@ -57,15 +61,6 @@ if ! python manage.py setup_roles_permissions; then
     exit 1
 fi
 
-# Create superuser if it doesn't exist
-log "Creating superuser..."
-if ! python manage.py create_superuser; then
-    log "Superuser creation failed or already exists."
-fi
-
-# Start Gunicorn - offering better performance than Django's built-in server
+# Start Gunicorn
 log "Starting Gunicorn server..."
 exec gunicorn siem.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 120 --access-logfile '-' --error-logfile '-'
-
-log "Starting server..."
-exec "$@"
