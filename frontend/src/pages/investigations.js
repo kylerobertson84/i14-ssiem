@@ -70,12 +70,23 @@ const InvestigationPage = () => {
     setAlertStatus(mappedStatus);
   };
 
+  // Function to load investigation data
+  const loadData = async () => {
+    try {
+      const fetchedInvestigations = await fetchInvestigations();
+      setInvestigations(fetchedInvestigations);
+      console.log(fetchedInvestigations.results);
+    } catch (error) {
+      console.error('Error loading investigations data', error);
+    }
+  };
+
   const handleUpdateStatus = async () => {
     if (selectedAlert) {
       try {
         await updateInvestigationStatus(selectedAlert.id, { status: alertStatus });
         setOpenDialog(false);
-        // Optionally reload the data after updating the status
+        loadData();
       } catch (error) {
         console.error('Error updating status', error);
       }
