@@ -1,12 +1,11 @@
-
-# accounts/permissions.py
-
 from rest_framework import permissions
 
-class HasRolePermission(permissions.BasePermission):
+class RoleBasedPermission(permissions.BasePermission):
     def has_permission(self, request, view):
-        return request.user.is_authenticated and request.user.role is not None
+        # Allow all authenticated users to perform read operations
+        if request.method in permissions.SAFE_METHODS:
+            return request.user.is_authenticated
 
-class IsAdminUser(permissions.BasePermission):
-    def has_permission(self, request, view):
-        return request.user.is_authenticated and request.user.role and request.user.role.name == 'ADMIN'
+        # Check if user has the required role for other operations
+        required_roles = getattr(view, 'required_roles', [])
+        return request.user.is_authenticated and (request.user.role.name in required_roles if request.user.role else False)

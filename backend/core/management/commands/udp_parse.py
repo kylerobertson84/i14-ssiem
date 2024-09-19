@@ -1,25 +1,137 @@
 import socket
 import re
+import signal
+import sys
 from datetime import datetime
 import pytz
+import django
+from django.conf import settings
+import logging
+import os
 from django.core.management.base import BaseCommand
-from logs.models import *
-from logs.management.commands.constants import BODY_KEY_SET
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+# Set up Django environment
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "your_project.settings")
+django.setup()
+
+# Try to import BODY_KEY_SET, use an empty set if import fails
+try:
+    from logs.management.commands.constants import BODY_KEY_SET
+except ImportError:
+    logger.warning("Could not import BODY_KEY_SET. Using an empty set instead.")
+    BODY_KEY_SET = set()
+
+# Ensure the logs app is in INSTALLED_APPS
+if 'logs' not in settings.INSTALLED_APPS:
+    raise ImportError("The 'logs' app is not in INSTALLED_APPS. Please add it to your settings.")
+
+from logs.models import BronzeEventData, RouterData
 
 # constant regular expressions
-
 SEVERITY_RE = r'(?<=\>)'
 DATE_TIME_RE = r'(\w{3}\s+\d{1,2}\s+\d{2}:\d{2}:\d{2})'
 
-class Command(BaseCommand):
-    help = 'Runs the UDP parser script'
-
-    def handle(self, *args, **kwargs):
-        server = SyslogUDPServer(host="0.0.0.0", port=514)
-        server.start()
-
-
 class SyslogUDPServer:
+    def __init__(self, host="0.0.0.0", port=514):
+        self.host = host
+        self.port = port
+        self.sock = None
+        self.is_running = False
+
+    def start(self):
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.sock.bind((self.host, self.port))
+        self.sock.settimeout(1)  # Set a timeout to allow checking is_running
+
+        logger.info(f"Listening for UDP syslog messages on {self.host}:{self.port}...")
+        self.is_running = True
+
+        while self.is_running:
+            try:
+                data, addr = self.sock.recvfrom(4096)
+                syslog_message = data.decode('utf-8').strip()
+                
+                if "NXLOG" in syslog_message:
+                    parse_line(syslog_message)
+                else:
+                    parse_router_line(syslog_message)
+
+                logger.debug(f"Received message from {addr}: {syslog_message}")
+            except socket.timeout:
+                continue
+            except Exception as e:
+                logger.error(f"Error processing message: {e}")
+
+        self.sock.close()
+        logger.info("UDP server stopped.")
+
+    def stop(self):
+        self.is_running = False
+        if self.sock:
+            self.sock.close()
+    def __init__(self, host="0.0.0.0", port=514):
+        self.host = host
+        self.port = port
+        self.is_running = False
+
+    def start(self):
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.bind((self.host, self.port))
+        sock.settimeout(1)  # Set a timeout to allow checking is_running
+
+        logger.info(f"Listening for UDP syslog messages on {self.host}:{self.port}...")
+        self.is_running = True
+
+        while self.is_running:
+            try:
+                data, addr = sock.recvfrom(4096)
+                syslog_message = data.decode('utf-8').strip()
+                
+                if "NXLOG" in syslog_message:
+                    parse_line(syslog_message)
+                else:
+                    parse_router_line(syslog_message)
+
+                logger.debug(f"Received message from {addr}: {syslog_message}")
+            except socket.timeout:
+                continue
+            except Exception as e:
+                logger.error(f"Error processing message: {e}")
+
+        sock.close()
+        logger.info("UDP server stopped.")
+
+    def stop(self):
+        self.is_running = False
+    def __init__(self, host="0.0.0.0", port=514):
+        self.host = host
+        self.port = port
+
+    def start(self):
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.bind((self.host, self.port))
+
+        self.stdout.write(self.style.SUCCESS(f"Listening for UDP syslog messages on {self.host}:{self.port}..."))
+        try:
+            while True:
+                data, addr = sock.recvfrom(4096)
+                syslog_message = data.decode('utf-8').strip()
+                
+                if "NXLOG" in syslog_message:
+                    parse_line(syslog_message)
+                else:
+                    parse_router_line(syslog_message)
+
+                self.stdout.write(f"Received message from {addr}: {syslog_message}")
+        except KeyboardInterrupt:
+            self.stdout.write(self.style.WARNING("\nServer stopped."))
+        finally:
+            sock.close()
+
     def __init__(self, host="0.0.0.0", port=514):
         self.host = host
         self.port = port
@@ -290,8 +402,6 @@ def parse_router_line(line):
     except Exception as e:
         print(f"Error processing line: {line}\nError: {e}")
 
-
-
 def parse_line(line):
     try:
         if re.search(r'(?<!\S)-(?!\S)', line):
@@ -299,9 +409,42 @@ def parse_line(line):
         else:
             separate_head_body_msg_when_bug_in_log(line, '} ')
     except Exception as e:
-        print(f"Error processing line: {line}\nError: {e}")
+        logger.error(f"Error processing line: {line}\nError: {e}")
 
+def signal_handler(signum, frame):
+    logger.info(f"Received signal {signum}. Shutting down...")
+    if server:
+        server.stop()
+    sys.exit(0)
 
+class Command(BaseCommand):
+    help = 'Runs the UDP parser script'
+
+    def handle(self, *args, **options):
+        def signal_handler(signum, frame):
+            logger.info(f"Received signal {signum}. Shutting down...")
+            if server:
+                server.stop()
+
+        signal.signal(signal.SIGTERM, signal_handler)
+        signal.signal(signal.SIGINT, signal_handler)
+
+        server = SyslogUDPServer(host="0.0.0.0", port=514)
+        try:
+            self.stdout.write(self.style.SUCCESS('Starting UDP server...'))
+            server.start()
+        except Exception as e:
+            logger.error(f"Error starting server: {e}")
+            self.stderr.write(self.style.ERROR(f'Failed to start UDP server: {e}'))
+            sys.exit(1)
+            
 if __name__ == "__main__":
+    signal.signal(signal.SIGTERM, signal_handler)
+    signal.signal(signal.SIGINT, signal_handler)
+
     server = SyslogUDPServer(host="0.0.0.0", port=514)
-    server.start()
+    try:
+        server.start()
+    except Exception as e:
+        logger.error(f"Error starting server: {e}")
+        sys.exit(1)

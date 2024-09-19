@@ -1,13 +1,11 @@
 from rest_framework import viewsets, filters, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet, CharFilter
 from utils.baseViewThrottle import BaseViewThrottleSet
 from .models import Alert, InvestigateAlert, InvestigationStatus
 from .serializers import AlertSerializer, InvestigateAlertSerializer
 from utils.pagination import StandardResultsSetPagination
-from accounts.permissions import HasRolePermission
 from accounts.models import User
 
 class AlertFilter(FilterSet):
@@ -31,36 +29,27 @@ class BaseAlertViewSet(BaseViewThrottleSet):
     pagination_class = StandardResultsSetPagination
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
 
-    def get_permissions(self):
-        permission_classes = self.permission_classes or [IsAuthenticated]
-        return [permission() for permission in permission_classes]
-
 
 class AlertViewSet(BaseAlertViewSet):
     queryset = Alert.objects.all()
     serializer_class = AlertSerializer
-    permission_classes = [IsAuthenticated]
     filterset_class = AlertFilter
     ordering_fields = ['created_at', 'severity']
     search_fields = ['event__EventID', 'event__UserID', 'event__hostname', 'rule__name']
 
-    @action(detail=True, methods=['post'], permission_classes=[IsAdminUser])
+    @action(detail=True, methods=['post'])
     def assign(self, request, pk=None):
-        # Only allow admins to assign alerts
         alert = self.get_object()
         
-        # Retrieve the analyst ID from the request data
         assigned_to_id = request.data.get('assigned_to')
         if not assigned_to_id:
             return Response({'error': 'No analyst ID provided'}, status=status.HTTP_400_BAD_REQUEST)
         
         try:
-            # Get the analyst user object
             assigned_to = User.objects.get(pk=assigned_to_id)
         except User.DoesNotExist:
             return Response({'error': 'Analyst not found'}, status=status.HTTP_404_NOT_FOUND)
         
-        # Create or update InvestigateAlert for the alert
         investigate_alert, created = InvestigateAlert.objects.get_or_create(
             alert=alert,
             defaults={'assigned_to': assigned_to}
@@ -69,7 +58,6 @@ class AlertViewSet(BaseAlertViewSet):
         if created:
             return Response({'status': 'Alert assigned successfully'}, status=status.HTTP_201_CREATED)
         else:
-            # Update the assignment if it already exists
             investigate_alert.assigned_to = assigned_to
             investigate_alert.save()
             return Response({'status': 'Alert reassigned successfully'}, status=status.HTTP_200_OK)
@@ -90,7 +78,6 @@ class AlertViewSet(BaseAlertViewSet):
 class InvestigateAlertViewSet(BaseAlertViewSet):
     queryset = InvestigateAlert.objects.all()
     serializer_class = InvestigateAlertSerializer
-    permission_classes = [IsAuthenticated]
     filterset_class = InvestigateAlertFilter 
     ordering_fields = ['created_at', 'updated_at']
 

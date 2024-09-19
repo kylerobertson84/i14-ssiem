@@ -1,4 +1,5 @@
 
+
 // src/services/apiService.js
 
 import apiRequest from './apiRequest';
@@ -82,6 +83,42 @@ export const exportPDF = (logType, searchParams) => {
   return apiRequest(`${endpoint}?${params}`, 'GET', null, { responseType: 'blob' });
 };
 
+// API services investigations page
+
+export const fetchInvestigations = () => {
+  return apiRequest(API_ENDPOINTS.investigate.base)
+}
+
+// API services for creating a user
+
+export const createUser = (userData) => {
+  return apiRequest(API_ENDPOINTS.auth.createUser, 'POST', userData);
+};
+
+export const fetchAlerts = (page = 1, pageSize = 10, search = '', severity = '', orderBy = 'created_at', order = 'desc') => {
+  const params = new URLSearchParams({
+    page,
+    page_size: pageSize,
+    search,
+    severity,
+    ordering: order === 'desc' ? `-${orderBy}` : orderBy
+  });
+  return apiRequest(`${API_ENDPOINTS.alerts.base}?${params}`);
+};
+
+// Assuming `alertId` is defined and has a valid value
+export const updateAlert = (alertId, data) => {
+  return apiRequest(`${API_ENDPOINTS.alerts.base}${alertId}/`, 'PATCH', data);
+};
+
+// New API service for assigning alerts
+export const assignAlert = (alertId, data) => {
+  return apiRequest(API_ENDPOINTS.alerts.assign(alertId), 'POST', data);
+};
+
+// ===============
+
+
 // API services for rules
 export const fetchRules = () => {
   return apiRequest(API_ENDPOINTS.rules.base);
@@ -143,35 +180,9 @@ export const deleteReport = (reportId) => {
   return apiRequest(`${API_ENDPOINTS.reports.base}${reportId}/delete_report/`, 'DELETE');
 };
 
-// API services investigations page
+// API service for updating the investigation status
 
-export const fetchInvestigations = () => {
-  return apiRequest(API_ENDPOINTS.investigate.base)
-}
-
-// API services for creating a user
-
-export const createUser = (userData) => {
-  return apiRequest(API_ENDPOINTS.auth.createUser, 'POST', userData);
-};
-
-export const fetchAlerts = (page = 1, pageSize = 10, search = '', severity = '', orderBy = 'created_at', order = 'desc') => {
-  const params = new URLSearchParams({
-    page,
-    page_size: pageSize,
-    search,
-    severity,
-    ordering: order === 'desc' ? `-${orderBy}` : orderBy
-  });
-  return apiRequest(`${API_ENDPOINTS.alerts.base}?${params}`);
-};
-
-// Assuming `alertId` is defined and has a valid value
-export const updateAlert = (alertId, data) => {
-  return apiRequest(`${API_ENDPOINTS.alerts.base}${alertId}/`, 'PATCH', data);
-};
-
-// New API service for assigning alerts
-export const assignAlert = (alertId, data) => {
-  return apiRequest(API_ENDPOINTS.alerts.assign(alertId), 'POST', data);
+export const updateInvestigationStatus = (id, data) => {
+  const url = `${API_ENDPOINTS.investigate.base}${id}/`;
+  return apiRequest(url, 'PATCH', data); // Specify PATCH method
 };

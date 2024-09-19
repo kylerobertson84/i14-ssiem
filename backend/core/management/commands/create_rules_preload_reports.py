@@ -177,7 +177,7 @@ class Command(BaseCommand):
             defaults={'is_staff': True, 'is_superuser': True}
         )
         if created:
-            user.set_password('adminpassword')
+            user.set_password('admin')
             user.save()
 
         # Get all rules
