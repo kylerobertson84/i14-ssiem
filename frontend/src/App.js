@@ -13,23 +13,30 @@ import Navbar from './components/NavBar';
 import AdminPage from './pages/admin.js';
 import theme from './Design/Theme.js';
 
+import PrivateRoute from './components/PrivateRoute';
+import ProtectedLayout from './components/ProtectedLayout';
+
 const App = () => (
   <ThemeProvider theme={theme}>
     <CssBaseline />
     <Router>
       <div className="app">
-        <Navbar />
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/investigations" element={<Investigations />} />
-            <Route path="/queries" element={<Queries />} />
-            <Route path="/reports" element={<Reports />} />
-            <Route path='/alerts' element={<Alerts/>} />
-            <Route path='/preferences' element={<Preferences/>} />
-            <Route path="/admin" element={<AdminPage />} />
-            <Route path="/" element={<Navigate replace to="/login" />} />
-          </Routes>
+        {/* <Navbar /> */}
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route element={<PrivateRoute />}>
+            <Route element={<ProtectedLayout />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/investigations" element={<Investigations />} />
+              <Route path="/queries" element={<Queries />} />
+              <Route path="/reports" element={<Reports />} />
+              <Route path='/alerts' element={<Alerts />} />
+              <Route path='/preferences' element={<Preferences />} />
+              <Route path="/admin" element={<AdminPage />} />
+              <Route path="/" element={<Navigate replace to="/login" />} />
+            </Route>
+          </Route>
+        </Routes>
         <Footer />
       </div>
     </Router>
