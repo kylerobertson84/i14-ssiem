@@ -1,14 +1,14 @@
 
 import React, { useState, useEffect } from 'react';
-import { 
-  Container, 
-  Typography, 
-  Paper, 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableContainer, 
-  TableHead, 
+import {
+  Container,
+  Typography,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
   TableRow,
   TablePagination,
   Button,
@@ -59,8 +59,16 @@ const InvestigationPage = () => {
   };
 
   const handleStatusChange = (event) => {
-    setAlertStatus(event.target.value);
-  }
+    const statusValue = event.target.value;
+    // Map display value to the backend value
+    const mappedStatus = {
+      'Open': 'OPEN',
+      'In Progress': 'IN PROGRESS',
+      'Closed': 'CLOSED'
+    }[statusValue] || statusValue;
+
+    setAlertStatus(mappedStatus);
+  };
 
   const handleUpdateStatus = async () => {
     if (selectedAlert) {
@@ -163,10 +171,11 @@ const InvestigationPage = () => {
               <FormControl fullWidth>
                 <Typography variant="subtitle1" sx={{ mb: 2 }}>Change Status</Typography>
                 <Select value={alertStatus} onChange={handleStatusChange}>
-                  <MenuItem value="Open">Open</MenuItem>
-                  <MenuItem value="In Progress">In Progress</MenuItem>
-                  <MenuItem value="Closed">Closed</MenuItem>
+                  <MenuItem value="OPEN">Open</MenuItem>
+                  <MenuItem value="IN PROGRESS">In Progress</MenuItem>
+                  <MenuItem value="CLOSED">Closed</MenuItem>
                 </Select>
+
               </FormControl>
             </Box>
           )}

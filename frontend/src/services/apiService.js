@@ -181,7 +181,8 @@ export const deleteReport = (reportId) => {
 };
 
 // API service for updating the investigation status
-export const updateInvestigationStatus = (investigationId, status) => {
-  const url = `${API_ENDPOINTS.investigate.base}${investigationId}/`;
-  return apiRequest(url, 'PATCH', { status });
+
+export const updateInvestigationStatus = (id, data) => {
+  const url = `${API_ENDPOINTS.investigate.base}${id}/`;
+  return apiRequest(url, 'PATCH', data); // Specify PATCH method
 };
