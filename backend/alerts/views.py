@@ -97,9 +97,11 @@ class InvestigateAlertViewSet(BaseAlertViewSet):
     @action(detail=False, methods=['get'])
     def investigation_status_count(self, request):
         closed_count = InvestigateAlert.objects.filter(status=InvestigationStatus.CLOSED).count()
-        other_status_count = InvestigateAlert.objects.exclude(status=InvestigationStatus.CLOSED).count()
+        open_count = InvestigateAlert.objects.filter(status=InvestigationStatus.OPEN).count()
+        in_progress_count = InvestigateAlert.objects.filter(status=InvestigationStatus.IN_PROGRESS).count()
 
         return Response({
             'closed_count': closed_count,
-            'other_status_count': other_status_count
+            'open_count': open_count,
+            'in_progress_count': in_progress_count,
         })
