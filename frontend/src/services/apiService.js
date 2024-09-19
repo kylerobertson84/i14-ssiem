@@ -179,3 +179,9 @@ export const generateReportPDF = (reportId) => {
 export const deleteReport = (reportId) => {
   return apiRequest(`${API_ENDPOINTS.reports.base}${reportId}/delete_report/`, 'DELETE');
 };
+
+// API service for updating the investigation status
+export const updateInvestigationStatus = (investigationId, status) => {
+  const url = `${API_ENDPOINTS.investigate.base}${investigationId}/`;
+  return apiRequest(url, 'PATCH', { status });
+};

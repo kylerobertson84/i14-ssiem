@@ -28,7 +28,7 @@ import {
 import { Search, CheckCircle, Error } from '@mui/icons-material';
 import '../Design/Investigation.css'
 
-import { fetchInvestigations } from '../services/apiService';
+import { fetchInvestigations, updateInvestigationStatus } from '../services/apiService';
 
 const InvestigationPage = () => {
   const theme = useTheme();
@@ -50,6 +50,7 @@ const InvestigationPage = () => {
 
   const handleOpenDialog = (alert) => {
     setSelectedAlert(alert);
+    setAlertStatus(alert.status);
     setOpenDialog(true);
   };
 
@@ -60,6 +61,18 @@ const InvestigationPage = () => {
   const handleStatusChange = (event) => {
     setAlertStatus(event.target.value);
   }
+
+  const handleUpdateStatus = async () => {
+    if (selectedAlert) {
+      try {
+        await updateInvestigationStatus(selectedAlert.id, { status: alertStatus });
+        setOpenDialog(false);
+        // Optionally reload the data after updating the status
+      } catch (error) {
+        console.error('Error updating status', error);
+      }
+    }
+  };
 
   useEffect(() => {
     const loadData = async () => {
@@ -147,7 +160,14 @@ const InvestigationPage = () => {
         <DialogContent>
           {selectedAlert && (
             <Box sx={{ mt: 2 }}>
-              {/* Dialog content */}
+              <FormControl fullWidth>
+                <Typography variant="subtitle1" sx={{ mb: 2 }}>Change Status</Typography>
+                <Select value={alertStatus} onChange={handleStatusChange}>
+                  <MenuItem value="Open">Open</MenuItem>
+                  <MenuItem value="In Progress">In Progress</MenuItem>
+                  <MenuItem value="Closed">Closed</MenuItem>
+                </Select>
+              </FormControl>
             </Box>
           )}
         </DialogContent>
@@ -155,11 +175,12 @@ const InvestigationPage = () => {
           <Button onClick={handleCloseDialog} color="primary">
             Cancel
           </Button>
-          <Button onClick={handleCloseDialog} color="primary" variant="contained">
+          <Button onClick={handleUpdateStatus} color="primary" variant="contained">
             Update
           </Button>
         </DialogActions>
       </Dialog>
+
     </Container>
   );
 };
