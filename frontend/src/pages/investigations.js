@@ -30,7 +30,7 @@ import '../Design/Investigation.css'
 
 import { fetchInvestigations, updateInvestigationStatus } from '../services/apiService';
 
-const InvestigationPage = () => {
+const InvestigationPage = (alert) => {
   const theme = useTheme();
   const [alertStatus, setAlertStatus] = useState('Open');
   const [notes, setNotes] = useState('');
@@ -39,6 +39,17 @@ const InvestigationPage = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedAlert, setSelectedAlert] = useState(null);
   const [investigations, setInvestigations] = useState({ results: [], count: 0 });
+
+  const renderAlertDetail = (label, value) => (
+    <Box sx={{ mb: 2 }}>
+      <Typography variant="subtitle2" color="text.secondary">
+        {label}
+      </Typography>
+      <Typography variant="body1">
+        {value !== null && value !== undefined && value !== "" ? value.toString() : 'N/A'}
+      </Typography>
+    </Box>
+  );
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -73,7 +84,7 @@ const InvestigationPage = () => {
   };
 
   const handleNotesChange = (event) => {
-    setNotes(event.target.value); 
+    setNotes(event.target.value);
   };
 
   // Function to load investigation data
@@ -112,6 +123,8 @@ const InvestigationPage = () => {
 
     loadData();
   }, []);
+
+  
 
   return (
     <Container maxWidth="xlg" className="investigation-page">
@@ -183,6 +196,23 @@ const InvestigationPage = () => {
           </Typography>
         </DialogTitle>
         <DialogContent>
+        <Paper sx={{ p: 2, mb: 2 }}>
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={6}>
+          {renderAlertDetail("Alert ID", selectedAlert?.id)}
+          {renderAlertDetail("Created At", new Date(selectedAlert?.created_at).toLocaleString())}
+          {renderAlertDetail("Severity", selectedAlert?.severity)}
+        </Grid>
+        <Grid item xs={12} md={6}>
+          {renderAlertDetail("Hostname", selectedAlert?.event?.hostname)}
+          {renderAlertDetail("Event ID", selectedAlert?.event?.EventID)}
+          {renderAlertDetail("User ID", selectedAlert?.event?.UserID)}
+        </Grid>
+        <Grid item xs={12}>
+          {renderAlertDetail("Rule", selectedAlert?.rule?.name || selectedAlert?.rule)}
+        </Grid>
+      </Grid>
+    </Paper>
           {selectedAlert && (
             <Box sx={{ mt: 2 }}>
               <FormControl fullWidth>
