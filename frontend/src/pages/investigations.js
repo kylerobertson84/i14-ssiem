@@ -33,6 +33,7 @@ import { fetchInvestigations, updateInvestigationStatus } from '../services/apiS
 const InvestigationPage = () => {
   const theme = useTheme();
   const [alertStatus, setAlertStatus] = useState('Open');
+  const [notes, setNotes] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [openDialog, setOpenDialog] = useState(false);
@@ -51,6 +52,7 @@ const InvestigationPage = () => {
   const handleOpenDialog = (alert) => {
     setSelectedAlert(alert);
     setAlertStatus(alert.status);
+    setNotes(alert.notes || '')
     setOpenDialog(true);
   };
 
@@ -70,6 +72,10 @@ const InvestigationPage = () => {
     setAlertStatus(mappedStatus);
   };
 
+  const handleNotesChange = (event) => {
+    setNotes(event.target.value); 
+  };
+
   // Function to load investigation data
   const loadData = async () => {
     try {
@@ -84,7 +90,7 @@ const InvestigationPage = () => {
   const handleUpdateStatus = async () => {
     if (selectedAlert) {
       try {
-        await updateInvestigationStatus(selectedAlert.id, { status: alertStatus });
+        await updateInvestigationStatus(selectedAlert.id, { status: alertStatus, notes: notes });
         setOpenDialog(false);
         loadData();
       } catch (error) {
@@ -187,6 +193,17 @@ const InvestigationPage = () => {
                   <MenuItem value="CLOSED">Closed</MenuItem>
                 </Select>
 
+              </FormControl>
+              {/* TextField for editing notes */}
+              <FormControl fullWidth sx={{ mt: 4 }}>
+                <Typography variant="subtitle1" sx={{ mb: 2 }}>Notes</Typography>
+                <TextField
+                  multiline
+                  minRows={3}
+                  value={notes} // Bind notes to the TextField
+                  onChange={handleNotesChange} // Update notes on change
+                  placeholder="Add investigation notes here"
+                />
               </FormControl>
             </Box>
           )}
