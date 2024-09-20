@@ -45,6 +45,12 @@ if ! python manage.py create_superuser; then
     log "Superuser creation failed or already exists."
 fi
 
+# Create Analyst if they do not exist
+log "Creating Analyst Users"
+if ! python manage.py create_users; then
+    log "Analyst users creation failed or already exists."
+fi
+
 # Start UDP parser in the background
 log "Starting UDP parser..."
 python manage.py udp_parse &
