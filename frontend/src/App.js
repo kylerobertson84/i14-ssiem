@@ -33,10 +33,12 @@ const App = () => (
               <Route path='/alerts' element={<Alerts />} />
               <Route path='/preferences' element={<Preferences />} />
               <Route path="/admin" element={<AdminPage />} />
-              <Route path="/" element={<Navigate replace to="/login" />} />
+              <Route path="/" element={<Navigate replace to="/dashboard" />} />
             </Route>
           </Route>
+          <Route path="*" element={<Navigate replace to="/login" />} />
         </Routes>
+
         <Footer />
       </div>
     </Router>
