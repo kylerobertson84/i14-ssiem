@@ -39,7 +39,7 @@ const App = () => (
           <Route path="*" element={<Navigate replace to="/login" />} />
         </Routes>
 
-        <Footer />
+        {/* <Footer /> */}
       </div>
     </Router>
   </ThemeProvider>
