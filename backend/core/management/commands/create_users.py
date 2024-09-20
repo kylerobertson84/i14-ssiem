@@ -72,6 +72,6 @@ class Command(BaseCommand):
             admin_2.set_password(password)  
             admin_2.role = admin_role 
             admin_2.save()
-            self.stdout.write(self.style.SUCCESS(f'Analyst {admin_2_email} created with password {password}'))
+            self.stdout.write(self.style.SUCCESS(f'Admin {admin_2_email} created with password {password}'))
         else:
-            self.stdout.write(self.style.WARNING(f'Analyst {admin_2_email} already exists.'))
+            self.stdout.write(self.style.WARNING(f'Admin {admin_2_email} already exists.'))

@@ -7,7 +7,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         User = get_user_model()
-        email = 'admin@siem.com'
+        email = 'super@siem.com'
         password = 'admin'
         
         admin_role, created = Role.objects.get_or_create(name=Role.ADMIN)
