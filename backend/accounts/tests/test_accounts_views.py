@@ -19,11 +19,15 @@ class UserViewSetTests(TestCase):
 
         # Authenticate the client
         self.client.force_authenticate(user=self.superuser)
+    
+    def tearDown(self):
+        User.objects.all().delete() 
+        Role.objects.all().delete()   
 
     def test_create_user(self):
         response = self.client.post(reverse('user-list'), self.user_data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(User.objects.count(), 1)
+        self.assertEqual(User.objects.count(), 2)
 
     def test_get_user(self):
         user = User.objects.create_user(**self.user_data)
