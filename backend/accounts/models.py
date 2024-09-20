@@ -8,6 +8,10 @@ from django.db.models import Max
 from utils.models import BaseModel
 
 class CustomUserManager(BaseUserManager):
+    def __init__(self, model=None, *args, **kwargs):
+        self.model = model or User  # Explicitly set the model
+        super().__init__(*args, **kwargs)
+        
     def create_user(self, email, password=None, **extra_fields):
         if not email:
             raise ValueError('The Email must be set')
@@ -74,18 +78,32 @@ class Employee(BaseModel):
     department = models.CharField(max_length=50, blank=True, null=True)
     job_title = models.CharField(max_length=50, blank=True, null=True)
     
+    # following not passing unit tests
+    # def save(self, *args, **kwargs):
+    #     if not self.employee_id:
+    #         # Get the maximum employee_id
+    #         max_id = Employee.objects.aggregate(Max('employee_id'))['employee_id__max']
+    #         if max_id is None:
+    #             next_id = 1
+    #         else:
+    #             # Basically, 6 digits for internal use like HR stuff increment by 1
+    #             # Extract the numeric part and increment by 1
+    #             next_id = int(max_id.replace(' ', '')) + 1
+            
+    #         self.employee_id = f"{next_id:06d}"[:3] + ' ' + f"{next_id:06d}"[3:]
+
+    #     super().save(*args, **kwargs)
+    
     def save(self, *args, **kwargs):
         if not self.employee_id:
-            # Get the maximum employee_id
             max_id = Employee.objects.aggregate(Max('employee_id'))['employee_id__max']
             if max_id is None:
                 next_id = 1
             else:
-                # Basically, 6 digits for internal use like HR stuff increment by 1
-                # Extract the numeric part and increment by 1
                 next_id = int(max_id.replace(' ', '')) + 1
             
-            self.employee_id = f"{next_id:06d}"[:3] + ' ' + f"{next_id:06d}"[3:]
+            # Ensure employee_id is only 6 characters long
+            self.employee_id = f"{next_id:06d}"
 
         super().save(*args, **kwargs)
         
