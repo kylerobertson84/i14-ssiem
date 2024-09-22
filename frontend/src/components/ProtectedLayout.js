@@ -1,19 +1,12 @@
-// src/components/ProtectedLayout.js
-import React from 'react';
-import { Outlet } from 'react-router-dom';
-import Navbar from './NavBar';
-import Footer from './Footer';
+import React from "react";
+import { Outlet } from "react-router-dom";
 
 const ProtectedLayout = () => {
-    return (
-        <div>
-            <Navbar />
-            <div style={{ padding: '20px' }}>
-                <Outlet />
-            </div>
-            <Footer />
-        </div>
-    );
+	return (
+		<div style={{ padding: "20px" }}>
+			<Outlet />
+		</div>
+	);
 };
 
 export default ProtectedLayout;

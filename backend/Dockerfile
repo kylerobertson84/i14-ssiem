@@ -2,7 +2,7 @@ FROM python:3.12
 
 WORKDIR /backend
 
-RUN apt-get update && apt-get install -y netcat-openbsd
+RUN apt-get update && apt-get install -y --fix-missing netcat-openbsd
 
 COPY requirements.txt .
 RUN pip install -r requirements.txt
