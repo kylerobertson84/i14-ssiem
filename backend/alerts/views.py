@@ -1,4 +1,5 @@
-from rest_framework import viewsets, filters, status, APIView
+from rest_framework import viewsets, filters, status
+from rest_framework.views import APIView
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet, CharFilter
@@ -102,6 +103,7 @@ class LatestAlertView(APIView):
         if latest_alert:
             return Response({
                 'has_alert': True,
+                'alert_name' : latest_alert.hostname,
                 'alert_message': latest_alert.message,
                 'alert_level': latest_alert.severity
             })
