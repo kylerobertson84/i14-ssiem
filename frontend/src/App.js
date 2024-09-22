@@ -22,15 +22,17 @@ import PrivateRoute from "./components/PrivateRoute";
 import ProtectedLayout from "./components/ProtectedLayout";
 import { AuthProvider } from "./services/AuthContext.js";
 import SEO from "./Design/SEO.js";
+import GlobalAlertPopup from './components/GlobalAlertPopup';
 
 const App = () => (
 	<AuthProvider>
 		<ThemeProvider theme={theme}>
 			<CssBaseline />
-			<SEO/>
+			<SEO />
 			<Router>
 				<div className="app">
 					<Navbar />
+					<GlobalAlertPopup />
 					<Routes>
 						<Route path="/" element={<LandingPage />} />
 						<Route path="/login" element={<Login />} />

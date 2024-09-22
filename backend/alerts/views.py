@@ -1,7 +1,8 @@
-from rest_framework import viewsets, filters, status
+from rest_framework import viewsets, filters, status, APIView
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet, CharFilter
+from rest_framework.permissions import IsAuthenticated 
 from utils.baseViewThrottle import BaseViewThrottleSet
 from .models import Alert, InvestigateAlert, InvestigationStatus
 from .serializers import AlertSerializer, InvestigateAlertSerializer
@@ -92,3 +93,16 @@ class InvestigateAlertViewSet(BaseAlertViewSet):
             'open_count': open_count,
             'in_progress_count': in_progress_count,
         })
+    
+class LatestAlertView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        latest_alert = Alert.objects.filter(user=request.user).order_by('-created_at').first()
+        if latest_alert:
+            return Response({
+                'has_alert': True,
+                'alert_message': latest_alert.message,
+                'alert_level': latest_alert.severity
+            })
+        return Response({'has_alert': False})
