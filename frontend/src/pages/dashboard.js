@@ -16,6 +16,7 @@ import {
 }
 from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import SEO from '../Design/SEO.js';
 
 import { Grid, Paper, Typography, Box, useTheme, Chip, IconButton } from '@mui/material';
 import { LogsPerHourChart, LogsByDeviceChart, CpuLoadChart, RamUsageChart, DiskUsageChart } from '../components/dashboardGraphs.js';
@@ -176,7 +177,11 @@ const Dashboard = () => {
   );
 
   return (
-    <div>
+    <>
+    	<SEO 
+				title="Dashboard" 
+			/>
+      <div>
       <Box
         sx={{
           marginBottom: 5,
@@ -256,6 +261,8 @@ const Dashboard = () => {
         </Grid>
       </Box>
     </div>
+    </>
+
   );
 };
 

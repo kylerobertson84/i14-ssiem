@@ -26,6 +26,7 @@ import {
 import { Search, CheckCircle, Error } from '@mui/icons-material';
 import '../Design/Investigation.css';
 import { fetchInvestigations, updateInvestigationStatus } from '../services/apiService';
+import SEO from '../Design/SEO.js';
 
 const InvestigationPage = () => {
   const theme = useTheme();
@@ -116,7 +117,11 @@ const InvestigationPage = () => {
   );
 
   return (
-    <Container maxWidth="xlg" className="investigation-page">
+    <>
+      <SEO 
+				title="Investigations" 
+			/>
+      <Container maxWidth="xlg" className="investigation-page">
       <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 4, fontWeight: 'bold' }}>
         Investigations
       </Typography>
@@ -228,7 +233,9 @@ const InvestigationPage = () => {
           <Button onClick={handleUpdateStatus} color="primary" variant="contained">Update</Button>
         </DialogActions>
       </Dialog>
-    </Container>
+      </Container>
+    </>
+
   );
 };
 

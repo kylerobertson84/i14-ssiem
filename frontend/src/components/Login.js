@@ -25,6 +25,7 @@ import {
 	Psychology,
 } from "@mui/icons-material";
 import theme from "../Design/Theme";
+import SEO from "../Design/SEO";
 
 const Feature = ({ icon, title, description }) => (
 	<Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
@@ -62,7 +63,12 @@ const Login = () => {
 	};
 
 	return (
-		<ThemeProvider theme={theme}>
+		<>
+			<SEO 
+				title="Login" 
+				description="Log in to SimpleSIEM - Secure access to your SIEM dashboard"
+			/>
+	  		<ThemeProvider theme={theme}>
 			<Container component="main" maxWidth="lg">
 				<CssBaseline />
 				<Grid
@@ -207,6 +213,8 @@ const Login = () => {
 				</Grid>
 			</Container>
 		</ThemeProvider>
+		</>
+
 	);
 };
 

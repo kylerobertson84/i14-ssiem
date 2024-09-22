@@ -17,6 +17,7 @@ import ReportGenerator from '../components/Reports/ReportGenerator';
 import ReportList from '../components/Reports/ReportList';
 import ReportViewer from '../components/Reports/ReportViewer';
 import ReportExporter from '../components/Reports/ReportExporter';
+import SEO from '../Design/SEO.js';
 import { fetchReports, createReport, updateReport, generateReportPDF, fetchRules, deleteReport } from '../services/apiService';
 
 const ReportsPage = () => {
@@ -110,57 +111,63 @@ const ReportsPage = () => {
   if (error) return <Typography color="error">{error}</Typography>;
 
   return (
-    <Container maxWidth="lg">
-      <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 4, fontWeight: 'bold', color: 'primary.main' }}>
-        Reports Management
-      </Typography>
-      <Grid container spacing={4}>
-        <Grid item xs={12}>
-          <ReportGenerator onGenerate={handleGenerate} rules={rules} />
+    <>
+      <SEO 
+				title="Reports" 
+			/>
+      <Container maxWidth="lg">
+        <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 4, fontWeight: 'bold', color: 'primary.main' }}>
+          Reports Management
+        </Typography>
+        <Grid container spacing={4}>
+          <Grid item xs={12}>
+            <ReportGenerator onGenerate={handleGenerate} rules={rules} />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            {reports.length > 0 && (
+              <ReportList 
+                reports={reports} 
+                onSelect={handleSelectReport}
+                onDelete={handleDeleteReport}
+              />
+            )}
+          </Grid>
+          <Grid item xs={12} md={6}>
+            {selectedReport && (
+              <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
+                <Typography variant="h5" component="h2" gutterBottom sx={{ mb: 4, fontWeight: 'bold', color: 'primary.main' }}>
+                  Selected Report
+                </Typography>
+                <ReportViewer report={selectedReport} onUpdate={handleUpdateReport} rules={rules} />
+                <Box sx={{ mt: 2 }}>
+                  <ReportExporter report={selectedReport} onExport={() => handleExportPDF(selectedReport.id)} />
+                </Box>
+              </Paper>
+            )}
+          </Grid>
         </Grid>
-        <Grid item xs={12} md={6}>
-          {reports.length > 0 && (
-            <ReportList 
-              reports={reports} 
-              onSelect={handleSelectReport}
-              onDelete={handleDeleteReport}
-            />
-          )}
-        </Grid>
-        <Grid item xs={12} md={6}>
-          {selectedReport && (
-            <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
-              <Typography variant="h5" component="h2" gutterBottom sx={{ mb: 4, fontWeight: 'bold', color: 'primary.main' }}>
-                Selected Report
-              </Typography>
-              <ReportViewer report={selectedReport} onUpdate={handleUpdateReport} rules={rules} />
-              <Box sx={{ mt: 2 }}>
-                <ReportExporter report={selectedReport} onExport={() => handleExportPDF(selectedReport.id)} />
-              </Box>
-            </Paper>
-          )}
-        </Grid>
-      </Grid>
-      <Dialog
-        open={deleteDialogOpen}
-        onClose={() => setDeleteDialogOpen(false)}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">{"Confirm Delete"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Are you sure you want to delete this report? This action cannot be undone.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
-          <Button onClick={confirmDeleteReport} color="error" autoFocus>
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Container>
+        <Dialog
+          open={deleteDialogOpen}
+          onClose={() => setDeleteDialogOpen(false)}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{"Confirm Delete"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Are you sure you want to delete this report? This action cannot be undone.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
+            <Button onClick={confirmDeleteReport} color="error" autoFocus>
+              Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </Container>
+    </>
+
   );
 };
 

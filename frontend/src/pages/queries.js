@@ -40,6 +40,7 @@ import {
   LastPage as LastPageIcon,
 } from '@mui/icons-material';
 import { fetchComputerLogs, fetchRouterLogs, exportPDF } from '../services/apiService';
+import SEO from '../Design/SEO.js';
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -267,198 +268,203 @@ const LogQueries = () => {
   const columns = activeTab === 0 ? computerColumns : routerColumns;
 
   return (
-    <Container maxWidth="xl">
-      <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 3 }}>
-        Log Queries
-      </Typography>
-
-      <Paper elevation={3} sx={{ mb: 3, p: 3 }}>
-        <Grid container spacing={2} alignItems="center">
-          <Grid item xs={12} md={4}>
-            <TextField
-              fullWidth
-              variant="outlined"
-              label="Search hostname, process or message"
-              name="query"
-              value={searchParams.query}
-              onChange={handleInputChange}
-            />
-          </Grid>
-          <Grid item xs={12} md={3}>
-            <LocalizationProvider 
-              dateAdapter={AdapterDateFns}
-              adapterLocale={enAU}
+    <>
+      <SEO 
+				title="Queries" 
+			/>
+      <Container maxWidth="xl">
+        <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 3 }} fontWeight="bold">
+          Log Queries
+        </Typography>
+        <Paper elevation={3} sx={{ mb: 3, p: 3 }}>
+          <Grid container spacing={2} alignItems="center">
+            <Grid item xs={12} md={4}>
+              <TextField
+                fullWidth
+                variant="outlined"
+                label="Search hostname, process or message"
+                name="query"
+                value={searchParams.query}
+                onChange={handleInputChange}
+              />
+            </Grid>
+            <Grid item xs={12} md={3}>
+              <LocalizationProvider 
+                dateAdapter={AdapterDateFns}
+                adapterLocale={enAU}
+                >
+                <DateTimePicker
+                  label="Start Time"
+                  value={searchParams.startTime}
+                  onChange={(newValue) => handleDateChange('startTime', newValue)}
+                  renderInput={(params) => <TextField {...params} fullWidth />}
+                  ampm={false}
+                />
+              </LocalizationProvider>
+            </Grid>
+            <Grid item xs={12} md={3}>
+              <LocalizationProvider 
+                dateAdapter={AdapterDateFns}
+                adapterLocale={enAU}
               >
-              <DateTimePicker
-                label="Start Time"
-                value={searchParams.startTime}
-                onChange={(newValue) => handleDateChange('startTime', newValue)}
-                renderInput={(params) => <TextField {...params} fullWidth />}
-                ampm={false}
-              />
-            </LocalizationProvider>
+                <DateTimePicker
+                  label="End Time"
+                  value={searchParams.endTime}
+                  onChange={(newValue) => handleDateChange('endTime', newValue)}
+                  renderInput={(params) => <TextField {...params} fullWidth />}
+                  ampm={false}
+                />
+              </LocalizationProvider>
+            </Grid>
+            <Grid item xs={12} md={2}>
+              <Button
+                fullWidth
+                variant="contained"
+                color="primary"
+                startIcon={<SearchIcon />}
+                onClick={handleSearch}
+                sx={{ mb: 1 }}
+              >
+                Search
+              </Button>
+              <Button
+                fullWidth
+                variant="outlined"
+                color="secondary"
+                startIcon={<ClearIcon />}
+                onClick={handleClearFilters}
+              >
+                Clear Filters
+              </Button>
+            </Grid>
           </Grid>
-          <Grid item xs={12} md={3}>
-            <LocalizationProvider 
-              dateAdapter={AdapterDateFns}
-              adapterLocale={enAU}
-            >
-              <DateTimePicker
-                label="End Time"
-                value={searchParams.endTime}
-                onChange={(newValue) => handleDateChange('endTime', newValue)}
-                renderInput={(params) => <TextField {...params} fullWidth />}
-                ampm={false}
-              />
-            </LocalizationProvider>
-          </Grid>
-          <Grid item xs={12} md={2}>
-            <Button
-              fullWidth
-              variant="contained"
-              color="primary"
-              startIcon={<SearchIcon />}
-              onClick={handleSearch}
-              sx={{ mb: 1 }}
-            >
-              Search
-            </Button>
-            <Button
-              fullWidth
-              variant="outlined"
-              color="secondary"
-              startIcon={<ClearIcon />}
-              onClick={handleClearFilters}
-            >
-              Clear Filters
-            </Button>
-          </Grid>
-        </Grid>
-      </Paper>
+        </Paper>
 
-      <Paper elevation={3}>
-        <Tabs value={activeTab} onChange={handleTabChange} centered sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <Tab label="Computer Logs" />
-          <Tab label="Router Logs" />
-        </Tabs>
+        <Paper elevation={3}>
+          <Tabs value={activeTab} onChange={handleTabChange} centered sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <Tab label="Computer Logs" />
+            <Tab label="Router Logs" />
+          </Tabs>
 
-        <Box sx={{ p: 2 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-            <Typography variant="h6">
-              Results: {totalResults}
-            </Typography>
-            <Box>
-              <Tooltip title="Refresh">
-                <IconButton onClick={handleSearch} color="primary">
-                  <RefreshIcon />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Export to PDF">
-                <IconButton onClick={handleExport} color="primary">
-                  <ExportIcon />
-                </IconButton>
-              </Tooltip>
+          <Box sx={{ p: 2 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+              <Typography variant="h6">
+                Results: {totalResults}
+              </Typography>
+              <Box>
+                <Tooltip title="Refresh">
+                  <IconButton onClick={handleSearch} color="primary">
+                    <RefreshIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Export to PDF">
+                  <IconButton onClick={handleExport} color="primary">
+                    <ExportIcon />
+                  </IconButton>
+                </Tooltip>
+              </Box>
             </Box>
-          </Box>
 
-          <Snackbar 
-            open={snackbar.open} 
-            autoHideDuration={6000} 
-            onClose={handleCloseSnackbar}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-          >
-            <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>
-              {snackbar.message}
-            </Alert>
-          </Snackbar>
+            <Snackbar 
+              open={snackbar.open} 
+              autoHideDuration={6000} 
+              onClose={handleCloseSnackbar}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            >
+              <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>
+                {snackbar.message}
+              </Alert>
+            </Snackbar>
 
-          <TableContainer>
-            <Table sx={{ minWidth: 650 }} aria-label="log table">
-              <TableHead>
-                <TableRow sx={{ backgroundColor: theme.palette.primary.main }}>
-                  {columns.map((column) => (
-                    <TableCell
-                      key={column.id}
-                      sx={{ color: 'white', fontWeight: 'bold' }}
-                    >
-                      <TableSortLabel
-                        active={orderBy === column.id}
-                        direction={orderBy === column.id ? order : 'asc'}
-                        onClick={() => handleRequestSort(column.id)}
-                        sx={{
-                          color: 'white',
-                          '&.MuiTableSortLabel-root:hover': {
-                            color: 'white',
-                          },
-                          '&.MuiTableSortLabel-root.Mui-active': {
-                            color: 'white',
-                          },
-                          '& .MuiTableSortLabel-icon': {
-                            color: 'white !important',
-                          },
-                        }}
-                      >
-                        {column.label}
-                      </TableSortLabel>
-                    </TableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {logs.map((log) => (
-                  <TableRow
-                    key={log.id}
-                    hover
-                    onClick={() => handleRowClick(log)}
-                    sx={{ cursor: 'pointer' }}
-                  >
+            <TableContainer>
+              <Table sx={{ minWidth: 650 }} aria-label="log table">
+                <TableHead>
+                  <TableRow sx={{ backgroundColor: theme.palette.primary.main }}>
                     {columns.map((column) => (
-                      <TableCell key={column.id}>
-                        {column.id === 'iso_timestamp'
-                          ? formatDate(log[column.id])
-                          : column.id === 'message'
-                          ? log[column.id].substring(0, 100) + (log[column.id].length > 100 ? '...' : '')
-                          : log[column.id]}
+                      <TableCell
+                        key={column.id}
+                        sx={{ color: 'white', fontWeight: 'bold' }}
+                      >
+                        <TableSortLabel
+                          active={orderBy === column.id}
+                          direction={orderBy === column.id ? order : 'asc'}
+                          onClick={() => handleRequestSort(column.id)}
+                          sx={{
+                            color: 'white',
+                            '&.MuiTableSortLabel-root:hover': {
+                              color: 'white',
+                            },
+                            '&.MuiTableSortLabel-root.Mui-active': {
+                              color: 'white',
+                            },
+                            '& .MuiTableSortLabel-icon': {
+                              color: 'white !important',
+                            },
+                          }}
+                        >
+                          {column.label}
+                        </TableSortLabel>
                       </TableCell>
                     ))}
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Box>
-              <Tooltip title="First Page">
-                <IconButton onClick={handleFirstPage} disabled={page === 0}>
-                  <FirstPageIcon />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Last Page">
-                <IconButton onClick={handleLastPage} disabled={page >= Math.ceil(totalResults / rowsPerPage) - 1}>
-                  <LastPageIcon />
-                </IconButton>
-              </Tooltip>
+                </TableHead>
+                <TableBody>
+                  {logs.map((log) => (
+                    <TableRow
+                      key={log.id}
+                      hover
+                      onClick={() => handleRowClick(log)}
+                      sx={{ cursor: 'pointer' }}
+                    >
+                      {columns.map((column) => (
+                        <TableCell key={column.id}>
+                          {column.id === 'iso_timestamp'
+                            ? formatDate(log[column.id])
+                            : column.id === 'message'
+                            ? log[column.id].substring(0, 100) + (log[column.id].length > 100 ? '...' : '')
+                            : log[column.id]}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Box>
+                <Tooltip title="First Page">
+                  <IconButton onClick={handleFirstPage} disabled={page === 0}>
+                    <FirstPageIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Last Page">
+                  <IconButton onClick={handleLastPage} disabled={page >= Math.ceil(totalResults / rowsPerPage) - 1}>
+                    <LastPageIcon />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+              <TablePagination
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={totalResults}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
             </Box>
-            <TablePagination
-              rowsPerPageOptions={[10, 25, 100]}
-              component="div"
-              count={totalResults}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
           </Box>
-        </Box>
-      </Paper>
+        </Paper>
 
-      <LogDetailDialog
-        log={selectedLog}
-        open={dialogOpen}
-        onClose={() => setDialogOpen(false)}
-        isComputerLog={activeTab === 0}
-      />
-    </Container>
+        <LogDetailDialog
+          log={selectedLog}
+          open={dialogOpen}
+          onClose={() => setDialogOpen(false)}
+          isComputerLog={activeTab === 0}
+        />
+      </Container>
+    </>
+
   );
 };
 

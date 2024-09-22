@@ -21,11 +21,13 @@ import theme from "./Design/Theme.js";
 import PrivateRoute from "./components/PrivateRoute";
 import ProtectedLayout from "./components/ProtectedLayout";
 import { AuthProvider } from "./services/AuthContext.js";
+import SEO from "./Design/SEO.js";
 
 const App = () => (
 	<AuthProvider>
 		<ThemeProvider theme={theme}>
 			<CssBaseline />
+			<SEO/>
 			<Router>
 				<div className="app">
 					<Navbar />

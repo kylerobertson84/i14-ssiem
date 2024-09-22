@@ -27,6 +27,9 @@ import {
   Search as SearchIcon,
   Settings as SettingsIcon
 } from '@mui/icons-material';
+import SEO from '../Design/SEO.js';
+
+
 const { fetchAlerts, updateAlert } = require('../services/apiService');
 
 const severityColors = {
@@ -120,129 +123,135 @@ const AlertsPage = () => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 4, fontWeight: 'bold' }}>
-        Alerts
-      </Typography>
+    <>
+      <SEO 
+				title="Alerts" 
+			/>
+      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+        <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 4, fontWeight: 'bold' }}>
+          Alerts
+        </Typography>
 
-      <Box sx={{ display: 'flex', mb: 2, gap: 2 }}>
-        <TextField
-          variant="outlined"
-          placeholder="Search alerts..."
-          InputProps={{
-            startAdornment: <SearchIcon color="action" sx={{ mr: 1 }} />,
-          }}
-          onChange={handleSearch}
-          sx={{ flexGrow: 1 }}
-        />
-        <FormControl sx={{ minWidth: 120 }}>
-          <InputLabel>Severity</InputLabel>
-          <Select
-            value={severityFilter}
-            onChange={handleSeverityFilter}
-            label="Severity"
-          >
-            <MenuItem value="">All</MenuItem>
-            <MenuItem value="INFO">Info</MenuItem>
-            <MenuItem value="LOW">Low</MenuItem>
-            <MenuItem value="MEDIUM">Medium</MenuItem>
-            <MenuItem value="HIGH">High</MenuItem>
-            <MenuItem value="CRITICAL">Critical</MenuItem>
-          </Select>
-        </FormControl>
-      </Box>
+        <Box sx={{ display: 'flex', mb: 2, gap: 2 }}>
+          <TextField
+            variant="outlined"
+            placeholder="Search alerts..."
+            InputProps={{
+              startAdornment: <SearchIcon color="action" sx={{ mr: 1 }} />,
+            }}
+            onChange={handleSearch}
+            sx={{ flexGrow: 1 }}
+          />
+          <FormControl sx={{ minWidth: 120 }}>
+            <InputLabel>Severity</InputLabel>
+            <Select
+              value={severityFilter}
+              onChange={handleSeverityFilter}
+              label="Severity"
+            >
+              <MenuItem value="">All</MenuItem>
+              <MenuItem value="INFO">Info</MenuItem>
+              <MenuItem value="LOW">Low</MenuItem>
+              <MenuItem value="MEDIUM">Medium</MenuItem>
+              <MenuItem value="HIGH">High</MenuItem>
+              <MenuItem value="CRITICAL">Critical</MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
 
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="alerts table">
-          <TableHead>
-            <TableRow sx={{ backgroundColor: theme.palette.primary.main }}>
-              <TableCell>
-                <TableSortLabel
-                  active={orderBy === 'id'}
-                  direction={orderBy === 'id' ? order : 'asc'}
-                  onClick={() => handleRequestSort('id')}
-                  sx={{ color: 'white', fontWeight: 'bold' }}
-                >
-                  ID
-                </TableSortLabel>
-              </TableCell>
-              <TableCell>
-                <TableSortLabel
-                  active={orderBy === 'created_at'}
-                  direction={orderBy === 'created_at' ? order : 'asc'}
-                  onClick={() => handleRequestSort('created_at')}
-                  sx={{ color: 'white', fontWeight: 'bold' }}
-                >
-                  Time
-                </TableSortLabel>
-              </TableCell>
-              <TableCell>
-                <TableSortLabel
-                  active={orderBy === 'event__hostname'}
-                  direction={orderBy === 'event__hostname' ? order : 'asc'}
-                  onClick={() => handleRequestSort('event__hostname')}
-                  sx={{ color: 'white', fontWeight: 'bold' }}
-                >
-                  Hostname
-                </TableSortLabel>
-              </TableCell>
-              <TableCell>
-                <TableSortLabel
-                  active={orderBy === 'severity'}
-                  direction={orderBy === 'severity' ? order : 'asc'}
-                  onClick={() => handleRequestSort('severity')}
-                  sx={{ color: 'white', fontWeight: 'bold' }}
-                >
-                  Severity
-                </TableSortLabel>
-              </TableCell>
-              <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Rule</TableCell>
-              <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {alerts.map((alert) => (
-              <TableRow key={alert.id} hover>
-                <TableCell>{alert.id}</TableCell>
-                <TableCell>{new Date(alert.created_at).toLocaleString()}</TableCell>
-                <TableCell>{alert.event?.hostname || 'N/A'}</TableCell>
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 650 }} aria-label="alerts table">
+            <TableHead>
+              <TableRow sx={{ backgroundColor: theme.palette.primary.main }}>
                 <TableCell>
-                  <Chip 
-                    label={alert.severity} 
-                    color={severityColors[alert.severity.toLowerCase()]} 
-                    size="small"
-                  />
+                  <TableSortLabel
+                    active={orderBy === 'id'}
+                    direction={orderBy === 'id' ? order : 'asc'}
+                    onClick={() => handleRequestSort('id')}
+                    sx={{ color: 'white', fontWeight: 'bold' }}
+                  >
+                    ID
+                  </TableSortLabel>
                 </TableCell>
-                <TableCell><strong>{typeof alert.rule === 'object' ? alert.rule.name : alert.rule}</strong></TableCell>
                 <TableCell>
-                  <Tooltip title="View Details">
-                    <IconButton onClick={() => handleViewDetails(alert)} size="small">
-                      <SettingsIcon />
-                    </IconButton>
-                  </Tooltip>
+                  <TableSortLabel
+                    active={orderBy === 'created_at'}
+                    direction={orderBy === 'created_at' ? order : 'asc'}
+                    onClick={() => handleRequestSort('created_at')}
+                    sx={{ color: 'white', fontWeight: 'bold' }}
+                  >
+                    Time
+                  </TableSortLabel>
                 </TableCell>
+                <TableCell>
+                  <TableSortLabel
+                    active={orderBy === 'event__hostname'}
+                    direction={orderBy === 'event__hostname' ? order : 'asc'}
+                    onClick={() => handleRequestSort('event__hostname')}
+                    sx={{ color: 'white', fontWeight: 'bold' }}
+                  >
+                    Hostname
+                  </TableSortLabel>
+                </TableCell>
+                <TableCell>
+                  <TableSortLabel
+                    active={orderBy === 'severity'}
+                    direction={orderBy === 'severity' ? order : 'asc'}
+                    onClick={() => handleRequestSort('severity')}
+                    sx={{ color: 'white', fontWeight: 'bold' }}
+                  >
+                    Severity
+                  </TableSortLabel>
+                </TableCell>
+                <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Rule</TableCell>
+                <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Actions</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 50]}
-        component="div"
-        count={totalCount}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+            </TableHead>
+            <TableBody>
+              {alerts.map((alert) => (
+                <TableRow key={alert.id} hover>
+                  <TableCell>{alert.id}</TableCell>
+                  <TableCell>{new Date(alert.created_at).toLocaleString()}</TableCell>
+                  <TableCell>{alert.event?.hostname || 'N/A'}</TableCell>
+                  <TableCell>
+                    <Chip 
+                      label={alert.severity} 
+                      color={severityColors[alert.severity.toLowerCase()]} 
+                      size="small"
+                    />
+                  </TableCell>
+                  <TableCell><strong>{typeof alert.rule === 'object' ? alert.rule.name : alert.rule}</strong></TableCell>
+                  <TableCell>
+                    <Tooltip title="View Details">
+                      <IconButton onClick={() => handleViewDetails(alert)} size="small">
+                        <SettingsIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[10, 25, 50]}
+          component="div"
+          count={totalCount}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
 
-      <AlertDetailsDialog 
-        alert={selectedAlert}
-        open={openDialog}
-        onClose={handleCloseDialog}
-        onAssign={handleAssign}
-      />
-    </Container>
+        <AlertDetailsDialog 
+          alert={selectedAlert}
+          open={openDialog}
+          onClose={handleCloseDialog}
+          onAssign={handleAssign}
+        />
+      </Container>
+    </>
+
   );
 };
 
