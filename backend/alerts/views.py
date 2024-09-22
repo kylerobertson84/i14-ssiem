@@ -7,6 +7,7 @@ from .models import Alert, InvestigateAlert, InvestigationStatus
 from .serializers import AlertSerializer, InvestigateAlertSerializer
 from utils.pagination import StandardResultsSetPagination
 from accounts.models import User
+from utils.notifications import send_alert_email
 
 class AlertFilter(FilterSet):
     rule__name = CharFilter(field_name='rule__name', lookup_expr='icontains')
@@ -72,6 +73,18 @@ class AlertViewSet(BaseAlertViewSet):
             return self.get_paginated_response(serializer.data)
         
         serializer = self.get_serializer(latest_alerts, many=True)
+
+        #Email logic
+        for alert in latest_alerts:
+            '''
+            if alert.severity in ['Critical', 'High']:  # Only send emails for Critical and High alerts
+            '''
+            subject = f"New Alert: {alert.severity} - {alert.hostname}"
+            message = f"An alert has been triggered with the following message: {alert.message}"
+            recipient_list = [alert.user.email] #not sure if this is correct
+
+            send_alert_email(subject, message, recipient_list) #send email
+
         return Response(serializer.data)
 
 

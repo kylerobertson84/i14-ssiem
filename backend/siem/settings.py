@@ -262,3 +262,13 @@ CELERY_BEAT_SCHEDULE = {
     #     'schedule': crontab(minute='*/1'),  # Run every minute
     # },
 }
+
+
+# Email Settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'ssiemalert@gmail.com'  
+EMAIL_HOST_PASSWORD = 'sSIEMPassword@4321'  
+DEFAULT_FROM_EMAIL = 'ssiemalert@gmail.com'
