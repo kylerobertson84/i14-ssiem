@@ -76,14 +76,15 @@ class AlertViewSet(BaseAlertViewSet):
 
         #Email logic
         for alert in latest_alerts:
-            '''
-            if alert.severity in ['Critical', 'High']:  # Only send emails for Critical and High alerts
-            '''
-            subject = f"New Alert: {alert.severity} - {alert.hostname}"
-            message = f"An alert has been triggered with the following message: {alert.message}"
-            recipient_list = [alert.user.email] #not sure if this is correct
-
-            send_alert_email(subject, message, recipient_list) #send email
+            # Email logic: only send emails for Critical/High alerts with an assigned user
+            for alert in latest_alerts:
+                if alert.severity in ['Critical', 'High'] and alert.assigned_to:  # Check assigned user
+                    subject = f"New {alert.severity} Alert: {alert.hostname}"
+                    message = f"An alert with {alert.severity} severity has been triggered: {alert.message}"
+                    recipient_list = [alert.assigned_to.email]  # Send to the assigned user
+                
+                    # Send the alert email
+                    send_alert_email(subject, message, recipient_list)
 
         return Response(serializer.data)
 
@@ -105,3 +106,13 @@ class InvestigateAlertViewSet(BaseAlertViewSet):
             'open_count': open_count,
             'in_progress_count': in_progress_count,
         })
+    
+    def create_or_update_alert(alert):
+    # Check if the alert has an assigned user
+        if alert.assigned_to:
+            subject = f"New {alert.severity} Alert: {alert.hostname}"
+            message = f"An alert with {alert.severity} severity has been triggered: {alert.message}"
+            recipient_list = [alert.assigned_to.email]  # Send email to the assigned user
+        
+            # Send the alert email
+            send_alert_email(subject, message, recipient_list)
