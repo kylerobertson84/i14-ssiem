@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Box } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const GlobalAlertPopup = () => {
     const [alert, setAlert] = useState(null);
-    /* This was a test with simulated data and it works
+    const navigate = useNavigate();
+    // This was a test with simulated data and it works
     // Mock the backend response to simulate an alert popup
     const fetchLatestAlert = async () => {
         // Simulate a delay
@@ -19,8 +21,8 @@ const GlobalAlertPopup = () => {
             setTimeout(() => setAlert(null), 5000);
         }, 15000);  // Mock delay of 15 seconds
     };
-    */
 
+    /*
     //Using Backend Data, needs to be tested
     const fetchLatestAlert = async () => {
         try {
@@ -40,7 +42,7 @@ const GlobalAlertPopup = () => {
             console.error('Error fetching latest alert:', error);
         }
     };
-
+    */
     useEffect(() => {
         const intervalId = setInterval(fetchLatestAlert, 10000); // Poll every 10 seconds
         return () => clearInterval(intervalId); // Cleanup on unmount
@@ -55,11 +57,15 @@ const GlobalAlertPopup = () => {
             ? '#f0ad4e'  // Orange for High
             : '#5bc0de';  // Blue for other levels
 
+    const handlePopupClick = () => {
+        navigate('/alerts');  // Navigate to the alerts page when the popup is clicked
+    };
     return (
         <Box
+            onClick={handlePopupClick}
             sx={{
                 position: 'fixed',
-                top: 20,
+                top: 80,
                 right: 20,
                 padding: '15px',
                 backgroundColor: backgroundColor,
