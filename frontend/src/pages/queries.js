@@ -39,7 +39,7 @@ import {
   FirstPage as FirstPageIcon,
   LastPage as LastPageIcon,
 } from '@mui/icons-material';
-import { fetchComputerLogs, fetchRouterLogs, exportPDF } from '../services/apiService';
+import { fetchComputerLogs, fetchRouterLogs, exportCSV } from '../services/apiService';
 import SEO from '../Design/SEO.js';
 
 const formatDate = (dateString) => {
@@ -105,12 +105,15 @@ const LogQueries = () => {
         return;
       }
 
-      const response = await exportPDF(activeTab === 0 ? 'computer' : 'router', searchParams);
-      const blob = new Blob([response], { type: 'application/pdf' });
+      const response = await exportCSV(activeTab === 0 ? 'computer' : 'router', searchParams);
+      const blob = new Blob([response], { type: 'text/csv' });
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
+
+    // Set the download attribute to specify the file name
       link.href = url;
-      link.setAttribute('download', `${activeTab === 0 ? 'computer' : 'router'}_logs.pdf`);
+      link.setAttribute('download', `${activeTab === 0 ? 'computer' : 'router'}_logs.csv`);
+
       document.body.appendChild(link);
       link.click();
       link.parentNode.removeChild(link);

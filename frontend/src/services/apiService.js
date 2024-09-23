@@ -62,7 +62,7 @@ export const fetchRouterLogs = (searchParams, page = 1, pageSize = 10) => {
   return apiRequest(`${API_ENDPOINTS.logs.router}?${params}`);
 };
 
-export const exportPDF = (logType, searchParams) => {
+export const exportCSV = (logType, searchParams) => {
   const params = new URLSearchParams({
     query: searchParams.query,
     start_time: searchParams.startTime ? searchParams.startTime.toISOString() : '',
@@ -70,12 +70,15 @@ export const exportPDF = (logType, searchParams) => {
   });
   let endpoint;
   if (logType === 'computer') {
-    endpoint = `${API_ENDPOINTS.logs.computer}export_pdf`;
+    endpoint = `${API_ENDPOINTS.logs.computer}export_csv`;  // Updated to CSV endpoint
   } else if (logType === 'router') {
-    endpoint = `${API_ENDPOINTS.logs.router}export_pdf`;
+    endpoint = `${API_ENDPOINTS.logs.router}export_csv`;  // Updated to CSV endpoint
   }
+  
+  // Return CSV response
   return apiRequest(`${endpoint}?${params}`, 'GET', null, { responseType: 'blob' });
 };
+
 
 // API services investigations page
 

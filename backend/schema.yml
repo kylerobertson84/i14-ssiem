@@ -8,599 +8,599 @@ paths:
     get:
       operationId: accounts_employees_list
       tags:
-      - accounts
+        - accounts
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Employee'
-          description: ''
+                  $ref: "#/components/schemas/Employee"
+          description: ""
     post:
       operationId: accounts_employees_create
       tags:
-      - accounts
+        - accounts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Employee'
+              $ref: "#/components/schemas/Employee"
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Employee'
+              $ref: "#/components/schemas/Employee"
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Employee'
+              $ref: "#/components/schemas/Employee"
         required: true
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '201':
+        "201":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Employee'
-          description: ''
+                $ref: "#/components/schemas/Employee"
+          description: ""
   /api/v1/accounts/employees/{user}/:
     get:
       operationId: accounts_employees_retrieve
       parameters:
-      - in: path
-        name: user
-        schema:
-          type: string
-          format: uuid
-        description: A unique value identifying this employee.
-        required: true
+        - in: path
+          name: user
+          schema:
+            type: string
+            format: uuid
+          description: A unique value identifying this employee.
+          required: true
       tags:
-      - accounts
+        - accounts
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Employee'
-          description: ''
+                $ref: "#/components/schemas/Employee"
+          description: ""
     put:
       operationId: accounts_employees_update
       parameters:
-      - in: path
-        name: user
-        schema:
-          type: string
-          format: uuid
-        description: A unique value identifying this employee.
-        required: true
+        - in: path
+          name: user
+          schema:
+            type: string
+            format: uuid
+          description: A unique value identifying this employee.
+          required: true
       tags:
-      - accounts
+        - accounts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Employee'
+              $ref: "#/components/schemas/Employee"
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Employee'
+              $ref: "#/components/schemas/Employee"
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Employee'
+              $ref: "#/components/schemas/Employee"
         required: true
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Employee'
-          description: ''
+                $ref: "#/components/schemas/Employee"
+          description: ""
     patch:
       operationId: accounts_employees_partial_update
       parameters:
-      - in: path
-        name: user
-        schema:
-          type: string
-          format: uuid
-        description: A unique value identifying this employee.
-        required: true
+        - in: path
+          name: user
+          schema:
+            type: string
+            format: uuid
+          description: A unique value identifying this employee.
+          required: true
       tags:
-      - accounts
+        - accounts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedEmployee'
+              $ref: "#/components/schemas/PatchedEmployee"
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedEmployee'
+              $ref: "#/components/schemas/PatchedEmployee"
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedEmployee'
+              $ref: "#/components/schemas/PatchedEmployee"
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Employee'
-          description: ''
+                $ref: "#/components/schemas/Employee"
+          description: ""
     delete:
       operationId: accounts_employees_destroy
       parameters:
-      - in: path
-        name: user
-        schema:
-          type: string
-          format: uuid
-        description: A unique value identifying this employee.
-        required: true
+        - in: path
+          name: user
+          schema:
+            type: string
+            format: uuid
+          description: A unique value identifying this employee.
+          required: true
       tags:
-      - accounts
+        - accounts
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '204':
+        "204":
           description: No response body
   /api/v1/accounts/permissions/:
     get:
       operationId: accounts_permissions_list
       tags:
-      - accounts
+        - accounts
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Permission'
-          description: ''
+                  $ref: "#/components/schemas/Permission"
+          description: ""
     post:
       operationId: accounts_permissions_create
       tags:
-      - accounts
+        - accounts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Permission'
+              $ref: "#/components/schemas/Permission"
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Permission'
+              $ref: "#/components/schemas/Permission"
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Permission'
+              $ref: "#/components/schemas/Permission"
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '201':
+        "201":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Permission'
-          description: ''
+                $ref: "#/components/schemas/Permission"
+          description: ""
   /api/v1/accounts/permissions/{permission_id}/:
     get:
       operationId: accounts_permissions_retrieve
       parameters:
-      - in: path
-        name: permission_id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this permission.
-        required: true
+        - in: path
+          name: permission_id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this permission.
+          required: true
       tags:
-      - accounts
+        - accounts
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Permission'
-          description: ''
+                $ref: "#/components/schemas/Permission"
+          description: ""
     put:
       operationId: accounts_permissions_update
       parameters:
-      - in: path
-        name: permission_id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this permission.
-        required: true
+        - in: path
+          name: permission_id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this permission.
+          required: true
       tags:
-      - accounts
+        - accounts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Permission'
+              $ref: "#/components/schemas/Permission"
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Permission'
+              $ref: "#/components/schemas/Permission"
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Permission'
+              $ref: "#/components/schemas/Permission"
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Permission'
-          description: ''
+                $ref: "#/components/schemas/Permission"
+          description: ""
     patch:
       operationId: accounts_permissions_partial_update
       parameters:
-      - in: path
-        name: permission_id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this permission.
-        required: true
+        - in: path
+          name: permission_id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this permission.
+          required: true
       tags:
-      - accounts
+        - accounts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedPermission'
+              $ref: "#/components/schemas/PatchedPermission"
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedPermission'
+              $ref: "#/components/schemas/PatchedPermission"
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedPermission'
+              $ref: "#/components/schemas/PatchedPermission"
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Permission'
-          description: ''
+                $ref: "#/components/schemas/Permission"
+          description: ""
     delete:
       operationId: accounts_permissions_destroy
       parameters:
-      - in: path
-        name: permission_id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this permission.
-        required: true
+        - in: path
+          name: permission_id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this permission.
+          required: true
       tags:
-      - accounts
+        - accounts
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '204':
+        "204":
           description: No response body
   /api/v1/accounts/role-permissions/:
     get:
       operationId: accounts_role_permissions_list
       tags:
-      - accounts
+        - accounts
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/RolePermission'
-          description: ''
+                  $ref: "#/components/schemas/RolePermission"
+          description: ""
     post:
       operationId: accounts_role_permissions_create
       tags:
-      - accounts
+        - accounts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RolePermission'
+              $ref: "#/components/schemas/RolePermission"
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/RolePermission'
+              $ref: "#/components/schemas/RolePermission"
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/RolePermission'
+              $ref: "#/components/schemas/RolePermission"
         required: true
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '201':
+        "201":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RolePermission'
-          description: ''
+                $ref: "#/components/schemas/RolePermission"
+          description: ""
   /api/v1/accounts/role-permissions/{id}/:
     get:
       operationId: accounts_role_permissions_retrieve
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this role permission.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this role permission.
+          required: true
       tags:
-      - accounts
+        - accounts
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RolePermission'
-          description: ''
+                $ref: "#/components/schemas/RolePermission"
+          description: ""
     put:
       operationId: accounts_role_permissions_update
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this role permission.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this role permission.
+          required: true
       tags:
-      - accounts
+        - accounts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RolePermission'
+              $ref: "#/components/schemas/RolePermission"
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/RolePermission'
+              $ref: "#/components/schemas/RolePermission"
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/RolePermission'
+              $ref: "#/components/schemas/RolePermission"
         required: true
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RolePermission'
-          description: ''
+                $ref: "#/components/schemas/RolePermission"
+          description: ""
     patch:
       operationId: accounts_role_permissions_partial_update
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this role permission.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this role permission.
+          required: true
       tags:
-      - accounts
+        - accounts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedRolePermission'
+              $ref: "#/components/schemas/PatchedRolePermission"
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedRolePermission'
+              $ref: "#/components/schemas/PatchedRolePermission"
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedRolePermission'
+              $ref: "#/components/schemas/PatchedRolePermission"
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RolePermission'
-          description: ''
+                $ref: "#/components/schemas/RolePermission"
+          description: ""
     delete:
       operationId: accounts_role_permissions_destroy
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this role permission.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this role permission.
+          required: true
       tags:
-      - accounts
+        - accounts
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '204':
+        "204":
           description: No response body
   /api/v1/accounts/roles/:
     get:
       operationId: accounts_roles_list
       tags:
-      - accounts
+        - accounts
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Role'
-          description: ''
+                  $ref: "#/components/schemas/Role"
+          description: ""
     post:
       operationId: accounts_roles_create
       tags:
-      - accounts
+        - accounts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Role'
+              $ref: "#/components/schemas/Role"
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Role'
+              $ref: "#/components/schemas/Role"
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Role'
+              $ref: "#/components/schemas/Role"
         required: true
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '201':
+        "201":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Role'
-          description: ''
+                $ref: "#/components/schemas/Role"
+          description: ""
   /api/v1/accounts/roles/{role_id}/:
     get:
       operationId: accounts_roles_retrieve
       parameters:
-      - in: path
-        name: role_id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this role.
-        required: true
+        - in: path
+          name: role_id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this role.
+          required: true
       tags:
-      - accounts
+        - accounts
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Role'
-          description: ''
+                $ref: "#/components/schemas/Role"
+          description: ""
     put:
       operationId: accounts_roles_update
       parameters:
-      - in: path
-        name: role_id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this role.
-        required: true
+        - in: path
+          name: role_id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this role.
+          required: true
       tags:
-      - accounts
+        - accounts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Role'
+              $ref: "#/components/schemas/Role"
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Role'
+              $ref: "#/components/schemas/Role"
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Role'
+              $ref: "#/components/schemas/Role"
         required: true
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Role'
-          description: ''
+                $ref: "#/components/schemas/Role"
+          description: ""
     patch:
       operationId: accounts_roles_partial_update
       parameters:
-      - in: path
-        name: role_id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this role.
-        required: true
+        - in: path
+          name: role_id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this role.
+          required: true
       tags:
-      - accounts
+        - accounts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedRole'
+              $ref: "#/components/schemas/PatchedRole"
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedRole'
+              $ref: "#/components/schemas/PatchedRole"
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedRole'
+              $ref: "#/components/schemas/PatchedRole"
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Role'
-          description: ''
+                $ref: "#/components/schemas/Role"
+          description: ""
     delete:
       operationId: accounts_roles_destroy
       parameters:
-      - in: path
-        name: role_id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this role.
-        required: true
+        - in: path
+          name: role_id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this role.
+          required: true
       tags:
-      - accounts
+        - accounts
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '204':
+        "204":
           description: No response body
   /api/v1/accounts/token/:
     post:
@@ -609,26 +609,26 @@ paths:
         Takes a set of user credentials and returns an access and refresh JSON web
         token pair to prove the authentication of those credentials.
       tags:
-      - accounts
+        - accounts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TokenObtainPair'
+              $ref: "#/components/schemas/TokenObtainPair"
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/TokenObtainPair'
+              $ref: "#/components/schemas/TokenObtainPair"
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/TokenObtainPair'
+              $ref: "#/components/schemas/TokenObtainPair"
         required: true
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TokenObtainPair'
-          description: ''
+                $ref: "#/components/schemas/TokenObtainPair"
+          description: ""
   /api/v1/accounts/token/refresh/:
     post:
       operationId: accounts_token_refresh_create
@@ -636,1092 +636,1092 @@ paths:
         Takes a refresh type JSON web token and returns an access type JSON web
         token if the refresh token is valid.
       tags:
-      - accounts
+        - accounts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TokenRefresh'
+              $ref: "#/components/schemas/TokenRefresh"
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/TokenRefresh'
+              $ref: "#/components/schemas/TokenRefresh"
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/TokenRefresh'
+              $ref: "#/components/schemas/TokenRefresh"
         required: true
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TokenRefresh'
-          description: ''
+                $ref: "#/components/schemas/TokenRefresh"
+          description: ""
   /api/v1/accounts/users/:
     get:
       operationId: accounts_users_list
       tags:
-      - accounts
+        - accounts
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/User'
-          description: ''
+                  $ref: "#/components/schemas/User"
+          description: ""
     post:
       operationId: accounts_users_create
       tags:
-      - accounts
+        - accounts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: "#/components/schemas/User"
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: "#/components/schemas/User"
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: "#/components/schemas/User"
         required: true
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '201':
+        "201":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-          description: ''
+                $ref: "#/components/schemas/User"
+          description: ""
   /api/v1/accounts/users/{user_id}/:
     get:
       operationId: accounts_users_retrieve
       parameters:
-      - in: path
-        name: user_id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this user.
-        required: true
+        - in: path
+          name: user_id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this user.
+          required: true
       tags:
-      - accounts
+        - accounts
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-          description: ''
+                $ref: "#/components/schemas/User"
+          description: ""
     put:
       operationId: accounts_users_update
       parameters:
-      - in: path
-        name: user_id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this user.
-        required: true
+        - in: path
+          name: user_id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this user.
+          required: true
       tags:
-      - accounts
+        - accounts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: "#/components/schemas/User"
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: "#/components/schemas/User"
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: "#/components/schemas/User"
         required: true
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-          description: ''
+                $ref: "#/components/schemas/User"
+          description: ""
     patch:
       operationId: accounts_users_partial_update
       parameters:
-      - in: path
-        name: user_id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this user.
-        required: true
+        - in: path
+          name: user_id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this user.
+          required: true
       tags:
-      - accounts
+        - accounts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedUser'
+              $ref: "#/components/schemas/PatchedUser"
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedUser'
+              $ref: "#/components/schemas/PatchedUser"
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedUser'
+              $ref: "#/components/schemas/PatchedUser"
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-          description: ''
+                $ref: "#/components/schemas/User"
+          description: ""
     delete:
       operationId: accounts_users_destroy
       parameters:
-      - in: path
-        name: user_id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this user.
-        required: true
+        - in: path
+          name: user_id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this user.
+          required: true
       tags:
-      - accounts
+        - accounts
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '204':
+        "204":
           description: No response body
   /api/v1/accounts/users/me/:
     get:
       operationId: accounts_users_me_retrieve
       tags:
-      - accounts
+        - accounts
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-          description: ''
+                $ref: "#/components/schemas/User"
+          description: ""
   /api/v1/alerts/:
     get:
       operationId: alerts_list
       parameters:
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - in: query
-        name: rule__name
-        schema:
-          type: string
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
-      - in: query
-        name: severity
-        schema:
-          type: string
-          enum:
-          - CRITICAL
-          - HIGH
-          - INFO
-          - LOW
-          - MEDIUM
-        description: |-
-          * `INFO` - Info
-          * `LOW` - Low
-          * `MEDIUM` - Medium
-          * `HIGH` - High
-          * `CRITICAL` - Critical
+        - name: ordering
+          required: false
+          in: query
+          description: Which field to use when ordering the results.
+          schema:
+            type: string
+        - name: page
+          required: false
+          in: query
+          description: A page number within the paginated result set.
+          schema:
+            type: integer
+        - name: page_size
+          required: false
+          in: query
+          description: Number of results to return per page.
+          schema:
+            type: integer
+        - in: query
+          name: rule__name
+          schema:
+            type: string
+        - name: search
+          required: false
+          in: query
+          description: A search term.
+          schema:
+            type: string
+        - in: query
+          name: severity
+          schema:
+            type: string
+            enum:
+              - CRITICAL
+              - HIGH
+              - INFO
+              - LOW
+              - MEDIUM
+          description: |-
+            * `INFO` - Info
+            * `LOW` - Low
+            * `MEDIUM` - Medium
+            * `HIGH` - High
+            * `CRITICAL` - Critical
       tags:
-      - alerts
+        - alerts
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedAlertList'
-          description: ''
+                $ref: "#/components/schemas/PaginatedAlertList"
+          description: ""
     post:
       operationId: alerts_create
       tags:
-      - alerts
+        - alerts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Alert'
+              $ref: "#/components/schemas/Alert"
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Alert'
+              $ref: "#/components/schemas/Alert"
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Alert'
+              $ref: "#/components/schemas/Alert"
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '201':
+        "201":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Alert'
-          description: ''
+                $ref: "#/components/schemas/Alert"
+          description: ""
   /api/v1/alerts/{id}/:
     get:
       operationId: alerts_retrieve
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this alert.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this alert.
+          required: true
       tags:
-      - alerts
+        - alerts
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Alert'
-          description: ''
+                $ref: "#/components/schemas/Alert"
+          description: ""
     put:
       operationId: alerts_update
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this alert.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this alert.
+          required: true
       tags:
-      - alerts
+        - alerts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Alert'
+              $ref: "#/components/schemas/Alert"
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Alert'
+              $ref: "#/components/schemas/Alert"
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Alert'
+              $ref: "#/components/schemas/Alert"
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Alert'
-          description: ''
+                $ref: "#/components/schemas/Alert"
+          description: ""
     patch:
       operationId: alerts_partial_update
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this alert.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this alert.
+          required: true
       tags:
-      - alerts
+        - alerts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedAlert'
+              $ref: "#/components/schemas/PatchedAlert"
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedAlert'
+              $ref: "#/components/schemas/PatchedAlert"
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedAlert'
+              $ref: "#/components/schemas/PatchedAlert"
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Alert'
-          description: ''
+                $ref: "#/components/schemas/Alert"
+          description: ""
     delete:
       operationId: alerts_destroy
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this alert.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this alert.
+          required: true
       tags:
-      - alerts
+        - alerts
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '204':
+        "204":
           description: No response body
   /api/v1/alerts/{id}/assign/:
     post:
       operationId: alerts_assign_create
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this alert.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this alert.
+          required: true
       tags:
-      - alerts
+        - alerts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Alert'
+              $ref: "#/components/schemas/Alert"
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Alert'
+              $ref: "#/components/schemas/Alert"
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Alert'
+              $ref: "#/components/schemas/Alert"
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Alert'
-          description: ''
+                $ref: "#/components/schemas/Alert"
+          description: ""
   /api/v1/alerts/latest_alerts/:
     get:
       operationId: alerts_latest_alerts_retrieve
       tags:
-      - alerts
+        - alerts
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Alert'
-          description: ''
+                $ref: "#/components/schemas/Alert"
+          description: ""
   /api/v1/investigate/:
     get:
       operationId: investigate_list
       parameters:
-      - in: query
-        name: alert__severity
-        schema:
-          type: string
-      - in: query
-        name: assigned_to__email
-        schema:
-          type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
-      - in: query
-        name: status
-        schema:
-          type: string
-          enum:
-          - CLOSED
-          - NEW
-          - PENDING
-          - RESOLVED
-        description: |-
-          * `NEW` - New
-          * `PENDING` - Pending
-          * `RESOLVED` - Resolved
-          * `CLOSED` - Closed
+        - in: query
+          name: alert__severity
+          schema:
+            type: string
+        - in: query
+          name: assigned_to__email
+          schema:
+            type: string
+        - name: ordering
+          required: false
+          in: query
+          description: Which field to use when ordering the results.
+          schema:
+            type: string
+        - name: page
+          required: false
+          in: query
+          description: A page number within the paginated result set.
+          schema:
+            type: integer
+        - name: page_size
+          required: false
+          in: query
+          description: Number of results to return per page.
+          schema:
+            type: integer
+        - name: search
+          required: false
+          in: query
+          description: A search term.
+          schema:
+            type: string
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum:
+              - CLOSED
+              - NEW
+              - PENDING
+              - RESOLVED
+          description: |-
+            * `NEW` - New
+            * `PENDING` - Pending
+            * `RESOLVED` - Resolved
+            * `CLOSED` - Closed
       tags:
-      - investigate
+        - investigate
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedInvestigateAlertList'
-          description: ''
+                $ref: "#/components/schemas/PaginatedInvestigateAlertList"
+          description: ""
     post:
       operationId: investigate_create
       tags:
-      - investigate
+        - investigate
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/InvestigateAlert'
+              $ref: "#/components/schemas/InvestigateAlert"
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/InvestigateAlert'
+              $ref: "#/components/schemas/InvestigateAlert"
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/InvestigateAlert'
+              $ref: "#/components/schemas/InvestigateAlert"
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '201':
+        "201":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InvestigateAlert'
-          description: ''
+                $ref: "#/components/schemas/InvestigateAlert"
+          description: ""
   /api/v1/investigate/{id}/:
     get:
       operationId: investigate_retrieve
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this investigate alert.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this investigate alert.
+          required: true
       tags:
-      - investigate
+        - investigate
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InvestigateAlert'
-          description: ''
+                $ref: "#/components/schemas/InvestigateAlert"
+          description: ""
     put:
       operationId: investigate_update
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this investigate alert.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this investigate alert.
+          required: true
       tags:
-      - investigate
+        - investigate
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/InvestigateAlert'
+              $ref: "#/components/schemas/InvestigateAlert"
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/InvestigateAlert'
+              $ref: "#/components/schemas/InvestigateAlert"
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/InvestigateAlert'
+              $ref: "#/components/schemas/InvestigateAlert"
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InvestigateAlert'
-          description: ''
+                $ref: "#/components/schemas/InvestigateAlert"
+          description: ""
     patch:
       operationId: investigate_partial_update
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this investigate alert.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this investigate alert.
+          required: true
       tags:
-      - investigate
+        - investigate
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedInvestigateAlert'
+              $ref: "#/components/schemas/PatchedInvestigateAlert"
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedInvestigateAlert'
+              $ref: "#/components/schemas/PatchedInvestigateAlert"
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedInvestigateAlert'
+              $ref: "#/components/schemas/PatchedInvestigateAlert"
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InvestigateAlert'
-          description: ''
+                $ref: "#/components/schemas/InvestigateAlert"
+          description: ""
     delete:
       operationId: investigate_destroy
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this investigate alert.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this investigate alert.
+          required: true
       tags:
-      - investigate
+        - investigate
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '204':
+        "204":
           description: No response body
   /api/v1/logs/bronze-events/:
     get:
       operationId: logs_bronze_events_list
       parameters:
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+        - name: ordering
+          required: false
+          in: query
+          description: Which field to use when ordering the results.
+          schema:
+            type: string
+        - name: page
+          required: false
+          in: query
+          description: A page number within the paginated result set.
+          schema:
+            type: integer
+        - name: page_size
+          required: false
+          in: query
+          description: Number of results to return per page.
+          schema:
+            type: integer
+        - name: search
+          required: false
+          in: query
+          description: A search term.
+          schema:
+            type: string
       tags:
-      - logs
+        - logs
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedBronzeEventDataList'
-          description: ''
+                $ref: "#/components/schemas/PaginatedBronzeEventDataList"
+          description: ""
   /api/v1/logs/bronze-events/{id}/:
     get:
       operationId: logs_bronze_events_retrieve
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this bronze event data.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this bronze event data.
+          required: true
       tags:
-      - logs
+        - logs
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BronzeEventData'
-          description: ''
+                $ref: "#/components/schemas/BronzeEventData"
+          description: ""
   /api/v1/logs/bronze-events/count/:
     get:
       operationId: logs_bronze_events_count_retrieve
       tags:
-      - logs
+        - logs
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BronzeEventData'
-          description: ''
-  /api/v1/logs/bronze-events/export_pdf/:
+                $ref: "#/components/schemas/BronzeEventData"
+          description: ""
+  /api/v1/logs/bronze-events/export_csv/:
     get:
       operationId: logs_bronze_events_export_pdf_retrieve
       tags:
-      - logs
+        - logs
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BronzeEventData'
-          description: ''
+                $ref: "#/components/schemas/BronzeEventData"
+          description: ""
   /api/v1/logs/events-today/events_today/:
     get:
       operationId: logs_events_today_events_today_retrieve
       tags:
-      - logs
+        - logs
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           description: No response body
   /api/v1/logs/log-percentage/log_percentages/:
     get:
       operationId: logs_log_percentage_log_percentages_retrieve
       tags:
-      - logs
+        - logs
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LogCount'
-          description: ''
+                $ref: "#/components/schemas/LogCount"
+          description: ""
   /api/v1/logs/logs-aggregation/logs_per_hour/:
     get:
       operationId: logs_logs_aggregation_logs_per_hour_retrieve
       tags:
-      - logs
+        - logs
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           description: No response body
   /api/v1/logs/router-data/:
     get:
       operationId: logs_router_data_list
       parameters:
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+        - name: ordering
+          required: false
+          in: query
+          description: Which field to use when ordering the results.
+          schema:
+            type: string
+        - name: page
+          required: false
+          in: query
+          description: A page number within the paginated result set.
+          schema:
+            type: integer
+        - name: page_size
+          required: false
+          in: query
+          description: Number of results to return per page.
+          schema:
+            type: integer
+        - name: search
+          required: false
+          in: query
+          description: A search term.
+          schema:
+            type: string
       tags:
-      - logs
+        - logs
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedRouterDataList'
-          description: ''
+                $ref: "#/components/schemas/PaginatedRouterDataList"
+          description: ""
   /api/v1/logs/router-data/{id}/:
     get:
       operationId: logs_router_data_retrieve
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this router data.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this router data.
+          required: true
       tags:
-      - logs
+        - logs
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RouterData'
-          description: ''
+                $ref: "#/components/schemas/RouterData"
+          description: ""
   /api/v1/logs/router-data/export_pdf/:
     get:
       operationId: logs_router_data_export_pdf_retrieve
       tags:
-      - logs
+        - logs
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RouterData'
-          description: ''
+                $ref: "#/components/schemas/RouterData"
+          description: ""
   /api/v1/logs/router-data/router_log_count/:
     get:
       operationId: logs_router_data_router_log_count_retrieve
       tags:
-      - logs
+        - logs
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RouterData'
-          description: ''
+                $ref: "#/components/schemas/RouterData"
+          description: ""
   /api/v1/reports/incident-reports/:
     get:
       operationId: reports_incident_reports_list
       parameters:
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
-      - in: query
-        name: status
-        schema:
-          type: string
-          enum:
-          - archived
-          - closed
-          - draft
-          - ongoing
-        description: |-
-          * `draft` - Draft
-          * `ongoing` - Ongoing
-          * `closed` - Closed
-          * `archived` - Archived
-      - in: query
-        name: type
-        schema:
-          type: string
-          enum:
-          - compliance_audit
-          - network_traffic
-          - security_incident
-          - system_performance
-          - user_activity
-        description: |-
-          * `security_incident` - Security Incident
-          * `network_traffic` - Network Traffic
-          * `user_activity` - User Activity
-          * `system_performance` - System Performance
-          * `compliance_audit` - Compliance Audit
-      - in: query
-        name: user__email
-        schema:
-          type: string
+        - name: ordering
+          required: false
+          in: query
+          description: Which field to use when ordering the results.
+          schema:
+            type: string
+        - name: page
+          required: false
+          in: query
+          description: A page number within the paginated result set.
+          schema:
+            type: integer
+        - name: page_size
+          required: false
+          in: query
+          description: Number of results to return per page.
+          schema:
+            type: integer
+        - name: search
+          required: false
+          in: query
+          description: A search term.
+          schema:
+            type: string
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum:
+              - archived
+              - closed
+              - draft
+              - ongoing
+          description: |-
+            * `draft` - Draft
+            * `ongoing` - Ongoing
+            * `closed` - Closed
+            * `archived` - Archived
+        - in: query
+          name: type
+          schema:
+            type: string
+            enum:
+              - compliance_audit
+              - network_traffic
+              - security_incident
+              - system_performance
+              - user_activity
+          description: |-
+            * `security_incident` - Security Incident
+            * `network_traffic` - Network Traffic
+            * `user_activity` - User Activity
+            * `system_performance` - System Performance
+            * `compliance_audit` - Compliance Audit
+        - in: query
+          name: user__email
+          schema:
+            type: string
       tags:
-      - reports
+        - reports
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedIncidentReportList'
-          description: ''
+                $ref: "#/components/schemas/PaginatedIncidentReportList"
+          description: ""
     post:
       operationId: reports_incident_reports_create
       tags:
-      - reports
+        - reports
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/IncidentReport'
+              $ref: "#/components/schemas/IncidentReport"
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/IncidentReport'
+              $ref: "#/components/schemas/IncidentReport"
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/IncidentReport'
+              $ref: "#/components/schemas/IncidentReport"
         required: true
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '201':
+        "201":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/IncidentReport'
-          description: ''
+                $ref: "#/components/schemas/IncidentReport"
+          description: ""
   /api/v1/reports/incident-reports/{id}/:
     get:
       operationId: reports_incident_reports_retrieve
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this incident report.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this incident report.
+          required: true
       tags:
-      - reports
+        - reports
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/IncidentReport'
-          description: ''
+                $ref: "#/components/schemas/IncidentReport"
+          description: ""
     put:
       operationId: reports_incident_reports_update
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this incident report.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this incident report.
+          required: true
       tags:
-      - reports
+        - reports
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/IncidentReport'
+              $ref: "#/components/schemas/IncidentReport"
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/IncidentReport'
+              $ref: "#/components/schemas/IncidentReport"
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/IncidentReport'
+              $ref: "#/components/schemas/IncidentReport"
         required: true
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/IncidentReport'
-          description: ''
+                $ref: "#/components/schemas/IncidentReport"
+          description: ""
     patch:
       operationId: reports_incident_reports_partial_update
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this incident report.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this incident report.
+          required: true
       tags:
-      - reports
+        - reports
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedIncidentReport'
+              $ref: "#/components/schemas/PatchedIncidentReport"
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedIncidentReport'
+              $ref: "#/components/schemas/PatchedIncidentReport"
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedIncidentReport'
+              $ref: "#/components/schemas/PatchedIncidentReport"
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/IncidentReport'
-          description: ''
+                $ref: "#/components/schemas/IncidentReport"
+          description: ""
     delete:
       operationId: reports_incident_reports_destroy
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this incident report.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this incident report.
+          required: true
       tags:
-      - reports
+        - reports
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '204':
+        "204":
           description: No response body
   /api/v1/reports/incident-reports/{id}/generate_pdf/:
     post:
       operationId: reports_incident_reports_generate_pdf_create
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this incident report.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this incident report.
+          required: true
       tags:
-      - reports
+        - reports
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/IncidentReport'
+              $ref: "#/components/schemas/IncidentReport"
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/IncidentReport'
+              $ref: "#/components/schemas/IncidentReport"
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/IncidentReport'
+              $ref: "#/components/schemas/IncidentReport"
         required: true
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/IncidentReport'
-          description: ''
+                $ref: "#/components/schemas/IncidentReport"
+          description: ""
   /api/v1/reports/incident-reports/get_rules/:
     get:
       operationId: reports_incident_reports_get_rules_retrieve
       tags:
-      - reports
+        - reports
       security:
-      - jwtAuth: []
-      - cookieAuth: []
+        - jwtAuth: []
+        - cookieAuth: []
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/IncidentReport'
-          description: ''
+                $ref: "#/components/schemas/IncidentReport"
+          description: ""
 components:
   schemas:
     Alert:
@@ -1732,7 +1732,7 @@ components:
           readOnly: true
         event:
           allOf:
-          - $ref: '#/components/schemas/AlertBronzeEventData'
+            - $ref: "#/components/schemas/AlertBronzeEventData"
           readOnly: true
         created_at:
           type: string
@@ -1740,18 +1740,18 @@ components:
           readOnly: true
         rule:
           allOf:
-          - $ref: '#/components/schemas/AlertRule'
+            - $ref: "#/components/schemas/AlertRule"
           readOnly: true
         severity:
-          $ref: '#/components/schemas/SeverityEnum'
+          $ref: "#/components/schemas/SeverityEnum"
         comments:
           type: string
           nullable: true
       required:
-      - created_at
-      - event
-      - id
-      - rule
+        - created_at
+        - event
+        - id
+        - rule
     AlertBronzeEventData:
       type: object
       properties:
@@ -1771,7 +1771,7 @@ components:
           nullable: true
           maxLength: 255
       required:
-      - id
+        - id
     AlertRule:
       type: object
       properties:
@@ -1782,8 +1782,8 @@ components:
           type: string
           maxLength: 255
       required:
-      - id
-      - name
+        - id
+        - name
     AlertUser:
       type: object
       properties:
@@ -1796,8 +1796,8 @@ components:
           format: email
           maxLength: 80
       required:
-      - email
-      - user_id
+        - email
+        - user_id
     BronzeEventData:
       type: object
       properties:
@@ -1828,13 +1828,13 @@ components:
           type: string
           nullable: true
       required:
-      - id
+        - id
     Employee:
       type: object
       properties:
         user:
           allOf:
-          - $ref: '#/components/schemas/User'
+            - $ref: "#/components/schemas/User"
           readOnly: true
         user_id:
           type: string
@@ -1858,11 +1858,11 @@ components:
           nullable: true
           maxLength: 50
       required:
-      - employee_id
-      - first_name
-      - last_name
-      - user
-      - user_id
+        - employee_id
+        - first_name
+        - last_name
+        - user
+        - user_id
     IncidentReport:
       type: object
       properties:
@@ -1871,16 +1871,16 @@ components:
           readOnly: true
         source:
           allOf:
-          - $ref: '#/components/schemas/BronzeEventData'
+            - $ref: "#/components/schemas/BronzeEventData"
           readOnly: true
         user:
           allOf:
-          - $ref: '#/components/schemas/IncidentReportUser'
+            - $ref: "#/components/schemas/IncidentReportUser"
           readOnly: true
         rules:
           type: array
           items:
-            $ref: '#/components/schemas/IncidentReportRule'
+            $ref: "#/components/schemas/IncidentReportRule"
           readOnly: true
         pdf_url:
           type: string
@@ -1901,9 +1901,9 @@ components:
           format: date-time
           readOnly: true
         type:
-          $ref: '#/components/schemas/TypeEnum'
+          $ref: "#/components/schemas/TypeEnum"
         status:
-          $ref: '#/components/schemas/IncidentReportStatusEnum'
+          $ref: "#/components/schemas/IncidentReportStatusEnum"
         description:
           type: string
         pdf_file:
@@ -1911,16 +1911,16 @@ components:
           format: uri
           nullable: true
       required:
-      - created_at
-      - description
-      - id
-      - pdf_url
-      - rules
-      - source
-      - status
-      - type
-      - updated_at
-      - user
+        - created_at
+        - description
+        - id
+        - pdf_url
+        - rules
+        - source
+        - status
+        - type
+        - updated_at
+        - user
     IncidentReportRule:
       type: object
       properties:
@@ -1934,17 +1934,17 @@ components:
           type: string
           maxLength: 255
         severity:
-          $ref: '#/components/schemas/SeverityEnum'
+          $ref: "#/components/schemas/SeverityEnum"
       required:
-      - description
-      - id
-      - name
+        - description
+        - id
+        - name
     IncidentReportStatusEnum:
       enum:
-      - draft
-      - ongoing
-      - closed
-      - archived
+        - draft
+        - ongoing
+        - closed
+        - archived
       type: string
       description: |-
         * `draft` - Draft
@@ -1963,8 +1963,8 @@ components:
           format: email
           maxLength: 80
       required:
-      - email
-      - user_id
+        - email
+        - user_id
     InvestigateAlert:
       type: object
       properties:
@@ -1973,14 +1973,14 @@ components:
           readOnly: true
         alert:
           allOf:
-          - $ref: '#/components/schemas/Alert'
+            - $ref: "#/components/schemas/Alert"
           readOnly: true
         assigned_to:
           allOf:
-          - $ref: '#/components/schemas/AlertUser'
+            - $ref: "#/components/schemas/AlertUser"
           readOnly: true
         status:
-          $ref: '#/components/schemas/InvestigateAlertStatusEnum'
+          $ref: "#/components/schemas/InvestigateAlertStatusEnum"
         notes:
           type: string
           nullable: true
@@ -1993,17 +1993,17 @@ components:
           format: date-time
           readOnly: true
       required:
-      - alert
-      - assigned_to
-      - created_at
-      - id
-      - updated_at
+        - alert
+        - assigned_to
+        - created_at
+        - id
+        - updated_at
     InvestigateAlertStatusEnum:
       enum:
-      - NEW
-      - PENDING
-      - RESOLVED
-      - CLOSED
+        - NEW
+        - PENDING
+        - RESOLVED
+        - CLOSED
       type: string
       description: |-
         * `NEW` - New
@@ -2020,13 +2020,13 @@ components:
           type: number
           format: double
       required:
-      - network_percentage
-      - windows_os_percentage
+        - network_percentage
+        - windows_os_percentage
     PaginatedAlertList:
       type: object
       required:
-      - count
-      - results
+        - count
+        - results
       properties:
         count:
           type: integer
@@ -2044,12 +2044,12 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/Alert'
+            $ref: "#/components/schemas/Alert"
     PaginatedBronzeEventDataList:
       type: object
       required:
-      - count
-      - results
+        - count
+        - results
       properties:
         count:
           type: integer
@@ -2067,12 +2067,12 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/BronzeEventData'
+            $ref: "#/components/schemas/BronzeEventData"
     PaginatedIncidentReportList:
       type: object
       required:
-      - count
-      - results
+        - count
+        - results
       properties:
         count:
           type: integer
@@ -2090,12 +2090,12 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/IncidentReport'
+            $ref: "#/components/schemas/IncidentReport"
     PaginatedInvestigateAlertList:
       type: object
       required:
-      - count
-      - results
+        - count
+        - results
       properties:
         count:
           type: integer
@@ -2113,12 +2113,12 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/InvestigateAlert'
+            $ref: "#/components/schemas/InvestigateAlert"
     PaginatedRouterDataList:
       type: object
       required:
-      - count
-      - results
+        - count
+        - results
       properties:
         count:
           type: integer
@@ -2136,7 +2136,7 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/RouterData'
+            $ref: "#/components/schemas/RouterData"
     PatchedAlert:
       type: object
       properties:
@@ -2145,7 +2145,7 @@ components:
           readOnly: true
         event:
           allOf:
-          - $ref: '#/components/schemas/AlertBronzeEventData'
+            - $ref: "#/components/schemas/AlertBronzeEventData"
           readOnly: true
         created_at:
           type: string
@@ -2153,10 +2153,10 @@ components:
           readOnly: true
         rule:
           allOf:
-          - $ref: '#/components/schemas/AlertRule'
+            - $ref: "#/components/schemas/AlertRule"
           readOnly: true
         severity:
-          $ref: '#/components/schemas/SeverityEnum'
+          $ref: "#/components/schemas/SeverityEnum"
         comments:
           type: string
           nullable: true
@@ -2165,7 +2165,7 @@ components:
       properties:
         user:
           allOf:
-          - $ref: '#/components/schemas/User'
+            - $ref: "#/components/schemas/User"
           readOnly: true
         user_id:
           type: string
@@ -2196,16 +2196,16 @@ components:
           readOnly: true
         source:
           allOf:
-          - $ref: '#/components/schemas/BronzeEventData'
+            - $ref: "#/components/schemas/BronzeEventData"
           readOnly: true
         user:
           allOf:
-          - $ref: '#/components/schemas/IncidentReportUser'
+            - $ref: "#/components/schemas/IncidentReportUser"
           readOnly: true
         rules:
           type: array
           items:
-            $ref: '#/components/schemas/IncidentReportRule'
+            $ref: "#/components/schemas/IncidentReportRule"
           readOnly: true
         pdf_url:
           type: string
@@ -2226,9 +2226,9 @@ components:
           format: date-time
           readOnly: true
         type:
-          $ref: '#/components/schemas/TypeEnum'
+          $ref: "#/components/schemas/TypeEnum"
         status:
-          $ref: '#/components/schemas/IncidentReportStatusEnum'
+          $ref: "#/components/schemas/IncidentReportStatusEnum"
         description:
           type: string
         pdf_file:
@@ -2243,14 +2243,14 @@ components:
           readOnly: true
         alert:
           allOf:
-          - $ref: '#/components/schemas/Alert'
+            - $ref: "#/components/schemas/Alert"
           readOnly: true
         assigned_to:
           allOf:
-          - $ref: '#/components/schemas/AlertUser'
+            - $ref: "#/components/schemas/AlertUser"
           readOnly: true
         status:
-          $ref: '#/components/schemas/InvestigateAlertStatusEnum'
+          $ref: "#/components/schemas/InvestigateAlertStatusEnum"
         notes:
           type: string
           nullable: true
@@ -2285,15 +2285,15 @@ components:
         permissions:
           type: array
           items:
-            $ref: '#/components/schemas/Permission'
+            $ref: "#/components/schemas/Permission"
           readOnly: true
     PatchedRolePermission:
       type: object
       properties:
         role:
-          $ref: '#/components/schemas/Role'
+          $ref: "#/components/schemas/Role"
         permission:
-          $ref: '#/components/schemas/Permission'
+          $ref: "#/components/schemas/Permission"
     PatchedUser:
       type: object
       properties:
@@ -2307,7 +2307,7 @@ components:
           maxLength: 80
         role:
           allOf:
-          - $ref: '#/components/schemas/Role'
+            - $ref: "#/components/schemas/Role"
           readOnly: true
         role_id:
           type: string
@@ -2336,7 +2336,7 @@ components:
           type: string
           maxLength: 50
       required:
-      - permission_id
+        - permission_id
     Role:
       type: object
       properties:
@@ -2350,22 +2350,22 @@ components:
         permissions:
           type: array
           items:
-            $ref: '#/components/schemas/Permission'
+            $ref: "#/components/schemas/Permission"
           readOnly: true
       required:
-      - name
-      - permissions
-      - role_id
+        - name
+        - permissions
+        - role_id
     RolePermission:
       type: object
       properties:
         role:
-          $ref: '#/components/schemas/Role'
+          $ref: "#/components/schemas/Role"
         permission:
-          $ref: '#/components/schemas/Permission'
+          $ref: "#/components/schemas/Permission"
       required:
-      - permission
-      - role
+        - permission
+        - role
     RouterData:
       type: object
       properties:
@@ -2388,14 +2388,14 @@ components:
           type: string
           nullable: true
       required:
-      - id
+        - id
     SeverityEnum:
       enum:
-      - INFO
-      - LOW
-      - MEDIUM
-      - HIGH
-      - CRITICAL
+        - INFO
+        - LOW
+        - MEDIUM
+        - HIGH
+        - CRITICAL
       type: string
       description: |-
         * `INFO` - Info
@@ -2419,10 +2419,10 @@ components:
           type: string
           readOnly: true
       required:
-      - access
-      - email
-      - password
-      - refresh
+        - access
+        - email
+        - password
+        - refresh
     TokenRefresh:
       type: object
       properties:
@@ -2432,15 +2432,15 @@ components:
         refresh:
           type: string
       required:
-      - access
-      - refresh
+        - access
+        - refresh
     TypeEnum:
       enum:
-      - security_incident
-      - network_traffic
-      - user_activity
-      - system_performance
-      - compliance_audit
+        - security_incident
+        - network_traffic
+        - user_activity
+        - system_performance
+        - compliance_audit
       type: string
       description: |-
         * `security_incident` - Security Incident
@@ -2461,7 +2461,7 @@ components:
           maxLength: 80
         role:
           allOf:
-          - $ref: '#/components/schemas/Role'
+            - $ref: "#/components/schemas/Role"
           readOnly: true
         role_id:
           type: string
@@ -2480,11 +2480,11 @@ components:
             type: string
           readOnly: true
       required:
-      - email
-      - password
-      - permissions
-      - role
-      - user_id
+        - email
+        - password
+        - permissions
+        - role
+        - user_id
   securitySchemes:
     cookieAuth:
       type: apiKey
