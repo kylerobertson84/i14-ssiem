@@ -55,7 +55,74 @@ services:
       - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD:-random_password}
     ports:
       - "${DOCKER_DB_PORT:-3307}:3306"
-  
+
+  # Message Broker, it stores and manages the tasks that need to be executed.
+  redis:
+    image: redis:alpine
+
+    deploy:
+      # Cranking up performance with replicas.
+      # replicas: 3
+      # resources:
+      #   limits:
+      #     memory: '1G'
+      restart_policy:
+        condition: on-failure
+
+  # Celery constantly checks the Redis broker for new tasks and executes them.
+  celery:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile.celery
+    command: celery -A siem worker -l info
+    volumes:
+      - ./log_files:/app/log_files
+      - ./processed_log_files:/app/processed_log_files
+    depends_on:
+      - backend
+      - redis
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    deploy:
+      # Cranking up performance with replicas.
+      # replicas: 3
+      # resources:
+      #   limits:
+      #     memory: '1G'
+      restart_policy:
+        condition: on-failure
+
+  # Celery Beat is a scheduler that periodically runs tasks. - sneding these tasks to Redis
+  celery-beat:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile.celery
+    command: celery -A siem beat -l info
+    volumes:
+      - ./log_files:/app/log_files
+      - ./processed_log_files:/app/processed_log_files
+    depends_on:
+      - backend
+      - redis
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+
+## Monitoring tool for Celery.
+  flower:
+    image: mher/flower
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - FLOWER_PORT=5555
+      - TZ=Australia/Melbourne
+    ports:
+      - 5555:5555
+    depends_on:
+      - redis
+      - celery
+      
+              
   traefik:
     image: "traefik:v3.1.2"
     container_name: "traefik"
