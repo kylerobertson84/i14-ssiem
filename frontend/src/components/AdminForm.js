@@ -14,6 +14,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 import apiRequest from '../services/apiRequest';
 import API_ENDPOINTS from '../services/apiConfig';
+import DOMPurify from 'dompurify';
 
 const AdminForm = () => {
     const [formData, setFormData] = useState({
@@ -201,7 +202,7 @@ const AdminForm = () => {
                             key={role.role_id}
                             value={role.role_id}
                             control={<Radio color="secondary" />}
-                            label={role.name}
+                            label={DOMPurify.sanitize(role.name)} // Sanitize role names
                         />
                     ))}
                 </RadioGroup>
@@ -218,7 +219,7 @@ const AdminForm = () => {
                         marginBottom: '16px',
                     }}
                 >
-                    {error}
+                    {DOMPurify.sanitize(error)} //Sanitize Error Message
                 </FormHelperText>
             )}
 
@@ -231,7 +232,7 @@ const AdminForm = () => {
                         marginBottom: '16px',
                     }}
                 >
-                    {success}
+                    {DOMPurify.sanitize(success)} //Sanitize Success Message
                 </FormHelperText>
             )}
 

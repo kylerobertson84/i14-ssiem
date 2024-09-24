@@ -41,6 +41,8 @@ import {
 } from '@mui/icons-material';
 import { fetchComputerLogs, fetchRouterLogs, exportPDF } from '../services/apiService';
 import SEO from '../Design/SEO.js';
+import DOMPurify from 'dompurify';
+import DOMPurifyTest from '../components/DOMPurifyTest.js';   
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -219,11 +221,12 @@ const LogQueries = () => {
           {label}
         </Typography>
         <Typography variant="body1">
-          {value !== null && value !== undefined && value !== "" ? value.toString() : 'N/A'}
+          {value !== null && value !== undefined && value !== "" 
+            ? DOMPurify.sanitize(value.toString()) 
+            : 'N/A'}
         </Typography>
       </Box>
     );
-  
     if (!log) {
       return null;
     }
@@ -270,7 +273,7 @@ const LogQueries = () => {
   return (
     <>
       <SEO 
-				title="Queries" 
+				title="Queries"  
 			/>
       <Container maxWidth="xl">
         <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 3 }} fontWeight="bold">
@@ -418,12 +421,12 @@ const LogQueries = () => {
                     >
                       {columns.map((column) => (
                         <TableCell key={column.id}>
-                          {column.id === 'iso_timestamp'
-                            ? formatDate(log[column.id])
-                            : column.id === 'message'
-                            ? log[column.id].substring(0, 100) + (log[column.id].length > 100 ? '...' : '')
-                            : log[column.id]}
-                        </TableCell>
+                        {column.id === 'iso_timestamp'
+                          ? formatDate(log[column.id])
+                          : column.id === 'message'
+                          ? DOMPurify.sanitize(log[column.id].substring(0, 100) + (log[column.id].length > 100 ? '...' : ''))
+                          : log[column.id]}
+                      </TableCell>                      
                       ))}
                     </TableRow>
                   ))}
@@ -463,6 +466,7 @@ const LogQueries = () => {
           isComputerLog={activeTab === 0}
         />
       </Container>
+      <DOMPurifyTest />
     </>
 
   );

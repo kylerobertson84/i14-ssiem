@@ -23,6 +23,7 @@ import {
 import apiRequest from '../services/apiRequest';
 import API_ENDPOINTS from '../services/apiConfig';
 import { assignAlert } from '../services/apiService';
+import DOMPurify from 'dompurify';
 
 const AlertDetailsDialog = ({ alert, open, onClose, onAssign }) => {
   const [assignee, setAssignee] = useState('');
@@ -79,14 +80,15 @@ const AlertDetailsDialog = ({ alert, open, onClose, onAssign }) => {
   const renderAlertDetail = (label, value) => (
     <Box sx={{ mb: 2 }}>
       <Typography variant="subtitle2" color="text.secondary">
-        {label}
+        {DOMPurify.sanitize(label)} //Sanitize Label
       </Typography>
       <Typography variant="body1">
-        {value !== null && value !== undefined && value !== "" ? value.toString() : 'N/A'}
+        {value !== null && value !== undefined && value !== "" 
+          ? DOMPurify.sanitize(value.toString()) //Sanitize value
+          : 'N/A'}
       </Typography>
     </Box>
   );
-
   const renderSelectOptions = () => {
     if (loadingUsers) {
       return <MenuItem value="">Loading...</MenuItem>;
@@ -96,9 +98,9 @@ const AlertDetailsDialog = ({ alert, open, onClose, onAssign }) => {
     }
     return [
       <MenuItem key="unassigned" value="">Unassigned</MenuItem>,
-      ...users.map(users => (
-        <MenuItem key={users.user_id} value={users.email}>
-          {users.email}
+      ...users.map(user => (
+        <MenuItem key={user.user_id} value={DOMPurify.sanitize(user.email)}>
+          {DOMPurify.sanitize(user.email)}  //Sanitize email
         </MenuItem>
       ))
     ];
@@ -145,7 +147,7 @@ const AlertDetailsDialog = ({ alert, open, onClose, onAssign }) => {
           multiline
           rows={4}
           value={comment}
-          onChange={(e) => setComment(e.target.value)}
+          onChange={(e) => setComment(DOMPurify.sanitize(e.target.value))}  //Sanitize user input
           placeholder="Add a comment..."
         />
       </DialogContent>
