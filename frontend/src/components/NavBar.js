@@ -27,8 +27,7 @@ import {
 import AuthService from "../services/AuthService";
 import { useAuth } from "../services/AuthContext";
 import whaleIcon from "../Design/whale-icon.png";
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
-
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
 
 const Navbar = () => {
 	const navigate = useNavigate();
@@ -71,7 +70,7 @@ const Navbar = () => {
 		},
 		{ label: "Reports", path: "/reports", icon: <ReportsIcon /> },
 		{ label: "Preferences", path: "/preferences", icon: <PreferencesIcon /> },
-        { label: "Admin Page", path: "/admin", icon: <PersonAddIcon />}
+		{ label: "Admin Page", path: "/admin", icon: <PersonAddIcon /> },
 	];
 
 	const NavButton = ({ item }) => (

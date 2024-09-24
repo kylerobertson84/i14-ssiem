@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.db import connection
 from core.models import Rule
+from django.contrib.auth import get_user_model
 from accounts.models import User
 from reports.models import IncidentReport
 
@@ -172,14 +173,13 @@ class Command(BaseCommand):
         
     def create_sample_reports(self):
         # Ensure we have a user
-        user, created = User.objects.get_or_create(
-            email="admin@example.com",
-            defaults={'is_staff': True, 'is_superuser': True}
-        )
-        if created:
-            user.set_password('admin')
-            user.save()
+        User = get_user_model()
 
+        # Ensure we have some users
+        users = list(User.objects.all())
+        if not users:
+            self.stdout.write(self.style.ERROR('No users found. Please create some users first.'))
+            return
         # Get all rules
         rules = list(Rule.objects.all())
 
@@ -188,6 +188,7 @@ class Command(BaseCommand):
         report_statuses = IncidentReport.ReportStatus.choices
 
         for i in range(20):  # Create 10 sample reports
+            user =random.choice(users)
             report = IncidentReport.objects.create(
                 title=f"Sample Incident Report {i+1}",
                 type=random.choice(report_types)[0],

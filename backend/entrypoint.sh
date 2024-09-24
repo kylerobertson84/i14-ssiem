@@ -39,6 +39,13 @@ EOF
     fi
 fi
 
+
+log "Setting up roles and permissions..."
+if ! python manage.py setup_roles_permissions; then
+    log "Failed to set up roles and permissions"
+    exit 1
+fi
+
 # Create superuser if it doesn't exist
 log "Creating superuser..."
 if ! python manage.py create_superuser; then
@@ -61,11 +68,6 @@ if ! python manage.py create_rules_preload_reports; then
     exit 1
 fi
 
-log "Setting up roles and permissions..."
-if ! python manage.py setup_roles_permissions; then
-    log "Failed to set up roles and permissions"
-    exit 1
-fi
 
 # Start Gunicorn
 log "Starting Gunicorn server..."
