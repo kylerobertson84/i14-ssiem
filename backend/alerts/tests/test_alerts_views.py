@@ -5,14 +5,20 @@ from rest_framework.test import APITestCase
 from alerts.models import Alert, InvestigateAlert
 from logs.models import BronzeEventData
 from core.models import Rule
-from accounts.models import User
+from accounts.models import User, Role
 from alerts.serializers import AlertSerializer, InvestigateAlertSerializer
 
 class AlertViewSetTest(APITestCase):
     
     def setUp(self):
         # Create necessary objects for the tests
-        self.user = User.objects.create_user(email='test@example.com', password='password')
+        admin_role, created = Role.objects.get_or_create(name=Role.ADMIN)
+
+        self.user = User.objects.create_user(email='test@example.com', password='password', role=admin_role)
+
+        # Authenticate the test client
+        self.client.force_authenticate(user=self.user)
+
         self.event_data = BronzeEventData.objects.create(EventID='1', UserID='user1', hostname='host1')
         self.rule = Rule.objects.create(name='Test Rule')
         self.alert = Alert.objects.create(event=self.event_data, rule=self.rule, severity='High', comments='Test comment')
