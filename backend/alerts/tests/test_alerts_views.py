@@ -35,7 +35,7 @@ class AlertViewSetTest(APITestCase):
 
     def test_assign_alert(self):
         assign_url = reverse('alert-assign', kwargs={'pk': self.alert.id})  # Adjust to your URL pattern name
-        response = self.client.post(assign_url, {'assigned_to': self.user.id}, format='json')
+        response = self.client.post(assign_url, {'assigned_to': self.user.user_id}, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         investigate_alert = InvestigateAlert.objects.first()
         self.assertIsNotNone(investigate_alert)
@@ -65,7 +65,7 @@ class InvestigateAlertViewSetTest(APITestCase):
         self.url = reverse('investigatealert-list')  # Adjust to your URL pattern name
 
     def test_investigation_status_count(self):
-        status_url = reverse('investigatealert-investigation_status_count')  # Adjust to your URL pattern name
+        status_url = reverse('investigatealert-investigation-status-count')  # Adjust to your URL pattern name
         response = self.client.get(status_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('closed_count', response.data)
