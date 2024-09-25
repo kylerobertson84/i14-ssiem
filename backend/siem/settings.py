@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'alerts',
     'logs',
     'reports',
+    
 ]
 
 MIDDLEWARE = [
@@ -176,7 +177,6 @@ DATABASES = {
     'PORT': os.getenv('DB_PORT', '3306'),
     'TEST': {
         'NAME': 'test_siem_db',
-        'USER': 'siem_user',
     },
   }
 }

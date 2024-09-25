@@ -1,3 +1,3 @@
 
-docker-compose exec backend python manage.py test accounts
-docker-compose exec backend python manage.py test alerts
+docker-compose exec backend python manage.py test accounts.tests
+docker-compose exec backend python manage.py test alerts.tests
