@@ -12,9 +12,9 @@ class AlertModelTest(TestCase):
     
     def setUp(self):
         self.rule = Rule.objects.create(name="Test Rule")
-        self.event = BronzeEventData.objects.create(event_type="Test Event", details="Test details")
+        self.event = BronzeEventData.objects.create(EventType="Test Event", message="a message")
         self.alert = Alert.objects.create(rule=self.rule, event=self.event, severity=AlertSeverity.HIGH)
-        self.user = User.objects.create_user(username='testuser', password='testpass')
+        self.user = User.objects.create_user(email='testuser@test.com', password='testpass')
         self.investigation = InvestigateAlert.objects.create(alert=self.alert, assigned_to=self.user, status=InvestigationStatus.OPEN)
 
     def test_alert_creation(self):
@@ -27,13 +27,13 @@ class AlertModelTest(TestCase):
         """Test that the default values of the Alert model fields are correct."""
         alert = Alert.objects.create(rule=self.rule, event=self.event)
         self.assertEqual(alert.severity, AlertSeverity.INFO)
-        self.assertEqual(alert.comments, '')
+        self.assertEqual(alert.comments, None)
 
     def test_investigate_alert_creation(self):
         """Test that an InvestigateAlert object is created successfully."""
         self.assertIsInstance(self.investigation, InvestigateAlert)
         self.assertEqual(self.investigation.status, InvestigationStatus.OPEN)
-        self.assertEqual(self.investigation.assigned_to.username, 'testuser')
+        self.assertEqual(self.investigation.assigned_to.email, 'testuser@test.com')
         self.assertEqual(str(self.investigation), f"Alert {self.investigation.alert} assigned to {self.investigation.assigned_to} at {self.investigation.created_at} with status {self.investigation.status}. Investigation ID: {self.investigation.id}, created on {self.investigation.created_at} - Last updated on {self.investigation.updated_at}")
     
     def test_investigate_alert_status_update(self):
