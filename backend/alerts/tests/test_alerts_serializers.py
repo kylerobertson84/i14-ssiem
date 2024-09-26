@@ -13,7 +13,7 @@ User = get_user_model()
 class AlertSerializerTest(TestCase):
     
     def setUp(self):
-        # Create necessary objects for the tests
+        
         self.user = User.objects.create_user(email='test@example.com', password='password')
         self.event_data = BronzeEventData.objects.create(EventID='1', UserID='user1', hostname='host1')
         self.rule = Rule.objects.create(name='Test Rule')
@@ -41,7 +41,7 @@ class AlertSerializerTest(TestCase):
 class InvestigateAlertSerializerTest(TestCase):
     
     def setUp(self):
-        # Create necessary objects for the tests
+        
         self.user = User.objects.create_user(email='test@example.com', password='password')
         self.event_data = BronzeEventData.objects.create(EventID='1', UserID='user1', hostname='host1')
         self.rule = Rule.objects.create(name='Test Rule')
