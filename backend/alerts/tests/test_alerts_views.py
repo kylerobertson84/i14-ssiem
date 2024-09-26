@@ -15,7 +15,7 @@ User = get_user_model()
 class AlertViewSetTest(APITestCase):
     
     def setUp(self):
-        # Create necessary objects for the tests
+        
         admin_role, created = Role.objects.get_or_create(name=Role.ADMIN)
         analyst_role, created = Role.objects.get_or_create(name=Role.ANALYST)
 
@@ -36,32 +36,33 @@ class AlertViewSetTest(APITestCase):
 
         self.admin_user = User.objects.create_user(email='admin@test.com', password='password', role=admin_role)
 
-        # Authenticate the test client
+       
         self.client.force_authenticate(user=self.analyst_user)
 
         self.event = BronzeEventData.objects.create(EventType="Test Event", message="a message")
         
-        self.alert = Alert.objects.create(rule=self.rule, event=self.event, severity=AlertSeverity.HIGH)
+        self.alert = Alert.objects.create(rule=self.rule, event=self.event, severity=self.rule.severity)
         self.url = reverse('alert-list') 
 
-    # def test_create_alert(self):
+        
 
-        
+    # def test_create_alert(self):
     #     data = {
-    #         'rule': self.rule.id,
-    #         'event': 1,  # Send the ID for event
-    #           # Send the ID for rule
-    #         'severity': 'HIGH',
-    #         'comments': 'New test comment'
+    #         'rule': self.rule.id,  
+    #         'event': self.event.id,  
+    #         'severity': self.rule.severity,
+    #         'comments': 'New test comment',
     #     }
-    #     print(self.rule.id)
+        
+    #     # print(f"Rule ID: {self.rule.id}")  
+    #     # print(f"Event ID: {self.event.id}")  
+
     #     response = self.client.post(self.url, data, format='json')
-        
-    #     # Print the response to see if there's an issue with validation
-    #     print(response.data)
-        
+
+    #     # print(response.data)
+
     #     self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-    #     self.assertEqual(Alert.objects.count(), 2)
+    #     self.assertEqual(Alert.objects.count(), 2) 
 
     def test_assign_alert(self):
         assign_url = reverse('alert-assign', kwargs={'pk': self.alert.id})  
@@ -87,18 +88,18 @@ class AlertViewSetTest(APITestCase):
 class InvestigateAlertViewSetTest(APITestCase):
     
     def setUp(self):
-        # Create necessary objects for the tests
+       
         analyst_role, created = Role.objects.get_or_create(name=Role.ANALYST)
         self.user = User.objects.create_user(email='test@example.com', password='password', role=analyst_role)
         
-        # Create the event data and rule
+        
         self.event_data = BronzeEventData.objects.create(EventID='1', UserID='user1', hostname='host1')
         self.rule = Rule.objects.create(name='Test Rule')
         self.alert = Alert.objects.create(event=self.event_data, rule=self.rule, severity='High', comments='Test comment')
         self.investigate_alert = InvestigateAlert.objects.create(alert=self.alert, assigned_to=self.user, status='OPEN', notes='Notes here')
         
-        # Authenticate the test client
-        self.client.force_authenticate(user=self.user)  # Authenticate the user here
+        
+        self.client.force_authenticate(user=self.user)  
         self.url = reverse('investigatealert-list') 
 
     def test_investigation_status_count(self):
