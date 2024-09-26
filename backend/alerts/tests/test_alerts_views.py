@@ -32,7 +32,7 @@ class AlertViewSetTest(APITestCase):
         
         self.rule = Rule.objects.create(**a_rule)
         
-        self.analyst_user = User.objects.create_user(email='analyst@test.com', password='password', role=admin_role)
+        self.analyst_user = User.objects.create_user(email='analyst@test.com', password='password', role=analyst_role)
 
         self.admin_user = User.objects.create_user(email='admin@test.com', password='password', role=admin_role)
 
@@ -83,15 +83,22 @@ class AlertViewSetTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertGreaterEqual(len(response.data), 1)
 
+
 class InvestigateAlertViewSetTest(APITestCase):
     
     def setUp(self):
         # Create necessary objects for the tests
-        self.user = User.objects.create_user(email='test@example.com', password='password')
+        analyst_role, created = Role.objects.get_or_create(name=Role.ANALYST)
+        self.user = User.objects.create_user(email='test@example.com', password='password', role=analyst_role)
+        
+        # Create the event data and rule
         self.event_data = BronzeEventData.objects.create(EventID='1', UserID='user1', hostname='host1')
         self.rule = Rule.objects.create(name='Test Rule')
         self.alert = Alert.objects.create(event=self.event_data, rule=self.rule, severity='High', comments='Test comment')
-        self.investigate_alert = InvestigateAlert.objects.create(alert=self.alert, assigned_to=self.user, status='Investigating', notes='Notes here')
+        self.investigate_alert = InvestigateAlert.objects.create(alert=self.alert, assigned_to=self.user, status='OPEN', notes='Notes here')
+        
+        # Authenticate the test client
+        self.client.force_authenticate(user=self.user)  # Authenticate the user here
         self.url = reverse('investigatealert-list') 
 
     def test_investigation_status_count(self):
@@ -101,4 +108,5 @@ class InvestigateAlertViewSetTest(APITestCase):
         self.assertIn('closed_count', response.data)
         self.assertIn('open_count', response.data)
         self.assertIn('in_progress_count', response.data)
+
 
