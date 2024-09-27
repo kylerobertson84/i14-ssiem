@@ -1,0 +1,205 @@
+/* design.css */
+:root {
+  --primary-color: #1565c0;
+  --secondary-color: #f50057;
+  --background-color: #f5f5f5;
+  --text-primary: #333333;
+  --text-secondary: #666666;
+  --success-color: #4caf50;
+  --warning-color: #ff9800;
+  --error-color: #f44336;
+  --info-color: #2196f3;
+}
+
+body {
+  font-family: 'Roboto', Arial, sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-primary);
+  margin: 0;
+  padding: 0;
+}
+
+.MuiTypography-h4,
+.MuiTypography-h6 {
+    color: #1565c0;
+}
+
+.main-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.report-list-item {
+  transition: background-color 0.3s ease;
+}
+
+.report-list-item:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.report-list-item__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.report-list-item__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.report-list-item__details {
+  margin-top: 8px;
+}
+
+.report-viewer,
+.report-generator {
+  margin-bottom: 24px;
+}
+
+.report-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.chip {
+  font-size: 0.8rem;
+  height: 24px;
+}
+
+.form-field {
+  margin-bottom: 16px;
+}
+
+.card {
+  background-color: #ffffff;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin-bottom: 16px;
+}
+
+.button {
+  text-transform: none;
+  font-weight: 500;
+}
+
+.button-primary {
+  background-color: var(--primary-color);
+  color: #ffffff;
+}
+
+.button-secondary {
+  background-color: var(--secondary-color);
+  color: #ffffff;
+}
+
+.status-chip {
+  font-weight: 500;
+}
+
+.status-chip-draft {
+  background-color: var(--info-color);
+  color: #ffffff;
+}
+
+.status-chip-pending {
+  background-color: var(--warning-color);
+  color: #ffffff;
+}
+
+.status-chip-approved {
+  background-color: var(--success-color);
+  color: #ffffff;
+}
+
+.status-chip-rejected {
+  background-color: var(--error-color);
+  color: #ffffff;
+}
+
+.filter-section {
+  margin-bottom: 24px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+@media (max-width: 600px) {
+  .main-content {
+    padding: 16px;
+  }
+
+  .report-list-item__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .report-list-item__actions {
+    margin-top: 8px;
+  }
+
+  .card {
+    padding: 12px;
+  }
+
+  .card-title {
+    font-size: 1.1rem;
+  }
+
+  .chip {
+    font-size: 0.7rem;
+    height: 20px;
+  }
+
+  .button {
+    font-size: 0.9rem;
+    padding: 6px 12px;
+  }
+
+  .form-field {
+    margin-bottom: 12px;
+  }
+
+  .filter-section {
+    margin-bottom: 16px;
+  }
+
+  .pagination {
+    margin-top: 16px;
+  }
+}
+
+/* Utility classes */
+.mt-1 { margin-top: 8px; }
+.mt-2 { margin-top: 16px; }
+.mt-3 { margin-top: 24px; }
+.mb-1 { margin-bottom: 8px; }
+.mb-2 { margin-bottom: 16px; }
+.mb-3 { margin-bottom: 24px; }
+.ml-1 { margin-left: 8px; }
+.mr-1 { margin-right: 8px; }
+
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+
+.d-flex { display: flex; }
+.flex-column { flex-direction: column; }
+.justify-content-between { justify-content: space-between; }
+.align-items-center { align-items: center; }
+
+.w-100 { width: 100%; }
+.h-100 { height: 100%; }

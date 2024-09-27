@@ -7,11 +7,14 @@ import {
 	Button,
 	Box,
 	IconButton,
-	Menu,
-	MenuItem,
 	useMediaQuery,
 	useTheme,
 	Avatar,
+	Drawer,
+	List,
+	ListItem,
+	ListItemIcon,
+	ListItemText,
 } from "@mui/material";
 import {
 	Dashboard as DashboardIcon,
@@ -23,18 +26,18 @@ import {
 	Menu as MenuIcon,
 	ExitToApp as LogoutIcon,
 	Login as LoginIcon,
+	PersonAdd as PersonAddIcon,
 } from "@mui/icons-material";
 import AuthService from "../services/AuthService";
 import { useAuth } from "../services/AuthContext";
 import whaleIcon from "../Design/whale-icon.png";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
 
 const Navbar = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-	const [anchorEl, setAnchorEl] = useState(null);
+	const [drawerOpen, setDrawerOpen] = useState(false);
 	const { user, setUser } = useAuth();
 
 	const handleLogout = () => {
@@ -47,17 +50,15 @@ const Navbar = () => {
 		navigate("/login");
 	};
 
-	const handleMenuOpen = (event) => {
-		setAnchorEl(event.currentTarget);
+	const toggleDrawer = (open) => (event) => {
+		if (
+			event.type === "keydown" &&
+			(event.key === "Tab" || event.key === "Shift")
+		) {
+			return;
+		}
+		setDrawerOpen(open);
 	};
-
-	const handleMenuClose = () => {
-		setAnchorEl(null);
-	};
-
-	if (user && user.username) {
-		console.log("User Username:", user.username);
-	}
 
 	const navItems = [
 		{ label: "Dashboard", path: "/dashboard", icon: <DashboardIcon /> },
@@ -73,43 +74,38 @@ const Navbar = () => {
 		{ label: "Admin Page", path: "/admin", icon: <PersonAddIcon /> },
 	];
 
-	const NavButton = ({ item }) => (
-		<Button
-			color="inherit"
-			component={Link}
-			to={item.path}
-			startIcon={item.icon}
-			sx={{
-				mx: 1,
-				borderRadius: 2,
-				"&.active": {
-					backgroundColor: "rgba(255, 255, 255, 0.12)",
-				},
-			}}
-			className={location.pathname === item.path ? "active" : ""}
+	const DrawerContent = (
+		<Box
+			sx={{ width: 250 }}
+			role="presentation"
+			onClick={toggleDrawer(false)}
+			onKeyDown={toggleDrawer(false)}
 		>
-			{item.label}
-		</Button>
+			<List>
+				{user &&
+					navItems.map((item) => (
+						<ListItem button key={item.path} component={Link} to={item.path}>
+							<ListItemIcon>{item.icon}</ListItemIcon>
+							<ListItemText primary={item.label} />
+						</ListItem>
+					))}
+				<ListItem button onClick={user ? handleLogout : handleLogin}>
+					<ListItemIcon>{user ? <LogoutIcon /> : <LoginIcon />}</ListItemIcon>
+					<ListItemText primary={user ? "Logout" : "Login"} />
+				</ListItem>
+			</List>
+		</Box>
 	);
 
 	return (
-		<AppBar position="static" elevation={0} sx={{ backgroundColor: "#1565c0" }}>
+		<AppBar position="static">
 			<Toolbar sx={{ justifyContent: "space-between" }}>
 				<Typography
-					variant="h6"
+					variant="h5"
 					component="div"
 					sx={{ display: "flex", alignItems: "center" }}
 				>
-					<img
-						src={whaleIcon}
-						alt="logo"
-						style={{
-							width: "50px",
-							height: "50px",
-							marginRight: "10px",
-							transform: "scale(1.5)",
-						}}
-					/>
+					<img src={whaleIcon} alt="logo" className="navbar-logo" />
 					Simple SIEM
 				</Typography>
 
@@ -120,58 +116,42 @@ const Navbar = () => {
 							edge="start"
 							color="inherit"
 							aria-label="menu"
-							onClick={handleMenuOpen}
+							onClick={toggleDrawer(true)}
 						>
 							<MenuIcon />
 						</IconButton>
-						<Menu
-							anchorEl={anchorEl}
-							open={Boolean(anchorEl)}
-							onClose={handleMenuClose}
+						<Drawer
+							anchor="right"
+							open={drawerOpen}
+							onClose={toggleDrawer(false)}
 						>
-							{user &&
-								navItems.map((item) => (
-									<MenuItem
-										key={item.path}
-										onClick={() => {
-											navigate(item.path);
-											handleMenuClose();
-										}}
-									>
-										{item.icon}
-										<Typography sx={{ ml: 1 }}>{item.label}</Typography>
-									</MenuItem>
-								))}
-							<MenuItem onClick={user ? handleLogout : handleLogin}>
-								{user ? <LogoutIcon /> : <LoginIcon />}
-								<Typography sx={{ ml: 1 }}>
-									{user ? "Logout" : "Login"}
-								</Typography>
-							</MenuItem>
-						</Menu>
+							{DrawerContent}
+						</Drawer>
 					</>
 				) : (
 					<Box sx={{ display: "flex", alignItems: "center" }}>
 						{user &&
-							navItems.map((item) => <NavButton key={item.path} item={item} />)}
+							navItems.map((item) => (
+								<Button
+									key={item.path}
+									component={Link}
+									to={item.path}
+									startIcon={item.icon}
+									className={location.pathname === item.path ? "active" : ""}
+									color="inherit"
+								>
+									{item.label}
+								</Button>
+							))}
 						{user && (
-							<Avatar
-								sx={{
-									width: 32,
-									height: 32,
-									marginLeft: 2,
-									fontSize: "0.875rem",
-									bgcolor: "secondary.main",
-								}}
-							>
+							<Avatar className="navbar-avatar">
 								{user.username ? user.username[0].toUpperCase() : "U"}
 							</Avatar>
 						)}
 						<Button
-							color="inherit"
 							onClick={user ? handleLogout : handleLogin}
 							startIcon={user ? <LogoutIcon /> : <LoginIcon />}
-							sx={{ ml: 2 }}
+							color="inherit"
 						>
 							{user ? "Logout" : "Login"}
 						</Button>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import PropTypes from "prop-types";
 import {
 	List,
 	ListItem,
@@ -20,12 +21,18 @@ import {
 	InputAdornment,
 	Tooltip,
 	CircularProgress,
+	Collapse,
+	Button,
+	useMediaQuery,
 } from "@mui/material";
 import {
 	Visibility as VisibilityIcon,
 	Delete as DeleteIcon,
 	Search as SearchIcon,
 	Refresh as RefreshIcon,
+	FilterList as FilterListIcon,
+	ExpandMore as ExpandMoreIcon,
+	ExpandLess as ExpandLessIcon,
 } from "@mui/icons-material";
 import { format } from "date-fns";
 import { fetchReports } from "../../services/apiService";
@@ -45,7 +52,7 @@ const statusMapping = {
 	open: "Open",
 	approved: "Approved",
 	rejected: "Rejected",
-	closed: "Approved",
+	closed: "Closed",
 	archived: "Archived",
 };
 
@@ -56,13 +63,12 @@ const getStatusColor = (status) => {
 		case "pending":
 			return "primary";
 		case "approved":
+		case "closed":
 			return "success";
 		case "rejected":
 			return "error";
 		case "archived":
 			return "warning";
-		case "closed":
-			return "secondary";
 		default:
 			return "default";
 	}
@@ -70,6 +76,7 @@ const getStatusColor = (status) => {
 
 const ReportList = ({ onSelect, onDelete, loading: externalLoading }) => {
 	const theme = useTheme();
+	const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 	const [reports, setReports] = useState([]);
 	const [page, setPage] = useState(1);
 	const [pageSize] = useState(10);
@@ -79,6 +86,7 @@ const ReportList = ({ onSelect, onDelete, loading: externalLoading }) => {
 	const [status, setStatus] = useState("");
 	const [lastUpdate, setLastUpdate] = useState("");
 	const [loading, setLoading] = useState(false);
+	const [showFilters, setShowFilters] = useState(false);
 
 	const loadReports = useCallback(
 		async (searchParams) => {
@@ -142,17 +150,8 @@ const ReportList = ({ onSelect, onDelete, loading: externalLoading }) => {
 		loadReports(searchParams);
 	};
 
-	return (
-		<Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
-			<Typography
-				variant="h5"
-				component="h2"
-				gutterBottom
-				sx={{ mb: 4, fontWeight: "bold", color: "primary.main" }}
-			>
-				Available Reports
-			</Typography>
-
+	const renderFilters = () => (
+		<Collapse in={showFilters}>
 			<Grid container spacing={2} sx={{ mb: 3 }}>
 				<Grid item xs={12} sm={6} md={3}>
 					<TextField
@@ -210,13 +209,117 @@ const ReportList = ({ onSelect, onDelete, loading: externalLoading }) => {
 					/>
 				</Grid>
 			</Grid>
-			<Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
-				<Tooltip title="Refresh">
-					<IconButton onClick={handleRefresh} color="primary">
-						<RefreshIcon />
-					</IconButton>
-				</Tooltip>
+		</Collapse>
+	);
+
+	const renderReportList = () => (
+		<List>
+			{reports.map((report, index) => (
+				<ListItem
+					key={report.id}
+					divider={index !== reports.length - 1}
+					sx={{
+						py: 2,
+						flexDirection: isMobile ? "column" : "row",
+						alignItems: isMobile ? "flex-start" : "center",
+						"&:hover": {
+							backgroundColor: theme.palette.action.hover,
+							transition: "background-color 0.3s",
+						},
+					}}
+				>
+					<ListItemText
+						primary={
+							<Typography variant="subtitle1" fontWeight="medium">
+								{report.title}
+							</Typography>
+						}
+						secondary={
+							<Box sx={{ mt: 1 }}>
+								<Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mb: 1 }}>
+									<Chip
+										label={typeMapping[report.type] || report.type}
+										size="small"
+										color="primary"
+										variant="outlined"
+									/>
+									<Chip
+										label={statusMapping[report.status] || report.status}
+										size="small"
+										color={getStatusColor(report.status)}
+									/>
+								</Box>
+								<Typography variant="caption" color="text.secondary">
+									Last updated: {format(new Date(report.updated_at), "PPP")}
+								</Typography>
+							</Box>
+						}
+					/>
+					<ListItemSecondaryAction
+						sx={{
+							position: isMobile ? "static" : "absolute",
+							mt: isMobile ? 2 : 0,
+						}}
+					>
+						<Tooltip title="View Report">
+							<IconButton
+								edge="end"
+								onClick={() => onSelect(report)}
+								color="primary"
+								sx={{ mr: 1 }}
+							>
+								<VisibilityIcon />
+							</IconButton>
+						</Tooltip>
+						<Tooltip title="Delete Report">
+							<IconButton
+								edge="end"
+								onClick={() => onDelete(report)}
+								color="error"
+							>
+								<DeleteIcon />
+							</IconButton>
+						</Tooltip>
+					</ListItemSecondaryAction>
+				</ListItem>
+			))}
+		</List>
+	);
+
+	return (
+		<Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
+			<Box
+				sx={{
+					display: "flex",
+					justifyContent: "space-between",
+					alignItems: "center",
+					mb: 3,
+				}}
+			>
+				<Typography
+					variant="h5"
+					component="h2"
+					sx={{ fontWeight: "bold", color: "primary.main" }}
+				>
+					Available Reports
+				</Typography>
+				<Box>
+					<Button
+						startIcon={showFilters ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+						onClick={() => setShowFilters(!showFilters)}
+						sx={{ mr: 1 }}
+					>
+						{showFilters ? "Hide Filters" : "Show Filters"}
+					</Button>
+					<Tooltip title="Refresh">
+						<IconButton onClick={handleRefresh} color="primary">
+							<RefreshIcon />
+						</IconButton>
+					</Tooltip>
+				</Box>
 			</Box>
+
+			{renderFilters()}
 
 			{loading || externalLoading ? (
 				<Box sx={{ display: "flex", justifyContent: "center", my: 4 }}>
@@ -227,89 +330,7 @@ const ReportList = ({ onSelect, onDelete, loading: externalLoading }) => {
 					<Typography>No reports found.</Typography>
 				</Box>
 			) : (
-				<List>
-					{reports.map((report, index) => (
-						<ListItem
-							key={report.id}
-							divider={index !== reports.length - 1}
-							sx={{
-								py: 2,
-								"&:hover": {
-									backgroundColor: theme.palette.action.hover,
-									transition: "background-color 0.3s",
-								},
-							}}
-						>
-							<ListItemText
-								primary={
-									<Typography variant="subtitle1" fontWeight="medium">
-										{report.title}
-									</Typography>
-								}
-								secondary={
-									<Box
-										sx={{
-											display: "flex",
-											flexDirection: "column",
-											gap: 1,
-											mt: 1,
-										}}
-									>
-										<Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-											<Chip
-												label={typeMapping[report.type] || report.type}
-												size="small"
-												color="primary"
-												variant="outlined"
-											/>
-											<Chip
-												label={statusMapping[report.status] || report.status}
-												size="small"
-												color={getStatusColor(report.status)}
-											/>
-										</Box>
-										<Typography variant="caption" color="text.secondary">
-											Last updated: {format(new Date(report.updated_at), "PPP")}
-										</Typography>
-									</Box>
-								}
-							/>
-							<ListItemSecondaryAction>
-								<Tooltip title="View Report">
-									<IconButton
-										edge="end"
-										onClick={() => onSelect(report)}
-										color="primary"
-										sx={{
-											mr: 1,
-											"&:hover": {
-												backgroundColor: theme.palette.primary.light,
-												color: theme.palette.primary.contrastText,
-											},
-										}}
-									>
-										<VisibilityIcon />
-									</IconButton>
-								</Tooltip>
-								<Tooltip title="Delete Report">
-									<IconButton
-										edge="end"
-										onClick={() => onDelete(report)}
-										color="error"
-										sx={{
-											"&:hover": {
-												backgroundColor: theme.palette.error.light,
-												color: theme.palette.error.contrastText,
-											},
-										}}
-									>
-										<DeleteIcon />
-									</IconButton>
-								</Tooltip>
-							</ListItemSecondaryAction>
-						</ListItem>
-					))}
-				</List>
+				renderReportList()
 			)}
 
 			<Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
@@ -318,11 +339,17 @@ const ReportList = ({ onSelect, onDelete, loading: externalLoading }) => {
 					page={page}
 					onChange={handlePageChange}
 					color="primary"
-					size="large"
+					size={isMobile ? "small" : "large"}
 				/>
 			</Box>
 		</Paper>
 	);
+};
+
+ReportList.propTypes = {
+	onSelect: PropTypes.func.isRequired,
+	onDelete: PropTypes.func.isRequired,
+	loading: PropTypes.bool,
 };
 
 export default ReportList;

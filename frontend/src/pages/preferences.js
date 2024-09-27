@@ -11,19 +11,53 @@ import {
 	FormControlLabel,
 	Button,
 	Divider,
+	Alert,
+	Chip,
+	useTheme,
+	useMediaQuery,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import {
 	AccountCircle as AccountCircleIcon,
 	Notifications as NotificationsIcon,
 	Visibility as VisibilityIcon,
 	Security as SecurityIcon,
+	Brightness4 as DarkModeIcon,
+	Settings as SettingsIcon,
+	Edit as EditIcon,
 } from "@mui/icons-material";
 import { fetchUser } from "../services/apiService";
 import PreferencesForm from "../components/PreferencesForm";
 
+const StyledPaper = styled(Paper)(({ theme }) => ({
+	padding: theme.spacing(3),
+	marginBottom: theme.spacing(3),
+}));
+
+const ProfileAvatar = styled(Avatar)(({ theme }) => ({
+	width: 100,
+	height: 100,
+	margin: "0 auto",
+	marginBottom: theme.spacing(2),
+}));
+
+const DisabledFeature = ({ icon, label }) => (
+	<FormControlLabel
+		control={<Switch disabled />}
+		label={
+			<Box sx={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
+				{icon}
+				<Typography sx={{ ml: 1 }}>{label}</Typography>
+			</Box>
+		}
+	/>
+);
+
 const Preferences = () => {
 	const [user, setUser] = useState(null);
 	const [loading, setLoading] = useState(true);
+	const theme = useTheme();
+	const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
 	useEffect(() => {
 		const loadData = async () => {
@@ -56,15 +90,19 @@ const Preferences = () => {
 	return (
 		<Container maxWidth="md">
 			<Box my={4}>
-				<Typography variant="h4" component="h1" gutterBottom align="center">
+				<Typography
+					variant="h4"
+					component="h1"
+					sx={{ fontWeight: "bold", mb: 3 }}
+				>
 					User Preferences
 				</Typography>
 				<Grid container spacing={3}>
 					<Grid item xs={12} md={4}>
-						<Paper elevation={3} sx={{ p: 2, textAlign: "center" }}>
-							<Avatar sx={{ width: 100, height: 100, margin: "0 auto", mb: 2 }}>
+						<StyledPaper sx={{ textAlign: "center" }}>
+							<ProfileAvatar>
 								<AccountCircleIcon sx={{ fontSize: 60 }} />
-							</Avatar>
+							</ProfileAvatar>
 							<Typography variant="h6">{user?.username || "User"}</Typography>
 							<Typography variant="body2" color="textSecondary">
 								{user?.email || "No email provided"}
@@ -72,51 +110,114 @@ const Preferences = () => {
 							<Typography variant="body2" color="textSecondary">
 								Role: {user?.role?.name || "No role assigned"}
 							</Typography>
-							<Button variant="outlined" sx={{ mt: 2 }}>
+							<Chip
+								label="Demo Version"
+								color="secondary"
+								size="small"
+								sx={{ mt: 1 }}
+							/>
+							<Button
+								variant="outlined"
+								disabled
+								startIcon={<EditIcon />}
+								sx={{ mt: 2 }}
+								fullWidth={isMobile}
+							>
 								Edit Profile
 							</Button>
-						</Paper>
+						</StyledPaper>
 					</Grid>
 					<Grid item xs={12} md={8}>
-						<Paper elevation={3} sx={{ p: 3 }}>
-							<Typography variant="h6" gutterBottom>
-								Notification Settings
+						<StyledPaper>
+							<Alert severity="info" sx={{ mb: 2 }}>
+								The following feature is disabled in the demo version.
+							</Alert>
+							<Typography
+								variant="h6"
+								gutterBottom
+								sx={{ display: "flex", alignItems: "center" }}
+							>
+								<NotificationsIcon sx={{ mr: 1 }} /> Notification Settings
 							</Typography>
 							<FormControlLabel
 								control={<Switch defaultChecked />}
 								label="Receive email notifications"
 							/>
-							<Typography variant="h6" gutterBottom sx={{ mt: 3 }}>
-								Display Settings
-							</Typography>
-							<FormControlLabel control={<Switch />} label="Dark Mode" />
-							<Typography variant="h6" gutterBottom sx={{ mt: 3 }}>
-								Security Settings
-							</Typography>
-							<Button
-								variant="outlined"
-								startIcon={<VisibilityIcon />}
-								sx={{ mr: 2, mb: 2 }}
+							<Typography
+								variant="h6"
+								gutterBottom
+								sx={{
+									mt: 3,
+									display: "flex",
+									alignItems: "center",
+									flexWrap: "wrap",
+								}}
 							>
-								Change Password
-							</Button>
-							<Button
-								variant="outlined"
-								startIcon={<SecurityIcon />}
-								sx={{ mb: 2 }}
+								<DarkModeIcon sx={{ mr: 1 }} /> Display Settings
+								<Chip
+									label="Demo Version"
+									color="secondary"
+									size="small"
+									sx={{ ml: 1, mt: isMobile ? 1 : 0 }}
+								/>
+							</Typography>
+							<DisabledFeature icon={<DarkModeIcon />} label="Dark Mode" />
+							<Typography
+								variant="h6"
+								gutterBottom
+								sx={{
+									mt: 3,
+									display: "flex",
+									alignItems: "center",
+									flexWrap: "wrap",
+								}}
 							>
-								Two-Factor Authentication
-							</Button>
-						</Paper>
+								<SecurityIcon sx={{ mr: 1 }} /> Security Settings
+								<Chip
+									label="Demo Version"
+									color="secondary"
+									size="small"
+									sx={{ ml: 1, mt: isMobile ? 1 : 0 }}
+								/>
+							</Typography>
+							<Box
+								sx={{
+									display: "flex",
+									flexDirection: isMobile ? "column" : "row",
+									gap: 2,
+								}}
+							>
+								<Button
+									variant="outlined"
+									disabled
+									startIcon={<VisibilityIcon />}
+									fullWidth={isMobile}
+								>
+									Change Password
+								</Button>
+								<Button
+									variant="outlined"
+									disabled
+									startIcon={<SecurityIcon />}
+									fullWidth={isMobile}
+								>
+									Two-Factor Authentication
+								</Button>
+							</Box>
+						</StyledPaper>
 					</Grid>
 				</Grid>
-				<Paper elevation={3} sx={{ p: 3, mt: 3 }}>
-					<Typography variant="h6" gutterBottom>
-						Additional Preferences
+				<StyledPaper>
+					<Typography
+						variant="h6"
+						gutterBottom
+						sx={{ display: "flex", alignItems: "center" }}
+					>
+						<SettingsIcon sx={{ mr: 1 }} /> Additional Preferences
 					</Typography>
 					<Divider sx={{ my: 2 }} />
 					<PreferencesForm />
-				</Paper>
+				</StyledPaper>
 			</Box>
 		</Container>
 	);

@@ -86,6 +86,9 @@ export const exportPDF = (logType, searchParams) => {
 };
 
 // API services investigations page
+export const fetchInvestigation = (id) => {
+	return apiRequest(`${API_ENDPOINTS.investigate.base}${id}/`);
+};
 
 export const fetchInvestigations = () => {
 	return apiRequest(API_ENDPOINTS.investigate.base);
@@ -193,9 +196,11 @@ export const generateReportPDF = (reportId) => {
 			link.href = fileURL;
 			link.download = `incident_report_${reportId}.pdf`;
 			link.click();
+			return fileURL; // Return the fileURL in case it's needed
 		})
 		.catch((error) => {
 			console.error("Error downloading PDF:", error);
+			throw error; // Re-throw the error to be caught in the component
 		});
 };
 

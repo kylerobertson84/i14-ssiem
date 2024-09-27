@@ -13,6 +13,8 @@ import {
 	ListItemIcon,
 	ListItemText,
 	Paper,
+	useTheme,
+	useMediaQuery,
 } from "@mui/material";
 import {
 	Security,
@@ -26,24 +28,59 @@ import {
 	Psychology,
 	Visibility,
 } from "@mui/icons-material";
+import { styled } from "@mui/system";
 
 import mainImage from "../Design/building-2.jpg";
 
+const HeroSection = styled(Box)(({ theme }) => ({
+	position: "relative",
+	paddingTop: theme.spacing(8),
+	paddingBottom: theme.spacing(6),
+	backgroundImage: `url(${mainImage})`,
+	backgroundSize: "cover",
+	backgroundPosition: "center",
+	color: theme.palette.common.white,
+	"&::before": {
+		content: '""',
+		position: "absolute",
+		top: 0,
+		left: 0,
+		right: 0,
+		bottom: 0,
+		backgroundColor: "rgba(0, 0, 0, 0.5)",
+	},
+}));
+
+const HeroContent = styled(Container)(({ theme }) => ({
+	position: "relative",
+	zIndex: 1,
+}));
+
+const FeatureCard = styled(Card)(({ theme }) => ({
+	height: "100%",
+	display: "flex",
+	flexDirection: "column",
+	transition: "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
+	"&:hover": {
+		transform: "translateY(-5px)",
+		boxShadow: theme.shadows[4],
+	},
+}));
+
+const FeatureIcon = styled(Box)(({ theme }) => ({
+	display: "flex",
+	justifyContent: "center",
+	marginBottom: theme.spacing(2),
+}));
+
 const Feature = ({ icon, title, description }) => (
-	<Card
-		sx={{
-			height: "100%",
-			display: "flex",
-			flexDirection: "column",
-			boxShadow: 3,
-		}}
-	>
+	<FeatureCard>
 		<CardContent sx={{ flexGrow: 1 }}>
-			<Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
+			<FeatureIcon>
 				{React.cloneElement(icon, {
 					sx: { fontSize: 60, color: "primary.main" },
 				})}
-			</Box>
+			</FeatureIcon>
 			<Typography gutterBottom variant="h5" component="h2" align="center">
 				{title}
 			</Typography>
@@ -51,7 +88,7 @@ const Feature = ({ icon, title, description }) => (
 				{description}
 			</Typography>
 		</CardContent>
-	</Card>
+	</FeatureCard>
 );
 
 const Requirement = ({ icon, text }) => (
@@ -64,47 +101,32 @@ const Requirement = ({ icon, text }) => (
 );
 
 const LandingPage = () => {
+	const theme = useTheme();
+	const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
 	return (
 		<Box sx={{ flexGrow: 1 }}>
-			<Box
-				sx={{
-					position: "relative",
-					pt: 8,
-					pb: 6,
-					backgroundImage: `url(${mainImage})`,
-					backgroundSize: "cover",
-					backgroundPosition: "center",
-					color: "white",
-					"&::before": {
-						content: '""',
-						position: "absolute",
-						top: 0,
-						left: 0,
-						width: "100%",
-						height: "100%",
-						bgcolor: "rgba(0, 0, 0, 0.5)",
-						zIndex: 1,
-					},
-					zIndex: 0,
-				}}
-			>
-				<Container maxWidth="sm" sx={{ position: "relative", zIndex: 2 }}>
+			<HeroSection>
+				<HeroContent maxWidth="sm">
 					<Typography
 						component="h1"
-						variant="h2"
+						variant={isMobile ? "h3" : "h2"}
 						align="center"
 						gutterBottom
 						sx={{ fontWeight: "bold" }}
 					>
 						Simple Security Information and Event Management (SIEM)
 					</Typography>
-					<Typography variant="h5" align="center" paragraph sx={{ mb: 4 }}>
+					<Typography
+						variant={isMobile ? "body1" : "h5"}
+						align="center"
+						paragraph
+						sx={{ mb: 4 }}
+					>
 						Streamline your security operations with our centralized platform
 						for threat detection and investigation.
 					</Typography>
-					<Box
-						sx={{ mt: 4, display: "flex", justifyContent: "center", gap: 2 }}
-					>
+					<Box sx={{ mt: 4, display: "flex", justifyContent: "center" }}>
 						<Button
 							variant="contained"
 							size="large"
@@ -115,10 +137,9 @@ const LandingPage = () => {
 							Start Demo
 						</Button>
 					</Box>
-				</Container>
-			</Box>
+				</HeroContent>
+			</HeroSection>
 
-			{/* Description Section */}
 			<Container sx={{ py: 8 }} maxWidth="md">
 				<Typography variant="h4" align="center" gutterBottom>
 					Centralised Security Management
@@ -131,7 +152,6 @@ const LandingPage = () => {
 				</Typography>
 			</Container>
 
-			{/* Key Features Section */}
 			<Box sx={{ bgcolor: "background.paper", py: 8 }}>
 				<Container maxWidth="lg">
 					<Typography variant="h4" align="center" gutterBottom>
@@ -162,6 +182,7 @@ const LandingPage = () => {
 					</Grid>
 				</Container>
 			</Box>
+
 			<Container sx={{ py: 8 }} maxWidth="lg">
 				<Typography variant="h4" align="center" gutterBottom color="primary">
 					Functional Requirements

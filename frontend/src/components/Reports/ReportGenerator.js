@@ -1,194 +1,101 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import PropTypes from "prop-types";
 import {
+	Typography,
 	TextField,
 	Button,
 	Select,
 	MenuItem,
 	FormControl,
 	InputLabel,
-	Chip,
 	Grid,
-	Typography,
 	Box,
-	Paper,
-	useTheme,
 	Autocomplete,
-	Stepper,
-	Step,
-	StepLabel,
-	Card,
-	CardContent,
-	Tooltip,
-	IconButton,
+	Chip,
 	CircularProgress,
-	Fade,
 	Snackbar,
 	Alert,
+	Card,
+	CardContent,
+	CardActions,
+	useTheme,
+	useMediaQuery,
 } from "@mui/material";
-import {
-	Add as AddIcon,
-	Help as HelpIcon,
-	ArrowBack as ArrowBackIcon,
-	ArrowForward as ArrowForwardIcon,
-	Refresh as RefreshIcon,
-} from "@mui/icons-material";
-import { fetchRules } from "../../services/apiService";
+import { Save as SaveIcon, Cancel as CancelIcon } from "@mui/icons-material";
 
-const reportTypes = [
-	"Security Incident",
-	"Network Traffic Analysis",
-	"User Activity",
-	"System Performance",
-	"Compliance Audit",
-];
-
-const reportStatuses = ["Draft", "Open"];
-
-const reportTypeMapping = {
-	"Security Incident": "security_incident",
-	"Network Traffic Analysis": "network_traffic",
-	"User Activity": "user_activity",
-	"System Performance": "system_performance",
-	"Compliance Audit": "compliance_audit",
+const typeMapping = {
+	security_incident: "Security Incident",
+	network_traffic: "Network Traffic Analysis",
+	user_activity: "User Activity",
+	system_performance: "System Performance",
+	compliance_audit: "Compliance Audit",
 };
 
-const reportStatusMapping = {
-	Draft: "draft",
-	Open: "open",
+const statusMapping = {
+	draft: "Draft",
+	pending: "Pending",
+	open: "Open",
+	approved: "Approved",
+	rejected: "Rejected",
+	closed: "Closed",
+	archived: "Archived",
 };
 
-const ReportGenerator = ({ onGenerate }) => {
+const ReportGenerator = ({ onReportCreated, rules, onClose }) => {
+	const theme = useTheme();
+	const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 	const [reportData, setReportData] = useState({
 		title: "",
 		type: "",
-		status: "",
+		status: "draft",
 		description: "",
-		rule_ids: [],
+		rules: [],
 	});
-	const [rules, setRules] = useState([]);
-	const [activeStep, setActiveStep] = useState(0);
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const [isRefreshing, setIsRefreshing] = useState(false);
 	const [snackbar, setSnackbar] = useState({
 		open: false,
 		message: "",
 		severity: "success",
 	});
-	const theme = useTheme();
-
-	useEffect(() => {
-		loadRules();
-	}, []);
-
-	const loadRules = async () => {
-		try {
-			const response = await fetchRules();
-			setRules(response.results || response);
-		} catch (err) {
-			console.error("Failed to load rules", err);
-			showSnackbar("Failed to load rules", "error");
-		}
-	};
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
-		setReportData((prevData) => ({
-			...prevData,
-			[name]: value,
-		}));
+		setReportData((prev) => ({ ...prev, [name]: value }));
 	};
 
 	const handleRuleChange = (event, newValue) => {
-		setReportData((prevData) => ({
-			...prevData,
-			rule_ids: newValue.map((rule) => rule.id),
-		}));
+		setReportData((prev) => ({ ...prev, rules: newValue }));
 	};
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		setIsSubmitting(true);
-		const mappedReportData = {
-			...reportData,
-			type: reportTypeMapping[reportData.type],
-			status: reportStatusMapping[reportData.status],
-		};
 		try {
-			await onGenerate(mappedReportData);
-			showSnackbar("Report generated successfully", "success");
-			setIsRefreshing(true);
-			setTimeout(() => {
-				setReportData({
-					title: "",
-					type: "",
-					status: "",
-					description: "",
-					rule_ids: [],
-				});
-				setActiveStep(0);
-				setIsRefreshing(false);
-				setIsSubmitting(false);
-			}, 1500);
+			await onReportCreated(reportData);
+			setSnackbar({
+				open: true,
+				message: "Report created successfully",
+				severity: "success",
+			});
+			onClose();
 		} catch (error) {
-			console.error("Error generating report:", error);
-			showSnackbar("Failed to generate report", "error");
+			setSnackbar({
+				open: true,
+				message: "Failed to create report",
+				severity: "error",
+			});
+		} finally {
 			setIsSubmitting(false);
 		}
 	};
 
-	const handleNext = () => {
-		setActiveStep((prevActiveStep) => prevActiveStep + 1);
-	};
-
-	const handleBack = () => {
-		setActiveStep((prevActiveStep) => prevActiveStep - 1);
-	};
-
-	const steps = ["Basic Information", "Rules Selection", "Description"];
-
-	const isStepComplete = (step) => {
-		switch (step) {
-			case 0:
-				return reportData.title && reportData.type && reportData.status;
-			case 1:
-				return reportData.rule_ids.length > 0;
-			case 2:
-				return reportData.description;
-			default:
-				return false;
-		}
-	};
-
-	const handleRefresh = () => {
-		setIsRefreshing(true);
-		setTimeout(() => {
-			setReportData({
-				title: "",
-				type: "",
-				status: "",
-				description: "",
-				rule_ids: [],
-			});
-			setActiveStep(0);
-			setIsRefreshing(false);
-		}, 1000);
-	};
-
-	const showSnackbar = (message, severity) => {
-		setSnackbar({ open: true, message, severity });
-	};
-
-	const handleCloseSnackbar = (event, reason) => {
-		if (reason === "clickaway") {
-			return;
-		}
-		setSnackbar({ ...snackbar, open: false });
-	};
-
-	const renderStepContent = (step) => {
-		switch (step) {
-			case 0:
-				return (
+	return (
+		<Card elevation={3} className="report-generator">
+			<CardContent>
+				<Typography variant="h5" color="primary" gutterBottom>
+					Generate New Report
+				</Typography>
+				<form onSubmit={handleSubmit} noValidate>
 					<Grid container spacing={3}>
 						<Grid item xs={12}>
 							<TextField
@@ -198,11 +105,10 @@ const ReportGenerator = ({ onGenerate }) => {
 								value={reportData.title}
 								onChange={handleChange}
 								required
-								variant="outlined"
 							/>
 						</Grid>
 						<Grid item xs={12} sm={6}>
-							<FormControl fullWidth variant="outlined" required>
+							<FormControl fullWidth required>
 								<InputLabel>Report Type</InputLabel>
 								<Select
 									name="type"
@@ -210,16 +116,16 @@ const ReportGenerator = ({ onGenerate }) => {
 									onChange={handleChange}
 									label="Report Type"
 								>
-									{reportTypes.map((type) => (
-										<MenuItem key={type} value={type}>
-											{type}
+									{Object.entries(typeMapping).map(([value, label]) => (
+										<MenuItem key={value} value={value}>
+											{label}
 										</MenuItem>
 									))}
 								</Select>
 							</FormControl>
 						</Grid>
 						<Grid item xs={12} sm={6}>
-							<FormControl fullWidth variant="outlined" required>
+							<FormControl fullWidth required>
 								<InputLabel>Status</InputLabel>
 								<Select
 									name="status"
@@ -227,188 +133,95 @@ const ReportGenerator = ({ onGenerate }) => {
 									onChange={handleChange}
 									label="Status"
 								>
-									{reportStatuses.map((status) => (
-										<MenuItem key={status} value={status}>
-											{status}
+									{Object.entries(statusMapping).map(([value, label]) => (
+										<MenuItem key={value} value={value}>
+											{label}
 										</MenuItem>
 									))}
 								</Select>
 							</FormControl>
 						</Grid>
-					</Grid>
-				);
-			case 1:
-				return (
-					<Autocomplete
-						multiple
-						id="rules-select"
-						options={rules}
-						getOptionLabel={(option) => `${option.id}: ${option.name}`}
-						value={rules.filter((rule) =>
-							reportData.rule_ids.includes(rule.id)
-						)}
-						onChange={handleRuleChange}
-						renderInput={(params) => (
-							<TextField
-								{...params}
-								variant="outlined"
-								label="Rules"
-								placeholder="Select rules"
+						<Grid item xs={12}>
+							<Autocomplete
+								multiple
+								options={rules}
+								getOptionLabel={(option) => `${option.id}: ${option.name}`}
+								value={reportData.rules}
+								onChange={handleRuleChange}
+								renderInput={(params) => (
+									<TextField
+										{...params}
+										variant="outlined"
+										label="Rules"
+										placeholder="Select rules"
+									/>
+								)}
+								renderTags={(value, getTagProps) =>
+									value.map((option, index) => (
+										<Chip
+											variant="outlined"
+											label={`${option.id}: ${option.name}`}
+											{...getTagProps({ index })}
+										/>
+									))
+								}
 							/>
-						)}
-						renderTags={(value, getTagProps) =>
-							value.map((option, index) => (
-								<Chip
-									variant="outlined"
-									label={`${option.id}: ${option.name}`}
-									{...getTagProps({ index })}
-								/>
-							))
-						}
-					/>
-				);
-			case 2:
-				return (
-					<TextField
-						name="description"
-						label="Description"
-						value={reportData.description}
-						onChange={handleChange}
-						fullWidth
-						multiline
-						required
-						rows={6}
-						variant="outlined"
-					/>
-				);
-			default:
-				return "Unknown step";
-		}
-	};
-
-	return (
-		<>
-			<Typography
-				variant="h5"
-				component="h2"
-				gutterBottom
-				sx={{
-					mb: 4,
-					fontWeight: "bold",
-					color: "primary.main",
-					display: "flex",
-					alignItems: "center",
-					justifyContent: "space-between",
-				}}
-			>
-				Generate New Report
-				<Box>
-					<Tooltip title="Refresh form">
-						<IconButton
-							onClick={handleRefresh}
-							disabled={isRefreshing || isSubmitting}
-						>
-							<RefreshIcon />
-						</IconButton>
-					</Tooltip>
-					<Tooltip title="Fill in the details step by step to generate a new report">
-						<IconButton>
-							<HelpIcon />
-						</IconButton>
-					</Tooltip>
-				</Box>
-			</Typography>
-			<Stepper activeStep={activeStep} sx={{ mb: 4 }}>
-				{steps.map((label, index) => (
-					<Step key={label}>
-						<StepLabel>{label}</StepLabel>
-					</Step>
-				))}
-			</Stepper>
-			<form onSubmit={handleSubmit}>
-				<Card variant="outlined" sx={{ mb: 3 }}>
-					<CardContent>{renderStepContent(activeStep)}</CardContent>
-				</Card>
-				<Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
-					<Button
-						color="inherit"
-						disabled={activeStep === 0 || isSubmitting || isRefreshing}
-						onClick={handleBack}
-						startIcon={<ArrowBackIcon />}
-					>
-						Back
-					</Button>
-					<Box>
-						{activeStep === steps.length - 1 ? (
-							<Button
-								type="submit"
-								variant="contained"
-								color="primary"
-								startIcon={
-									isSubmitting ? (
-										<CircularProgress size={24} color="inherit" />
-									) : (
-										<AddIcon />
-									)
-								}
-								disabled={
-									!isStepComplete(activeStep) || isSubmitting || isRefreshing
-								}
-								sx={{
-									px: 4,
-									py: 1,
-									borderRadius: 2,
-									boxShadow: theme.shadows[2],
-									"&:hover": {
-										boxShadow: theme.shadows[4],
-									},
-								}}
-							>
-								{isSubmitting ? "Generating..." : "Generate Report"}
-							</Button>
-						) : (
-							<Button
-								variant="contained"
-								color="primary"
-								onClick={handleNext}
-								endIcon={<ArrowForwardIcon />}
-								disabled={
-									!isStepComplete(activeStep) || isSubmitting || isRefreshing
-								}
-							>
-								Next
-							</Button>
-						)}
-					</Box>
-				</Box>
-			</form>
-			<Fade in={isRefreshing}>
-				<CircularProgress
-					size={60}
-					sx={{
-						position: "absolute",
-						top: "50%",
-						left: "50%",
-						marginTop: "-30px",
-						marginLeft: "-30px",
-					}}
-				/>
-			</Fade>
+						</Grid>
+						<Grid item xs={12}>
+							<TextField
+								fullWidth
+								multiline
+								rows={4}
+								label="Description"
+								name="description"
+								value={reportData.description}
+								onChange={handleChange}
+								required
+							/>
+						</Grid>
+					</Grid>
+				</form>
+			</CardContent>
+			<CardActions>
+				<Button
+					startIcon={<SaveIcon />}
+					onClick={handleSubmit}
+					variant="contained"
+					color="primary"
+					disabled={isSubmitting}
+				>
+					{isSubmitting ? <CircularProgress size={24} /> : "Generate Report"}
+				</Button>
+				<Button
+					startIcon={<CancelIcon />}
+					onClick={onClose}
+					variant="outlined"
+					color="secondary"
+				>
+					Cancel
+				</Button>
+			</CardActions>
 			<Snackbar
 				open={snackbar.open}
 				autoHideDuration={6000}
-				onClose={handleCloseSnackbar}
+				onClose={() => setSnackbar({ ...snackbar, open: false })}
 			>
 				<Alert
-					onClose={handleCloseSnackbar}
+					onClose={() => setSnackbar({ ...snackbar, open: false })}
 					severity={snackbar.severity}
 					sx={{ width: "100%" }}
 				>
 					{snackbar.message}
 				</Alert>
 			</Snackbar>
-		</>
+		</Card>
 	);
+};
+
+ReportGenerator.propTypes = {
+	onReportCreated: PropTypes.func.isRequired,
+	rules: PropTypes.array.isRequired,
+	onClose: PropTypes.func.isRequired,
 };
 
 export default ReportGenerator;
