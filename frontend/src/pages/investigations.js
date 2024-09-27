@@ -36,6 +36,7 @@ import {
 import {
 	fetchInvestigations,
 	updateInvestigationStatus,
+	fetchRules,
 } from "../services/apiService";
 import SEO from "../Design/SEO";
 import ReportGenerator from "../components/Reports/ReportGenerator";
@@ -93,6 +94,7 @@ const InvestigationPage = () => {
 	const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
 	const [openReportGenerator, setOpenReportGenerator] = useState(false);
 	const [selectedInvestigationId, setSelectedInvestigationId] = useState(null);
+	const [rules, setRules] = useState([]);
 
 	const loadInvestigations = useCallback(async () => {
 		setLoading(true);
@@ -109,6 +111,15 @@ const InvestigationPage = () => {
 	useEffect(() => {
 		loadInvestigations();
 	}, [loadInvestigations]);
+
+	const loadRules = useCallback(async () => {
+		try {
+			const fetchedRules = await fetchRules();
+			setRules(fetchedRules);
+		} catch (error) {
+			console.error("Error loading rules", error);
+		}
+	}, []);
 
 	const handleOpenDialog = (alert) => {
 		setSelectedAlert(alert);
@@ -199,8 +210,9 @@ const InvestigationPage = () => {
 		</TableCell>
 	);
 
-	const handleOpenReport = (investigationId) => {
+	const handleOpenReport = async (investigationId) => {
 		setSelectedInvestigationId(investigationId);
+		await loadRules();
 		setOpenReportGenerator(true);
 	};
 
@@ -328,6 +340,11 @@ const InvestigationPage = () => {
 								investigationId={selectedInvestigationId}
 								onClose={handleCloseReportGenerator}
 								isFromInvestigationPage={true}
+								rules={rules}
+								onReportCreated={() => {
+									handleCloseReportGenerator();
+									loadInvestigations();
+								}}
 							/>
 						)}
 					</DialogContent>
