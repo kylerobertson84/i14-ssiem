@@ -35,10 +35,11 @@ chmod +x ./scripts/test_accounts.sh
 
 1. To run the test cases make sure you're in the root directory i14-ssiem: 
 ```
-./scripts/test_accounts.sh 
+./scripts/run_backend_unit_tests.sh 
 ```
-or
+or to run test groups individually:
 ```
-docker-compose exec backend python manage.py test accounts
+docker-compose exec backend python manage.py test accounts.tests
+docker-compose exec backend python manage.py test accounts.alerts
 ```
 I will update this document as I add more test cases.
