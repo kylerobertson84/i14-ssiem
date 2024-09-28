@@ -1,3 +1,6 @@
+
+# logs/views.py
+
 from io import BytesIO
 from datetime import datetime
 import logging
