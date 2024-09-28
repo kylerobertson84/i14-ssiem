@@ -79,8 +79,8 @@ class BronzeEventDataViewSet(viewsets.ReadOnlyModelViewSet):
     
     @action(detail=False, methods=['get'])
     def count(self, request):
-        print('Request headers:', request.headers)  # Debugging line
-        print('Request user:', request.user)  # Check the user
+        # print('Request headers:', request.headers)  # Debugging line
+        # print('Request user:', request.user)  # Check the user
         count = self.queryset.count()
         return Response({'count': count})
 
@@ -217,8 +217,8 @@ class EventsToday(viewsets.ViewSet):
         today_end_utc = today_end_local.astimezone(pytz.UTC)
 
         # Log the UTC start and end of today
-        logger.debug(f"UTC Start of today: {today_start_utc}")
-        logger.debug(f"UTC End of today: {today_end_utc}")
+        # logger.debug(f"UTC Start of today: {today_start_utc}")
+        # logger.debug(f"UTC End of today: {today_end_utc}")
 
         # Filter EventData by UTC datetime range
         event_today_count = Alert.objects.filter(created_at__range=(today_start_utc, today_end_utc)).count()
