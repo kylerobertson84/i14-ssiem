@@ -54,7 +54,6 @@ const ReportGenerator = ({
 	investigationId,
 	onClose,
 	isFromInvestigationPage,
-	onReportCreated,
 }) => {
 	const [reportData, setReportData] = useState({
 		title: "",
@@ -162,14 +161,9 @@ const ReportGenerator = ({
 				message: "Report created successfully",
 				severity: "success",
 			});
-
-			if (onReportCreated) {
-				onReportCreated(createdReport);
-			}
-
 			setTimeout(() => {
-				if (onClose) onClose();
-			}, 1000);
+				window.location.reload();
+			}, 2000);
 		} catch (err) {
 			console.error("Error creating report:", err);
 			setError(
@@ -390,7 +384,6 @@ ReportGenerator.propTypes = {
 	investigationId: PropTypes.number,
 	onClose: PropTypes.func,
 	isFromInvestigationPage: PropTypes.bool,
-	onReportCreated: PropTypes.func,
 };
 
 ReportGenerator.defaultProps = {

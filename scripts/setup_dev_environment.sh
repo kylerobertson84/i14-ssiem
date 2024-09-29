@@ -39,6 +39,9 @@ docker image prune -f
 # Wait for the backend service to be healthy
 sleep 3
 
+# Preloading all the data to database
+sudo cp preprocess_log_files/* log_files
+
 
 # Print success message
 echo "Development environment setup complete!"

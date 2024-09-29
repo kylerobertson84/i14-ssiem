@@ -15,6 +15,7 @@ import {
 	ListItem,
 	ListItemIcon,
 	ListItemText,
+	CircularProgress,
 } from "@mui/material";
 import {
 	Dashboard as DashboardIcon,
@@ -28,7 +29,6 @@ import {
 	Login as LoginIcon,
 	PersonAdd as PersonAddIcon,
 } from "@mui/icons-material";
-import AuthService from "../services/AuthService";
 import { useAuth } from "../services/AuthContext";
 import whaleIcon from "../Design/whale-icon.png";
 
@@ -38,11 +38,10 @@ const Navbar = () => {
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 	const [drawerOpen, setDrawerOpen] = useState(false);
-	const { user, setUser } = useAuth();
+	const { user, loading, logout, hasRole } = useAuth();
 
 	const handleLogout = () => {
-		AuthService.logout();
-		setUser(null);
+		logout();
 		navigate("/");
 	};
 
@@ -61,18 +60,51 @@ const Navbar = () => {
 	};
 
 	const navItems = [
-		{ label: "Dashboard", path: "/dashboard", icon: <DashboardIcon /> },
-		{ label: "Queries", path: "/queries", icon: <QueriesIcon /> },
-		{ label: "Alerts", path: "/alerts", icon: <AlertsIcon /> },
+		{
+			label: "Dashboard",
+			path: "/dashboard",
+			icon: <DashboardIcon />,
+			roles: ["ADMIN", "ANALYST"],
+		},
+		{
+			label: "Queries",
+			path: "/queries",
+			icon: <QueriesIcon />,
+			roles: ["ADMIN", "ANALYST"],
+		},
+		{
+			label: "Alerts",
+			path: "/alerts",
+			icon: <AlertsIcon />,
+			roles: ["ADMIN", "ANALYST"],
+		},
 		{
 			label: "Investigations",
 			path: "/investigations",
 			icon: <InvestigationsIcon />,
+			roles: ["ADMIN", "ANALYST"],
 		},
-		{ label: "Reports", path: "/reports", icon: <ReportsIcon /> },
-		{ label: "Preferences", path: "/preferences", icon: <PreferencesIcon /> },
-		{ label: "Admin Page", path: "/admin", icon: <PersonAddIcon /> },
+		{
+			label: "Reports",
+			path: "/reports",
+			icon: <ReportsIcon />,
+			roles: ["ADMIN", "ANALYST"],
+		},
+		{
+			label: "Preferences",
+			path: "/preferences",
+			icon: <PreferencesIcon />,
+			roles: ["ADMIN", "ANALYST"],
+		},
+		{
+			label: "Admin Page",
+			path: "/admin",
+			icon: <PersonAddIcon />,
+			roles: ["ADMIN"],
+		},
 	];
+
+	const filteredNavItems = navItems.filter((item) => hasRole(item.roles));
 
 	const DrawerContent = (
 		<Box
@@ -83,7 +115,7 @@ const Navbar = () => {
 		>
 			<List>
 				{user &&
-					navItems.map((item) => (
+					filteredNavItems.map((item) => (
 						<ListItem button key={item.path} component={Link} to={item.path}>
 							<ListItemIcon>{item.icon}</ListItemIcon>
 							<ListItemText primary={item.label} />
@@ -97,6 +129,16 @@ const Navbar = () => {
 		</Box>
 	);
 
+	if (loading) {
+		return (
+			<AppBar position="static">
+				<Toolbar>
+					<CircularProgress color="inherit" />
+				</Toolbar>
+			</AppBar>
+		);
+	}
+
 	return (
 		<AppBar position="static">
 			<Toolbar sx={{ justifyContent: "space-between" }}>
@@ -105,7 +147,11 @@ const Navbar = () => {
 					component="div"
 					sx={{ display: "flex", alignItems: "center" }}
 				>
-					<img src={whaleIcon} alt="logo" className="navbar-logo" />
+					<img
+						src={whaleIcon}
+						alt="logo"
+						style={{ height: "32px", marginRight: "8px" }}
+					/>
 					Simple SIEM
 				</Typography>
 
@@ -131,7 +177,7 @@ const Navbar = () => {
 				) : (
 					<Box sx={{ display: "flex", alignItems: "center" }}>
 						{user &&
-							navItems.map((item) => (
+							filteredNavItems.map((item) => (
 								<Button
 									key={item.path}
 									component={Link}
@@ -145,7 +191,7 @@ const Navbar = () => {
 							))}
 						{user && (
 							<Avatar className="navbar-avatar">
-								{user.username ? user.username[0].toUpperCase() : "U"}
+								{user.email ? user.email[0].toUpperCase() : "U"}
 							</Avatar>
 						)}
 						<Button

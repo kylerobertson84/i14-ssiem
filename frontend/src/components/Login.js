@@ -77,6 +77,10 @@ const Login = () => {
 		try {
 			const userData = await AuthService.login(email, password);
 			setUser(userData);
+
+			setTimeout(() => {
+				window.location.reload();
+			}, 100);
 			navigate("/dashboard");
 		} catch (error) {
 			setMessage("Login failed. Please check your credentials.");

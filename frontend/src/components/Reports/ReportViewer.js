@@ -78,7 +78,9 @@ const ReportViewer = ({ report, onUpdate, rules }) => {
 				message: "Report updated successfully",
 				severity: "success",
 			});
-			setIsEditing(false);
+			setTimeout(() => {
+				window.location.reload();
+			}, 2000);
 		} catch (error) {
 			setSnackbar({
 				open: true,

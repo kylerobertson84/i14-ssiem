@@ -38,6 +38,7 @@ import {
 	updateInvestigationStatus,
 	fetchRules,
 } from "../services/apiService";
+import { useAuth } from "../services/AuthContext";
 import SEO from "../Design/SEO";
 import ReportGenerator from "../components/Reports/ReportGenerator";
 
@@ -88,6 +89,7 @@ const InvestigationPage = () => {
 	const [alertStatus, setAlertStatus] = useState("OPEN");
 	const [notes, setNotes] = useState("");
 	const [page, setPage] = useState(0);
+	const { user, hasRole } = useAuth();
 	const [rowsPerPage, setRowsPerPage] = useState(10);
 	const [openDialog, setOpenDialog] = useState(false);
 	const [selectedAlert, setSelectedAlert] = useState(null);
@@ -166,6 +168,13 @@ const InvestigationPage = () => {
 				setLoading(false);
 			}
 		}
+	};
+
+	const canManageInvestigation = (investigation) => {
+		return (
+			hasRole("ADMIN") ||
+			(hasRole("ANALYST") && investigation.assigned_to.id === user?.id)
+		);
 	};
 
 	const handleSort = (key) => {
@@ -284,15 +293,17 @@ const InvestigationPage = () => {
 													{result.assigned_to?.email || "Unassigned"}
 												</TableCell>
 												<TableCell>
-													<Tooltip title="Investigate">
-														<IconButton
-															color="primary"
-															onClick={() => handleOpenDialog(result)}
-															size="small"
-														>
-															<VisibilityIcon />
-														</IconButton>
-													</Tooltip>
+													{canManageInvestigation(result) && (
+														<Tooltip title="Investigate">
+															<IconButton
+																color="primary"
+																onClick={() => handleOpenDialog(result)}
+																size="small"
+															>
+																<VisibilityIcon />
+															</IconButton>
+														</Tooltip>
+													)}
 													<Tooltip title="Open Report">
 														<IconButton
 															color="secondary"

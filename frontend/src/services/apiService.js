@@ -245,3 +245,11 @@ export const deleteUser = (userId) => {
 export const fetchRoles = () => {
 	return apiRequest(API_ENDPOINTS.auth.roles);
 };
+
+export const fetchOpenInvestigations = () => {
+	return apiRequest(API_ENDPOINTS.investigate.openInvestigations);
+};
+
+export const updateInvestigation = (id, data) => {
+	return apiRequest(`${API_ENDPOINTS.investigate.base}${id}/`, "PATCH", data);
+};
