@@ -42,5 +42,6 @@ or to run test groups individually:
 docker-compose exec backend python manage.py test accounts.tests
 docker-compose exec backend python manage.py test accounts.alerts
 docker-compose exec backend python manage.py test logs.tests
+docker-compose exec backend python manage.py test core.tests
 ```
 I will update this document as I add more test cases.
