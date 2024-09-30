@@ -1,8 +1,17 @@
-const API_BASE_URL = process.env.REACT_APP_API_URL || "https://test.ssiem.dev/api";
+const API_BASE_URL =
+	process.env.REACT_APP_API_URL || "https://test.ssiem.dev/api";
 const API_VERSION = "v1";
 
-const buildUrl = (path, version = API_VERSION) =>
-	`${API_BASE_URL}/${version}/${path}`;
+console.log("API_BASE_URL:", API_BASE_URL);
+
+const buildUrl = (path, version = API_VERSION) => {
+	const baseUrl = API_BASE_URL.endsWith("/")
+		? API_BASE_URL.slice(0, -1)
+		: API_BASE_URL;
+	const url = `${baseUrl}/${version}/${path}`;
+	console.log("Built URL:", url);
+	return url;
+};
 
 const API_ENDPOINTS = {
 	// Authentication Related API Endpoints
