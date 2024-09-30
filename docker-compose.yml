@@ -25,11 +25,14 @@ services:
     environment:
       - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
       - DJANGO_DEBUG=${DJANGO_DEBUG:-True}
+      - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
       - DB_NAME=${DB_NAME:-siem_db}
       - DB_USER=${DB_USER:-siem_user}
       - DB_PASSWORD=${DB_PASSWORD:-random_password}
       - DB_HOST=db
       - DB_PORT=3306
+      - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS}
+      - CSRF_TRUSTED_ORIGINS=${CSRF_TRUSTED_ORIGINS}
     command:
       echo 'Starting server...' &&
       python manage.py runserver_plus --print-sql 0.0.0.0:8000"
