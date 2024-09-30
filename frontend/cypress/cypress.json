@@ -1,0 +1,9 @@
+{
+    "baseUrl": "http://localhost:3000",
+    "chromeWebSecurity": false,
+    "integrationFolder": "cypress/integration",
+    "testFiles": "**/*.spec.js",
+    "video": true,
+    "screenshotsFolder": "cypress/screenshots",
+    "videosFolder": "cypress/videos"
+}
