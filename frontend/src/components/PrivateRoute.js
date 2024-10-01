@@ -5,7 +5,7 @@ import { CircularProgress } from "@mui/material";
 
 const PrivateRoute = ({ roles, children }) => {
 	const { user, loading, hasRole } = useAuth();
-	const shouldBypassAuth = process.env.REACT_APP_BYPASS_AUTH === "true";
+	const shouldBypassAuth = process.env.REACT_APP_BYPASS_AUTH === "false";
 
 	if (loading) {
 		return <CircularProgress />;

@@ -15,7 +15,7 @@ services:
     environment:
       - REACT_APP_API_URL=${REACT_APP_API_URL:-http://backend:8000/api}
       - CHOKIDAR_USEPOLLING=true
-      - REACT_APP_BYPASS_AUTH=true
+      - REACT_APP_BYPASS_AUTH=false
       - DOMAIN=${DOMAIN}
     command: npm start
 
