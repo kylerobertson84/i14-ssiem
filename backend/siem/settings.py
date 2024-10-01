@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'django_filters',
     'drf_spectacular',
+    'defender',
     # Local apps
     'core',
     'accounts',
