@@ -19,7 +19,7 @@ services:
       #- REACT_APP_API_URL=${REACT_APP_API_URL:-http://backend:8000/api}
       - REACT_APP_API_URL=${REACT_APP_API_URL:-https://test.ssiem.dev/api}
       - CHOKIDAR_USEPOLLING=true
-      - REACT_APP_BYPASS_AUTH=false
+      - REACT_APP_BYPASS_AUTH= ${REACT_APP_BYPASS_AUTH}
       - DOMAIN=${DOMAIN}
     command: npm start
 
@@ -48,11 +48,11 @@ services:
     depends_on:
       - db
     labels:
-      - 'traefik.enable=true'
-      - 'traefik.http.routers.backend.rule=Host(`ssiem.dev`) && PathPrefix(`/api`)'
-      - 'traefik.http.routers.backend.entrypoints=websecure'
-      - 'traefik.http.routers.backend.tls.certresolver=myresolver'
-      - 'traefik.http.services.backend.loadbalancer.server.port=8000'  # Port exposed by backend container
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=Host(`ssiem.dev`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.backend.entrypoints=websecure"
+      - "traefik.http.routers.backend.tls.certresolver=myresolver"
+      - "traefik.http.services.backend.loadbalancer.server.port=8000" # Port exposed by backend container
 
   db:
     image: mariadb:10.5
