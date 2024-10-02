@@ -6,7 +6,7 @@ from logs.serializers import BronzeEventDataSerializer, RouterDataSerializer
 from logs.models import BronzeEventData, RouterData
 
 class BronzeEventDataSerializerTest(TestCase):
-    def test_serialization(self):
+    def test_win_serialization(self):
         event_data = BronzeEventData.objects.create(
             hostname="test-host",
             EventType="EventType1",
@@ -28,7 +28,7 @@ class BronzeEventDataSerializerTest(TestCase):
         self.assertEqual(serializer.data, expected_data)
 
 class RouterDataSerializerTest(TestCase):
-    def test_serialization(self):
+    def test_router_serialization(self):
         router_data = RouterData.objects.create(
             hostname="router-host",
             process="router-process",
