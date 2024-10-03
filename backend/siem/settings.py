@@ -245,7 +245,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'syslogs', 'debug.log'),
+            'filename': os.path.join(BASE_DIR, 'syslogs', 'accounts.log'),
             'formatter': 'verbose',
         },
         "console": {
