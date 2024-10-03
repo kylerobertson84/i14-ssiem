@@ -243,38 +243,43 @@ LOGGING = {
     },
     'handlers': {
         'file': {
+            'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'debug.log'),
-            'formatter': 'verbose',  # Assign the 'verbose' formatter here
+            'filename': os.path.join(BASE_DIR, 'syslogs', 'debug.log'),
+            'formatter': 'verbose',
         },
         "console": {
             "class": "logging.StreamHandler",
-            'formatter': 'simple',  # Assign the 'simple' formatter here
+            'formatter': 'simple',
         },
     },
     'root': {
         'handlers': ['file'],
         'level': 'DEBUG',
     },
-    'loggers': {  # Add the 'loggers' key
+    'loggers': {
         "django.server": {
             'handlers': ['file'],
             "propagate": True,
-            "level": 'DEBUG',  # Specify the logging level here
+            "level": 'DEBUG',
         },
         "django.request": {
             'handlers': ['file'],
             "propagate": True,
-            "level": 'DEBUG',  # Specify the logging level here
+            "level": 'DEBUG',
         },
         "django.security": {
             'handlers': ['file'],
             "propagate": True,
-            "level": 'DEBUG',  # Specify the logging level here
+            "level": 'DEBUG',
+        },
+        'accounts': {
+            'handlers': ['file', 'console'],
+            'level': 'DEBUG',
+            'propagate': True,
         },
     },
 }
-
 
 
 AUTH_USER_MODEL = 'accounts.User'
