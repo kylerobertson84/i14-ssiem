@@ -19,7 +19,7 @@ services:
       #- REACT_APP_API_URL=${REACT_APP_API_URL:-http://backend:8000/api}
       - REACT_APP_API_URL=${REACT_APP_API_URL:-https://test.ssiem.dev/api}
       - CHOKIDAR_USEPOLLING=true
-      - REACT_APP_BYPASS_AUTH= ${REACT_APP_BYPASS_AUTH}
+      - REACT_APP_BYPASS_AUTH=${REACT_APP_BYPASS_AUTH}
       - DOMAIN=${DOMAIN}
     command: npm start
 
