@@ -1,11 +1,14 @@
 
 # accounts/models.py
-
+import logging
 import uuid
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from django.db.models import Max
 from utils.models import BaseModel
+
+
+logger = logging.getLogger(__name__)
 
 class CustomUserManager(BaseUserManager):
 
@@ -42,7 +45,11 @@ class User(AbstractBaseUser, PermissionsMixin, BaseModel):
     REQUIRED_FIELDS = []
 
     def __str__(self):
+        logger.debug(f'New user Created ID:{self.user_id},Email: {self.email}. Role: {self.role}')
         return f"User ID: {self.user_id}. Email: {self.email}. Role: {self.role}. Created on {self.created_at} - Last updated on {self.updated_at}"
+        
+    
+    
     
     def has_permission(self, permission_name):
         if self.role:
@@ -106,6 +113,7 @@ class Employee(BaseModel):
         super().save(*args, **kwargs)
         
     def __str__(self):
+        logger.debug(f'New user Created ID:{self.user_id},Email: {self.email}. Role: {self.role}')
         return f"Employee ID: {self.employee_id}. {self.first_name} {self.last_name} started on {self.created_at}. Last updated on {self.updated_at}"
 
 class Permission(BaseModel):

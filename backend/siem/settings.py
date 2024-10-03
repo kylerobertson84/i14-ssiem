@@ -226,18 +226,56 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    "formatters": {
+        "django.server": {
+            "()": "django.utils.log.ServerFormatter",
+            "format": "[{server_time}] {message}",
+            "style": "{",
+        },
+        "verbose": {
+            "format": "{name} {levelname} {asctime} {module} {process:d} {thread:d} {message}",
+            "style": "{",
+        },
+        "simple": {
+            "format": "{levelname} {message}",
+            "style": "{",
+        },
+    },
     'handlers': {
         'file': {
-            'level': 'DEBUG',
             'class': 'logging.FileHandler',
             'filename': os.path.join(BASE_DIR, 'debug.log'),
+            'formatter': 'verbose',  # Assign the 'verbose' formatter here
+        },
+        "console": {
+            "class": "logging.StreamHandler",
+            'formatter': 'simple',  # Assign the 'simple' formatter here
         },
     },
     'root': {
         'handlers': ['file'],
         'level': 'DEBUG',
     },
+    'loggers': {  # Add the 'loggers' key
+        "django.server": {
+            'handlers': ['file'],
+            "propagate": True,
+            "level": 'DEBUG',  # Specify the logging level here
+        },
+        "django.request": {
+            'handlers': ['file'],
+            "propagate": True,
+            "level": 'DEBUG',  # Specify the logging level here
+        },
+        "django.security": {
+            'handlers': ['file'],
+            "propagate": True,
+            "level": 'DEBUG',  # Specify the logging level here
+        },
+    },
 }
+
+
 
 AUTH_USER_MODEL = 'accounts.User'
 

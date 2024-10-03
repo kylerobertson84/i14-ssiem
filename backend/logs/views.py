@@ -214,8 +214,8 @@ class EventsToday(viewsets.ViewSet):
         today_end_utc = today_end_local.astimezone(pytz.UTC)
 
         # Log the UTC start and end of today
-        logger.debug(f"UTC Start of today: {today_start_utc}")
-        logger.debug(f"UTC End of today: {today_end_utc}")
+        #logger.debug(f"UTC Start of today: {today_start_utc}")
+        #logger.debug(f"UTC End of today: {today_end_utc}")
 
         # Filter EventData by UTC datetime range
         event_today_count = Alert.objects.filter(created_at__range=(today_start_utc, today_end_utc)).count()
