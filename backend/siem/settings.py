@@ -14,6 +14,7 @@ import os
 from pathlib import Path
 from datetime import timedelta
 from pathlib import Path
+from utils.logging_utils import ensure_log_directory_and_file
 # Celery beat settings
 from celery.schedules import crontab
 
@@ -33,8 +34,10 @@ DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True' # Set to False in production
 # settings.py
 ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1,[::1]').split(',')
 
-# Application definition
+#Ensure Log directory exist
+log_file_path = ensure_log_directory_and_file(BASE_DIR, 'syslogs', 'accounts.log')
 
+# Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -244,7 +247,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'syslogs', 'accounts.log'),
+            'filename': log_file_path,  # Use the path returned by our function
             'formatter': 'verbose',
         },
         "console": {
