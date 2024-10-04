@@ -1,11 +1,10 @@
-
-# accounts/models.py
 import logging
 import uuid
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from django.db.models import Max
 from utils.models import BaseModel
+from utils.baseViewThrottle import BaseViewThrottleSet
 
 
 logger = logging.getLogger(__name__)
@@ -31,7 +30,7 @@ class CustomUserManager(BaseUserManager):
             raise ValueError('Superuser must have is_superuser=True.')
         return self.create_user(email, password, **extra_fields)
 
-class User(AbstractBaseUser, PermissionsMixin, BaseModel):
+class User(AbstractBaseUser, PermissionsMixin, BaseModel, BaseViewThrottleSet):
     user_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(max_length=80, unique=True)
     role = models.ForeignKey('Role', on_delete=models.SET_NULL, null=True)
@@ -56,7 +55,7 @@ class User(AbstractBaseUser, PermissionsMixin, BaseModel):
             return self.role.has_permission(permission_name)
         return False
 
-class Role(BaseModel):
+class Role(BaseModel, BaseViewThrottleSet):
     # Hardcode roles here
     ADMIN = 'ADMIN'
     ANALYST = 'ANALYST'
@@ -116,14 +115,14 @@ class Employee(BaseModel):
         logger.debug(f'New user Created ID:{self.user_id},Email: {self.email}. Role: {self.role}')
         return f"Employee ID: {self.employee_id}. {self.first_name} {self.last_name} started on {self.created_at}. Last updated on {self.updated_at}"
 
-class Permission(BaseModel):
+class Permission(BaseModel, BaseViewThrottleSet):
     permission_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     permission_name = models.CharField(max_length=50, default=None, unique=True)
 
     def __str__(self):
         return f"{self.permission_name}. Created on {self.created_at} - Last updated on {self.updated_at}"
 
-class RolePermission(BaseModel):
+class RolePermission(BaseModel, BaseViewThrottleSet):
     role = models.ForeignKey(Role, on_delete=models.CASCADE)
     permission = models.ForeignKey(Permission, on_delete=models.CASCADE)
 

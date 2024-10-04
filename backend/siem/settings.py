@@ -298,10 +298,4 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'logs.tasks.check_and_process_logs',
         'schedule': crontab(minute='*/1'),  # Run every minute
     },
-    
-    ## Don't need this anymore just for testing Log Processing
-    # 'process-logs': {
-    #     'task': 'logs.tasks.process_logs',
-    #     'schedule': crontab(minute='*/1'),  # Run every minute
-    # },
 }

@@ -1,9 +1,10 @@
 from django.db import models
 from utils.models import BaseModel
+from utils.baseViewThrottle import BaseViewThrottleSet
 from core.models import Rule
 from django.conf import settings
 
-class IncidentReport(BaseModel):
+class IncidentReport(BaseModel, BaseViewThrottleSet):
     class ReportType(models.TextChoices):
         SECURITY_INCIDENT = 'security_incident', ('Security Incident')
         NETWORK_TRAFFIC = 'network_traffic', ('Network Traffic')

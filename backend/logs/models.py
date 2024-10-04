@@ -1,11 +1,11 @@
 from django.db import models
 from utils.models import BaseModel
+from utils.baseViewThrottle import BaseViewThrottleSet
 
-class BronzeEventData(BaseModel):
+class BronzeEventData(BaseModel, BaseViewThrottleSet):
     created_at = models.DateTimeField(auto_now_add=True)
     priority = models.IntegerField(null=True, blank=True)
     h_version = models.IntegerField(null=True, blank=True)
-    #processed = models.BooleanField(default=False)
     iso_timestamp = models.DateTimeField(null=True, blank=True)
     hostname = models.CharField(max_length=255,null=True, blank=True)
     app_name = models.CharField(max_length=255,null=True, blank=True)
@@ -39,7 +39,7 @@ class BronzeEventData(BaseModel):
         return f"{self.iso_timestamp} - {self.app_name} - {self.EventType}"
     
 
-class RouterData(BaseModel):
+class RouterData(BaseModel, BaseViewThrottleSet):
     created_at = models.DateTimeField(auto_now_add=True)
     severity = models.IntegerField(null = True, blank = True)
     date_time = models.CharField(max_length=100,null=True,blank=True)
