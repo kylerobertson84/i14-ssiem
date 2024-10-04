@@ -10,35 +10,61 @@ jobs:
   test:
     runs-on: ubuntu-latest
     
+    services:
+      mariadb:
+        image: mariadb:10.5
+        env:
+          MYSQL_ROOT_PASSWORD: rootpassword
+          MYSQL_DATABASE: test_db
+        ports:
+          - 3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: 3.12
     
-    - name: Install dependencies
+    - name: Install backend dependencies
       run: |
         cd backend
         pip install -r requirements.txt
     
     - name: Run Django tests
+      env:
+        DB_NAME: test_db
+        DB_USER: root
+        DB_PASSWORD: rootpassword
+        DB_HOST: 127.0.0.1
+        DB_PORT: ${{ job.services.mariadb.ports[3306] }}
       run: |
         cd backend
         python manage.py test
     
     - name: Set up Node.js
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
-        node-version: 14
+        node-version: 16
     
-    - name: Install npm dependencies
+    - name: Install frontend dependencies
       run: |
         cd frontend
-        npm install
+        npm ci
     
-    # - name: Run React tests
-    #   run: |
-    #     cd frontend
-    #     # npm test -- --watchAll=false
+    - name: Run React tests
+      run: |
+        cd frontend
+        npm test -- --watchAll=false
+
+    - name: Run ESLint
+      run: |
+        cd frontend
+        npm run lint
+
+    - name: Build frontend
+      run: |
+        cd frontend
+        npm run build
