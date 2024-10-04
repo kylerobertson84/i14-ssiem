@@ -7,6 +7,10 @@ from .models import Alert, InvestigateAlert, InvestigationStatus
 from .serializers import AlertSerializer, InvestigateAlertSerializer
 from utils.pagination import StandardResultsSetPagination
 from accounts.models import User
+from django.db.models import Q
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import PermissionDenied
+
 
 class AlertFilter(FilterSet):
     rule__name = CharFilter(field_name='rule__name', lookup_expr='icontains')
@@ -80,6 +84,30 @@ class InvestigateAlertViewSet(BaseAlertViewSet):
     serializer_class = InvestigateAlertSerializer
     filterset_class = InvestigateAlertFilter 
     ordering_fields = ['created_at', 'updated_at']
+    permission_classes = [IsAuthenticated]
+    
+    @action(detail=True, methods=['patch'])
+    def update_investigation(self, request, pk=None):
+        investigation = self.get_object()
+        user = request.user
+
+        if user.role.name != 'ADMIN' and investigation.assigned_to != user:
+            raise PermissionDenied("You don't have permission to update this investigation.")
+
+        serializer = self.get_serializer(investigation, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data)
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.role.name == 'ADMIN':
+            return InvestigateAlert.objects.all()
+        elif user.role.name == 'ANALYST':
+            return InvestigateAlert.objects.filter(assigned_to=user)
+        else:
+            return InvestigateAlert.objects.none()
 
     @action(detail=False, methods=['get'])
     def investigation_status_count(self, request):
@@ -92,3 +120,21 @@ class InvestigateAlertViewSet(BaseAlertViewSet):
             'open_count': open_count,
             'in_progress_count': in_progress_count,
         })
+    # Fetch open investigations for a specific user or all users( for ADMIN)
+    @action(detail=False, methods=['get'])
+    def open_investigations(self, request):
+        user = request.user
+        if user.role.name == 'ADMIN':
+            investigations = InvestigateAlert.objects.filter(
+                Q(status=InvestigationStatus.OPEN) | Q(status=InvestigationStatus.IN_PROGRESS)
+            )
+        elif user.role.name == 'ANALYST':
+            investigations = InvestigateAlert.objects.filter(
+                Q(assigned_to=user) & 
+                (Q(status=InvestigationStatus.OPEN) | Q(status=InvestigationStatus.IN_PROGRESS))
+            )
+        else:
+            return Response({"error": "Unauthorized"}, status=status.HTTP_403_FORBIDDEN)
+
+        serializer = self.get_serializer(investigations, many=True)
+        return Response(serializer.data)

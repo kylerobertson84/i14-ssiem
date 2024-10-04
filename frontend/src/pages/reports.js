@@ -1,174 +1,176 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from "react";
 import {
-  Container,
-  Typography,
-  Grid,
-  Paper,
-  Box,
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Button
-} from '@mui/material';
-import ReportGenerator from '../components/Reports/ReportGenerator';
-import ReportList from '../components/Reports/ReportList';
-import ReportViewer from '../components/Reports/ReportViewer';
-import ReportExporter from '../components/Reports/ReportExporter';
-import SEO from '../Design/SEO.js';
-import { fetchReports, createReport, updateReport, generateReportPDF, fetchRules, deleteReport } from '../services/apiService';
+	Container,
+	Typography,
+	Grid,
+	Paper,
+	Box,
+	Button,
+	Tooltip,
+	useMediaQuery,
+	useTheme,
+} from "@mui/material";
+import { Refresh as RefreshIcon, Add as AddIcon } from "@mui/icons-material";
+import ReportGenerator from "../components/Reports/ReportGenerator.js";
+import ReportList from "../components/Reports/ReportList";
+import ReportViewer from "../components/Reports/ReportViewer";
+import ReportExporter from "../components/Reports/ReportExporter";
+import SEO from "../Design/SEO.js";
+import {
+	fetchReports,
+	createReport,
+	updateReport,
+	generateReportPDF,
+	fetchRules,
+	deleteReport,
+} from "../services/apiService";
 
 const ReportsPage = () => {
-  const [reports, setReports] = useState([]);
-  const [selectedReport, setSelectedReport] = useState(null);
-  const [rules, setRules] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [reportToDelete, setReportToDelete] = useState(null);
+	const theme = useTheme();
+	const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+	const [reports, setReports] = useState([]);
+	const [selectedReport, setSelectedReport] = useState(null);
+	const [rules, setRules] = useState([]);
+	const [loading, setLoading] = useState(false);
+	const [showGenerator, setShowGenerator] = useState(false);
 
-  useEffect(() => {
-    loadReports();
-    loadRules();
-  }, []);
+	const loadReports = useCallback(async () => {
+		setLoading(true);
+		try {
+			const response = await fetchReports();
+			setReports(response.results || response);
+		} catch (err) {
+			console.error("Failed to load reports:", err);
+		} finally {
+			setLoading(false);
+		}
+	}, []);
 
-  const loadReports = async () => {
-    setLoading(true);
-    try {
-      const response = await fetchReports();
-      setReports(response.results || response);
-    } catch (err) {
-      setError('Failed to load reports');
-      setReports([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+	const loadRules = useCallback(async () => {
+		try {
+			const response = await fetchRules();
+			setRules(response.results || response);
+		} catch (err) {
+			console.error("Failed to load rules:", err);
+		}
+	}, []);
 
-  const loadRules = async () => {
-    try {
-      const response = await fetchRules();
-      setRules(response.results || response);
-    } catch (err) {
-      setError('Failed to load rules');
-    }
-  };
+	useEffect(() => {
+		loadReports();
+		loadRules();
+	}, [loadReports, loadRules]);
 
-  const handleGenerate = async (newReport) => {
-    try {
-      const createdReport = await createReport(newReport);
-      setReports([createdReport, ...reports]);
-    } catch (err) {
-      setError('Failed to create report');
-    }
-  };
+	const handleReportCreated = async (newReport) => {
+		await loadReports();
+		setShowGenerator(false);
+	};
 
-  const handleSelectReport = (report) => {
-    setSelectedReport(report);
-  };
+	const handleReportUpdated = async (updatedReport) => {
+		await loadReports();
+		setSelectedReport(updatedReport);
+	};
 
-  const handleUpdateReport = async (updatedReport) => {
-    try {
-      const updated = await updateReport(updatedReport.id, updatedReport);
-      setReports(reports.map(r => r.id === updated.id ? updated : r));
-      setSelectedReport(updated);
-    } catch (err) {
-      setError('Failed to update report');
-    }
-  };
+	const handleSelectReport = (report) => {
+		setSelectedReport(report);
+	};
 
-  const handleExportPDF = async (reportId) => {
-    try {
-      await generateReportPDF(reportId);
-      const updatedReport = await fetchReports(reportId);
-      setSelectedReport(updatedReport);
-    } catch (err) {
-      setError('Failed to generate PDF');
-    }
-  };
+	const handleUpdateReport = async (updatedReport) => {
+		try {
+			const result = await updateReport(updatedReport.id, updatedReport);
+			await handleReportUpdated(result);
+			return result;
+		} catch (err) {
+			console.error("Failed to update report:", err);
+			throw err;
+		}
+	};
 
-  const handleDeleteReport = (report) => {
-    setReportToDelete(report);
-    setDeleteDialogOpen(true);
-  };
+	const handleDeleteReport = async (reportToDelete) => {
+		try {
+			await deleteReport(reportToDelete.id);
+			await loadReports();
+			if (selectedReport && selectedReport.id === reportToDelete.id) {
+				setSelectedReport(null);
+			}
+		} catch (err) {
+			console.error("Failed to delete report:", err);
+		}
+	};
 
-  const confirmDeleteReport = async () => {
-    try {
-      await deleteReport(reportToDelete.id);
-      setReports(reports.filter(r => r.id !== reportToDelete.id));
-      if (selectedReport && selectedReport.id === reportToDelete.id) {
-        setSelectedReport(null);
-      }
-      setDeleteDialogOpen(false);
-    } catch (err) {
-      setError('Failed to delete report');
-    }
-  };
+	const handleRefresh = () => {
+		loadReports();
+		loadRules();
+	};
 
-  if (loading) return <CircularProgress />;
-  if (error) return <Typography color="error">{error}</Typography>;
-
-  return (
-    <>
-      <SEO 
-				title="Reports" 
-			/>
-      <Container maxWidth="lg">
-        <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 4, fontWeight: 'bold', color: 'primary.main' }}>
-          Reports Management
-        </Typography>
-        <Grid container spacing={4}>
-          <Grid item xs={12}>
-            <ReportGenerator onGenerate={handleGenerate} rules={rules} />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            {reports.length > 0 && (
-              <ReportList 
-                reports={reports} 
-                onSelect={handleSelectReport}
-                onDelete={handleDeleteReport}
-              />
-            )}
-          </Grid>
-          <Grid item xs={12} md={6}>
-            {selectedReport && (
-              <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
-                <Typography variant="h5" component="h2" gutterBottom sx={{ mb: 4, fontWeight: 'bold', color: 'primary.main' }}>
-                  Selected Report
-                </Typography>
-                <ReportViewer report={selectedReport} onUpdate={handleUpdateReport} rules={rules} />
-                <Box sx={{ mt: 2 }}>
-                  <ReportExporter report={selectedReport} onExport={() => handleExportPDF(selectedReport.id)} />
-                </Box>
-              </Paper>
-            )}
-          </Grid>
-        </Grid>
-        <Dialog
-          open={deleteDialogOpen}
-          onClose={() => setDeleteDialogOpen(false)}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">{"Confirm Delete"}</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              Are you sure you want to delete this report? This action cannot be undone.
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
-            <Button onClick={confirmDeleteReport} color="error" autoFocus>
-              Delete
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </Container>
-    </>
-
-  );
+	return (
+		<>
+			<SEO title="Reports Management" />
+			<Container maxWidth="lg" className="main-content">
+				<Box sx={{ mb: 4 }}>
+					<Typography variant="h4" component="h1" gutterBottom>
+						Reports Management
+					</Typography>
+					<Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
+						<Button
+							startIcon={<AddIcon />}
+							onClick={() => setShowGenerator(true)}
+							variant="contained"
+							color="primary"
+						>
+							New Report
+						</Button>
+						<Button
+							startIcon={<RefreshIcon />}
+							onClick={handleRefresh}
+							variant="outlined"
+						>
+							Refresh
+						</Button>
+					</Box>
+				</Box>
+				<Grid container spacing={4}>
+					{showGenerator && (
+						<Grid item xs={12}>
+							<Paper elevation={3} sx={{ p: 3, mb: 4 }}>
+								<ReportGenerator
+									onReportCreated={handleReportCreated}
+									rules={rules}
+									onClose={() => setShowGenerator(false)}
+								/>
+							</Paper>
+						</Grid>
+					)}
+					<Grid item xs={12} md={selectedReport && !isMobile ? 6 : 12}>
+						<ReportList
+							reports={reports}
+							onSelect={handleSelectReport}
+							onDelete={handleDeleteReport}
+							onRefresh={handleRefresh}
+							loading={loading}
+						/>
+					</Grid>
+					{selectedReport && (
+						<Grid item xs={12} md={isMobile ? 12 : 6}>
+							<Paper elevation={3} sx={{ p: 3 }}>
+								<ReportViewer
+									report={selectedReport}
+									onUpdate={handleUpdateReport}
+									onReportUpdated={handleReportUpdated}
+									rules={rules}
+								/>
+								<Box sx={{ mt: 2 }}>
+									<ReportExporter
+										report={selectedReport}
+										onExport={() => generateReportPDF(selectedReport.id)}
+									/>
+								</Box>
+							</Paper>
+						</Grid>
+					)}
+				</Grid>
+			</Container>
+		</>
+	);
 };
 
 export default ReportsPage;

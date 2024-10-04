@@ -8,6 +8,7 @@ from .models import IncidentReport, Rule
 from .serializers import IncidentReportSerializer, RuleSerializer
 from utils.pagination import StandardResultsSetPagination
 from .pdf_generator import generate_pdf
+from django.db.models import Q
 
 class IncidentReportFilter(FilterSet):
     user__email = CharFilter(field_name='user__email', lookup_expr='icontains')
@@ -24,8 +25,20 @@ class IncidentReportViewSet(BaseViewThrottleSet):
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
     filterset_class = IncidentReportFilter
     ordering_fields = ['created_at', 'updated_at']
-    search_fields = ['title', 'description', 'source__hostname', 'rules__name', 'custom_rules']
+    search_fields = ['title', 'description', 'rules__name', 'user__email']
     
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        search_query = self.request.query_params.get('search', None)
+        if search_query:
+            queryset = queryset.filter(
+                Q(title__icontains=search_query) |
+                Q(description__icontains=search_query) |
+                Q(rules__name__icontains=search_query) |
+                Q(user__email__icontains=search_query)
+            ).distinct()
+        return queryset
+
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 

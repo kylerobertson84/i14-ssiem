@@ -4,4 +4,4 @@ from .models import Rule
 class RuleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rule
-        fields = ['id', 'name', 'description', 'conditions']
+        fields = ['id', 'name', 'description', 'conditions',]

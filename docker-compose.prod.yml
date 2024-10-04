@@ -11,15 +11,13 @@ services:
       - "traefik.http.routers.frontend.entrypoints=websecure"
       - "traefik.http.routers.frontend.tls.certresolver=myresolver"
       - "traefik.http.services.frontend.loadbalancer.server.port=3000"
-    
+
     environment:
       - REACT_APP_API_URL=${REACT_APP_API_URL:-http://backend:8000/api}
       - CHOKIDAR_USEPOLLING=true
       - REACT_APP_BYPASS_AUTH=true
       - DOMAIN=${DOMAIN}
     command: npm start
-
-
 
   backend:
     build:
@@ -55,7 +53,7 @@ services:
       - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD:-random_password}
     ports:
       - "${DOCKER_DB_PORT:-3307}:3306"
-  
+
   traefik:
     image: "traefik:v3.1.2"
     container_name: "traefik"
@@ -87,4 +85,3 @@ volumes:
   log_files:
   processed_log_files:
   data:
-

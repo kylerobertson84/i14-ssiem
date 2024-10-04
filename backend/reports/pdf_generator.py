@@ -12,6 +12,7 @@ def generate_pdf(incident_report):
 
     # Add title
     elements.append(Paragraph(f"Incident Report ID: {incident_report.id}", styles['Title']))
+    elements.append(Paragraph(f"(Mock Report in PDF)", styles['Normal']))
     elements.append(Spacer(1, 12))
 
     # Add details
@@ -19,6 +20,7 @@ def generate_pdf(incident_report):
     elements.append(Paragraph(f"Type: {incident_report.get_type_display()}", styles['Normal']))
     elements.append(Paragraph(f"Status: {incident_report.get_status_display()}", styles['Normal']))
     elements.append(Paragraph(f"Created At: {incident_report.created_at}", styles['Normal']))
+    elements.append(Paragraph(f"Last Updated At: {incident_report.updated_at}", styles['Normal']))
     elements.append(Paragraph(f"User ID: {incident_report.user.user_id}", styles['Normal']))
     elements.append(Paragraph(f"User Email: {incident_report.user.email}", styles['Normal']))
     elements.append(Spacer(1, 12))

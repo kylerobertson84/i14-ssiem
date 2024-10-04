@@ -17,15 +17,25 @@ class UserModelTests(TestCase):
 
 class RoleModelTests(TestCase):
     def setUp(self):
-        self.role = Role.objects.create(name='Admin')
+        self.admin_role = Role.objects.create(name='Admin')
+        self.analyst_role = Role.objects.create(name='Analyst')
 
-    def test_role_creation(self):
-        self.assertEqual(self.role.name, 'Admin')
+    def test_admin_role_creation(self):
+        self.assertEqual(self.admin_role.name, 'Admin')
     
-    def test_role_has_permission(self):
+    def test_admin_role_has_permission(self):
+        permission = Permission.objects.create(permission_name='Can create users')
+        self.admin_role.permissions.add(permission)
+        self.assertTrue(self.admin_role.has_permission('Can create users'))
+
+    def test_analyst_role_creation(self):
+        self.assertEqual(self.analyst_role.name, 'Analyst')
+    
+    def test_analyst_role_has_permission(self):
         permission = Permission.objects.create(permission_name='Can view')
-        self.role.permissions.add(permission)
-        self.assertTrue(self.role.has_permission('Can view'))
+        self.analyst_role.permissions.add(permission)
+        self.assertTrue(self.analyst_role.has_permission('Can view'))
+
 
 class EmployeeModelTests(TestCase):
     def setUp(self):

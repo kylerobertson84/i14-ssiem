@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthService from "../services/AuthService";
 import { useAuth } from "../services/AuthContext";
 import {
 	Button,
-	CssBaseline,
 	TextField,
 	Box,
 	Typography,
@@ -13,7 +12,13 @@ import {
 	Link,
 	Checkbox,
 	FormControlLabel,
-	ThemeProvider,
+	Select,
+	MenuItem,
+	FormControl,
+	InputLabel,
+	Paper,
+	useTheme,
+	useMediaQuery,
 	Divider,
 } from "@mui/material";
 import {
@@ -24,110 +29,182 @@ import {
 	Dashboard,
 	Psychology,
 } from "@mui/icons-material";
-import theme from "../Design/Theme";
+import { styled } from "@mui/system";
 import SEO from "../Design/SEO";
 
-const Feature = ({ icon, title, description }) => (
-	<Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-		{icon}
-		<Box sx={{ ml: 2 }}>
-			<Typography variant="subtitle1" color="primary">
-				{title}
-			</Typography>
-			<Typography variant="body2">{description}</Typography>
-		</Box>
-	</Box>
-);
+const Feature = styled(Box)(({ theme }) => ({
+	display: "flex",
+	alignItems: "center",
+	marginBottom: theme.spacing(2),
+}));
+
+const FeatureIcon = styled(Box)(({ theme }) => ({
+	marginRight: theme.spacing(2),
+	color: theme.palette.primary.main,
+}));
+
+const StyledButton = styled(Button)(({ theme }) => ({
+	marginBottom: theme.spacing(2),
+}));
+
+const DEMO_ACCOUNTS = {
+	user1: { email: "user1@siem.com", password: "abc123", role: "ANALYST" },
+	user2: { email: "user2@siem.com", password: "abc123", role: "ANALYST" },
+	admin1: { email: "admin1@siem.com", password: "abc123", role: "ADMIN" },
+	admin2: { email: "admin2@siem.com", password: "abc123", role: "ADMIN" },
+};
 
 const Login = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [selectedAccount, setSelectedAccount] = useState("");
 	const [message, setMessage] = useState("");
 	const navigate = useNavigate();
 	const { setUser } = useAuth();
+	const theme = useTheme();
+	const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+	useEffect(() => {
+		if (selectedAccount) {
+			const account = DEMO_ACCOUNTS[selectedAccount];
+			setEmail(account.email);
+			setPassword(account.password);
+		}
+	}, [selectedAccount]);
 
 	const handleLogin = async (e) => {
 		e.preventDefault();
 		try {
 			const userData = await AuthService.login(email, password);
 			setUser(userData);
+
+			setTimeout(() => {
+				window.location.reload();
+			}, 100);
 			navigate("/dashboard");
 		} catch (error) {
 			setMessage("Login failed. Please check your credentials.");
 		}
 	};
 
-	const handlePrefillLogin = () => {
-		setEmail("admin@example.com");
-		setPassword("admin");
+	const handleAccountChange = (event) => {
+		setSelectedAccount(event.target.value);
 	};
 
 	return (
 		<>
-			<SEO 
-				title="Login" 
+			<SEO
+				title="Login"
 				description="Log in to SimpleSIEM - Secure access to your SIEM dashboard"
 			/>
-	  		<ThemeProvider theme={theme}>
 			<Container component="main" maxWidth="lg">
-				<CssBaseline />
 				<Grid
 					container
 					spacing={4}
-					sx={{ height: "100vh", alignItems: "center" }}
+					sx={{ minHeight: "100vh", alignItems: "center" }}
 				>
+					{!isMobile && (
+						<Grid item xs={12} md={6}>
+							<Box sx={{ mb: 4 }}>
+								<Typography
+									variant="h4"
+									component="h1"
+									color="primary"
+									gutterBottom
+								>
+									SimpleSIEM
+								</Typography>
+							</Box>
+							<Feature>
+								<FeatureIcon>
+									<Security fontSize="large" />
+								</FeatureIcon>
+								<Box>
+									<Typography variant="subtitle1" color="primary">
+										Advanced Threat Detection
+									</Typography>
+									<Typography variant="body2" color="textSecondary">
+										Our SIEM solution effortlessly adapts to your security
+										needs, boosting efficiency in threat identification.
+									</Typography>
+								</Box>
+							</Feature>
+							<Feature>
+								<FeatureIcon>
+									<Storage fontSize="large" />
+								</FeatureIcon>
+								<Box>
+									<Typography variant="subtitle1" color="primary">
+										Robust Log Management
+									</Typography>
+									<Typography variant="body2" color="textSecondary">
+										Experience unmatched durability with our long-term log
+										storage and analysis capabilities.
+									</Typography>
+								</Box>
+							</Feature>
+							<Feature>
+								<FeatureIcon>
+									<Dashboard fontSize="large" />
+								</FeatureIcon>
+								<Box>
+									<Typography variant="subtitle1" color="primary">
+										Intuitive Dashboard
+									</Typography>
+									<Typography variant="body2" color="textSecondary">
+										Integrate our SIEM into your security operations with an
+										easy-to-use and customizable interface.
+									</Typography>
+								</Box>
+							</Feature>
+							<Feature>
+								<FeatureIcon>
+									<Psychology fontSize="large" />
+								</FeatureIcon>
+								<Box>
+									<Typography variant="subtitle1" color="primary">
+										AI-Powered Analytics
+									</Typography>
+									<Typography variant="body2" color="textSecondary">
+										Stay ahead with machine learning features that set new
+										standards in security event correlation and analysis.
+									</Typography>
+								</Box>
+							</Feature>
+						</Grid>
+					)}
 					<Grid item xs={12} md={6}>
-						<Box sx={{ mb: 4 }}>
+						<Paper elevation={3} sx={{ p: 4 }}>
 							<Typography
-								variant="h4"
 								component="h1"
-								color="primary"
+								variant="h5"
 								gutterBottom
+								align="center"
 							>
-								SimpleSIEM
-							</Typography>
-						</Box>
-						<Feature
-							icon={<Security sx={{ color: theme.palette.primary.main }} />}
-							title="Advanced Threat Detection"
-							description="Our SIEM solution effortlessly adapts to your security needs, boosting efficiency in threat identification."
-						/>
-						<Feature
-							icon={<Storage sx={{ color: theme.palette.primary.main }} />}
-							title="Robust Log Management"
-							description="Experience unmatched durability with our long-term log storage and analysis capabilities."
-						/>
-						<Feature
-							icon={<Dashboard sx={{ color: theme.palette.primary.main }} />}
-							title="Intuitive Dashboard"
-							description="Integrate our SIEM into your security operations with an easy-to-use and customizable interface."
-						/>
-						<Feature
-							icon={<Psychology sx={{ color: theme.palette.primary.main }} />}
-							title="AI-Powered Analytics"
-							description="Stay ahead with machine learning features that set new standards in security event correlation and analysis."
-						/>
-					</Grid>
-					<Grid item xs={12} md={6}>
-						<Box
-							sx={{
-								display: "flex",
-								flexDirection: "column",
-								alignItems: "center",
-								bgcolor: "background.paper",
-								p: 4,
-								boxShadow: 3,
-							}}
-						>
-							<Typography component="h1" variant="h5" gutterBottom>
 								Sign in
 							</Typography>
-							<Box
-								component="form"
-								onSubmit={handleLogin}
-								noValidate
-								sx={{ mt: 1, width: "100%" }}
-							>
+							<Box component="form" onSubmit={handleLogin} noValidate>
+								<FormControl fullWidth margin="normal">
+									<InputLabel id="account-select-label">
+										Select Demo Account
+									</InputLabel>
+									<Select
+										labelId="account-select-label"
+										id="account-select"
+										value={selectedAccount}
+										label="Select Demo Account"
+										onChange={handleAccountChange}
+									>
+										<MenuItem value="">
+											<em>None</em>
+										</MenuItem>
+										{Object.entries(DEMO_ACCOUNTS).map(([key, account]) => (
+											<MenuItem key={key} value={key}>
+												{`${key} (${account.role})`}
+											</MenuItem>
+										))}
+									</Select>
+								</FormControl>
 								<TextField
 									margin="normal"
 									required
@@ -176,45 +253,38 @@ const Login = () => {
 										</Link>
 									</Grid>
 								</Grid>
-								<Divider>
-									<Typography align="center" sx={{ mt: 2, mb: 1 }}>
-										or
+								<Divider sx={{ my: 3 }}>
+									<Typography variant="body2" color="text.secondary">
+										Coming Soon!
 									</Typography>
 								</Divider>
-
-								<Button
+								<StyledButton
 									fullWidth
 									variant="outlined"
+									disabled
 									startIcon={<Google />}
-									sx={{ mb: 1 }}
 								>
 									Sign in with Google
-								</Button>
-								<Button fullWidth variant="outlined" startIcon={<GitHub />}>
-									Sign in with GitHub
-								</Button>
-
-								<Button
+								</StyledButton>
+								<StyledButton
 									fullWidth
 									variant="outlined"
-									onClick={handlePrefillLogin}
-									sx={{ mt: 2 }}
+									disabled
+									startIcon={<GitHub />}
 								>
-									Use Demo Account
-								</Button>
+									Sign in with GitHub
+								</StyledButton>
 								{message && (
 									<Typography color="error" align="center" sx={{ mt: 2 }}>
 										{message}
 									</Typography>
 								)}
 							</Box>
-						</Box>
+						</Paper>
 					</Grid>
 				</Grid>
 			</Container>
-		</ThemeProvider>
 		</>
-
 	);
 };
 

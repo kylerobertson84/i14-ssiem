@@ -11,15 +11,13 @@ services:
       - "traefik.http.routers.frontend.entrypoints=websecure"
       - "traefik.http.routers.frontend.tls.certresolver=myresolver"
       - "traefik.http.services.frontend.loadbalancer.server.port=3000"
-    
+
     environment:
       - REACT_APP_API_URL=${REACT_APP_API_URL:-http://backend:8000/api}
       - CHOKIDAR_USEPOLLING=true
       - REACT_APP_BYPASS_AUTH=true
       - DOMAIN=${DOMAIN}
     command: npm start
-
-
 
   backend:
     build:
@@ -71,7 +69,7 @@ services:
 
   # Celery constantly checks the Redis broker for new tasks and executes them.
   celery:
-    build: 
+    build:
       context: ./backend
       dockerfile: Dockerfile.celery
     command: celery -A siem worker -l info
@@ -95,7 +93,7 @@ services:
 
   # Celery Beat is a scheduler that periodically runs tasks. - sneding these tasks to Redis
   celery-beat:
-    build: 
+    build:
       context: ./backend
       dockerfile: Dockerfile.celery
     command: celery -A siem beat -l info
@@ -109,7 +107,7 @@ services:
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
 
-## Monitoring tool for Celery.
+  ## Monitoring tool for Celery.
   flower:
     image: mher/flower
     environment:
@@ -121,8 +119,7 @@ services:
     depends_on:
       - redis
       - celery
-      
-              
+
   traefik:
     image: "traefik:v3.1.2"
     container_name: "traefik"
@@ -154,4 +151,3 @@ volumes:
   log_files:
   processed_log_files:
   data:
-

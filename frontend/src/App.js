@@ -22,15 +22,17 @@ import PrivateRoute from "./components/PrivateRoute";
 import ProtectedLayout from "./components/ProtectedLayout";
 import { AuthProvider } from "./services/AuthContext.js";
 import SEO from "./Design/SEO.js";
+import OpenInvestigationsNotification from "./components/OpenInvestigationsNotifi.js";
 
 const App = () => (
 	<AuthProvider>
 		<ThemeProvider theme={theme}>
 			<CssBaseline />
-			<SEO/>
+			<SEO />
 			<Router>
 				<div className="app">
 					<Navbar />
+					<OpenInvestigationsNotification />
 					<Routes>
 						<Route path="/" element={<LandingPage />} />
 						<Route path="/login" element={<Login />} />
@@ -42,7 +44,14 @@ const App = () => (
 								<Route path="/reports" element={<Reports />} />
 								<Route path="/alerts" element={<Alerts />} />
 								<Route path="/preferences" element={<Preferences />} />
-								<Route path="/admin" element={<AdminPage />} />
+								<Route
+									path="/admin"
+									element={
+										<PrivateRoute roles={["ADMIN"]}>
+											<AdminPage />
+										</PrivateRoute>
+									}
+								/>
 							</Route>
 						</Route>
 						<Route path="*" element={<Navigate replace to="/" />} />

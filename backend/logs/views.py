@@ -1,3 +1,6 @@
+
+# logs/views.py
+
 from io import BytesIO
 from datetime import datetime
 import logging
@@ -78,8 +81,8 @@ class BronzeEventDataViewSet(viewsets.ReadOnlyModelViewSet, BaseViewThrottleSet)
     
     @action(detail=False, methods=['get'])
     def count(self, request):
-        print('Request headers:', request.headers)  # Debugging line
-        print('Request user:', request.user)  # Check the user
+        # print('Request headers:', request.headers)  # Debugging line
+        # print('Request user:', request.user)  # Check the user
         count = self.queryset.count()
         return Response({'count': count})
 
