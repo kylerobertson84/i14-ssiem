@@ -16,7 +16,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: 3.9
+        python-version: 3.12
     
     - name: Install dependencies
       run: |
@@ -26,7 +26,7 @@ jobs:
     - name: Run Django tests
       run: |
         cd backend
-        # python manage.py test
+        python manage.py test
     
     - name: Set up Node.js
       uses: actions/setup-node@v2
@@ -38,7 +38,7 @@ jobs:
         cd frontend
         npm install
     
-    - name: Run React tests
-      run: |
-        cd frontend
-        # npm test -- --watchAll=false
+    # - name: Run React tests
+    #   run: |
+    #     cd frontend
+    #     # npm test -- --watchAll=false
