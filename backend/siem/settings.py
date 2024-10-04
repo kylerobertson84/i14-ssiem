@@ -14,6 +14,7 @@ import os
 from pathlib import Path
 from datetime import timedelta
 from pathlib import Path
+from utils.logging_utils import ensure_log_directory_and_file
 # Celery beat settings
 from celery.schedules import crontab
 
@@ -33,8 +34,10 @@ DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True' # Set to False in production
 # settings.py
 ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1,[::1]').split(',')
 
-# Application definition
+#Ensure Log directory exist
+log_file_path = ensure_log_directory_and_file(BASE_DIR, 'syslogs', 'accounts.log')
 
+# Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -225,18 +228,61 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    "formatters": {
+        "django.server": {
+            "()": "django.utils.log.ServerFormatter",
+            "format": "[{server_time}] {message}",
+            "style": "{",
+        },
+        "verbose": {
+            "format": "{name} {levelname} {asctime} {module} {process:d} {thread:d} {message}",
+            "style": "{",
+        },
+        "simple": {
+            "format": "{levelname} {message}",
+            "style": "{",
+        },
+    },
     'handlers': {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'debug.log'),
+            'filename': log_file_path,  # Use the path returned by our function
+            'formatter': 'verbose',
+        },
+        "console": {
+            "class": "logging.StreamHandler",
+            'formatter': 'simple',
         },
     },
     'root': {
         'handlers': ['file'],
         'level': 'DEBUG',
     },
+    'loggers': {
+        "django.server": {
+            'handlers': ['file'],
+            "propagate": True,
+            "level": 'DEBUG',
+        },
+        "django.request": {
+            'handlers': ['file'],
+            "propagate": True,
+            "level": 'DEBUG',
+        },
+        "django.security": {
+            'handlers': ['file'],
+            "propagate": True,
+            "level": 'DEBUG',
+        },
+        'accounts': {
+            'handlers': ['file', 'console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
 }
+
 
 AUTH_USER_MODEL = 'accounts.User'
 

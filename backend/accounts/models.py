@@ -44,7 +44,11 @@ class User(AbstractBaseUser, PermissionsMixin, BaseModel, BaseViewThrottleSet):
     REQUIRED_FIELDS = []
 
     def __str__(self):
+        logger.debug(f'New user Created ID:{self.user_id},Email: {self.email}. Role: {self.role}')
         return f"User ID: {self.user_id}. Email: {self.email}. Role: {self.role}. Created on {self.created_at} - Last updated on {self.updated_at}"
+        
+    
+    
     
     def has_permission(self, permission_name):
         if self.role:
@@ -91,6 +95,7 @@ class Employee(BaseModel):
         super().save(*args, **kwargs)
         
     def __str__(self):
+        logger.debug(f'New user Created ID:{self.user_id},Email: {self.email}. Role: {self.role}')
         return f"Employee ID: {self.employee_id}. {self.first_name} {self.last_name} started on {self.created_at}. Last updated on {self.updated_at}"
 
 class Permission(BaseModel, BaseViewThrottleSet):
