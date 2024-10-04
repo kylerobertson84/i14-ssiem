@@ -3,6 +3,7 @@
 
 from django.db import models
 from utils.models import BaseModel
+from utils.baseViewThrottle import BaseViewThrottleSet
 from core.models import Rule
 from logs.models import BronzeEventData
 from django.conf import settings
@@ -19,7 +20,7 @@ class InvestigationStatus(models.TextChoices):
     IN_PROGRESS = 'IN PROGRESS', 'In Progress'
     CLOSED = 'CLOSED', 'Closed'
 
-class Alert(BaseModel):
+class Alert(BaseModel, BaseViewThrottleSet):
     id = models.AutoField(primary_key=True)
     rule = models.ForeignKey(Rule, on_delete=models.CASCADE, default=None)
     event = models.ForeignKey(BronzeEventData, on_delete=models.CASCADE, default=None)
@@ -37,7 +38,7 @@ class Alert(BaseModel):
         ordering = ['-created_at']
 
 ## InvestigateAlert model - AssignedAlert
-class InvestigateAlert(BaseModel):
+class InvestigateAlert(BaseModel, BaseViewThrottleSet):
     id = models.AutoField(primary_key=True)
     alert = models.OneToOneField(Alert, on_delete=models.CASCADE, related_name='investigation')
     assigned_to = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
