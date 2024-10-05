@@ -34,8 +34,12 @@
   },
   "jest": {
     "moduleNameMapper": {
-      "\\.(css|less)$": "<rootDir>/src/__mocks__/styleMock.js"
-    }
+      "\\.(css|less)$": "<rootDir>/src/__mocks__/styleMock.js",
+      "^../services/apiRequest$": "<rootDir>/src/__mocks__/mockApi.js"
+    },
+    "transformIgnorePatterns": [
+      "node_modules/(?!axios)"
+    ]
   },
   "eslintConfig": {
     "extends": [

@@ -22,8 +22,8 @@ const DetailItem = styled(Box)(({ theme }) => ({
 }));
 
 const LogDetailDialog = ({ log, open, onClose, isComputerLog }) => {
-	const renderLogDetail = (label, value) => (
-		<DetailItem>
+	const renderLogDetail = (label, value, testId) => (
+		<DetailItem data-testid={testId}>
 			<Typography variant="subtitle2" color="text.secondary">
 				{label}
 			</Typography>
@@ -38,35 +38,35 @@ const LogDetailDialog = ({ log, open, onClose, isComputerLog }) => {
 	}
 
 	return (
-		<Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+		<Dialog open={open} onClose={onClose} maxWidth="md" fullWidth data-testid="log-detail-dialog">
 			<DialogTitle>Log Details</DialogTitle>
 			<DialogContent>
 				<StyledPaper>
 					<Grid container spacing={2}>
 						<Grid item xs={12} md={6}>
-							{renderLogDetail("Log ID", log.id)}
-							{renderLogDetail("Timestamp", log.iso_timestamp || log.date_time)}
-							{renderLogDetail("Hostname", log.hostname)}
+							{renderLogDetail("Log ID", log.id, "log-id")}
+							{renderLogDetail("Timestamp", log.iso_timestamp || log.date_time, "log-timestamp")}
+							{renderLogDetail("Hostname", log.hostname, "log-hostname")}
 						</Grid>
 						<Grid item xs={12} md={6}>
 							{isComputerLog ? (
 								<>
-									{renderLogDetail("Event Type", log.EventType)}
-									{renderLogDetail("Event ID", log.EventID)}
-									{renderLogDetail("Account Name", log.AccountName)}
+									{renderLogDetail("Event Type", log.EventType, "log-event-type")}
+									{renderLogDetail("Event ID", log.EventID, "log-event-id")}
+									{renderLogDetail("Account Name", log.AccountName, "log-account-name")}
 								</>
 							) : (
-								renderLogDetail("Process", log.process)
+								renderLogDetail("Process", log.process, "log-process")
 							)}
 						</Grid>
 						<Grid item xs={12}>
-							{renderLogDetail("Message", log.message)}
+							{renderLogDetail("Message", log.message, "log-message")}
 						</Grid>
 					</Grid>
 				</StyledPaper>
 			</DialogContent>
 			<DialogActions>
-				<Button onClick={onClose} color="primary">
+				<Button onClick={onClose} color="primary" data-testid="close-button">
 					Close
 				</Button>
 			</DialogActions>

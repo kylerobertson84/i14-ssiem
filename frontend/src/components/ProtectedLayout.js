@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 
 const ProtectedLayout = () => {
 	return (
-		<div style={{ padding: "20px" }}>
+		<div style={{ padding: "20px" }} data-testid="protected-layout">
 			<Outlet />
 		</div>
 	);
