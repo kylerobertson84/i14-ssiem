@@ -44,8 +44,6 @@ class AlertViewSetTest(APITestCase):
         self.alert = Alert.objects.create(rule=self.rule, event=self.event, severity=self.rule.severity)
         self.url = reverse('alert-list') 
 
-        
-
     # def test_create_alert(self):
     #     data = {
     #         'rule': self.rule.id,  
@@ -54,8 +52,8 @@ class AlertViewSetTest(APITestCase):
     #         'comments': 'New test comment',
     #     }
         
-    #     # print(f"Rule ID: {self.rule.id}")  
-    #     # print(f"Event ID: {self.event.id}")  
+    #     print(f"Rule ID: {self.rule.id}")  
+    #     print(f"Event ID: {self.event.id}")  
 
     #     response = self.client.post(self.url, data, format='json')
 

@@ -24,9 +24,11 @@ from django.db.models import Count, Q
 from django.utils import timezone
 from dateutil.parser import parse as parse_datetime
 
+from utils.baseViewThrottle import BaseViewThrottleSet
+
 # from rest_framework.authentication import TokenAuthentication
 
-class BronzeEventDataViewSet(viewsets.ReadOnlyModelViewSet):
+class BronzeEventDataViewSet(viewsets.ReadOnlyModelViewSet, BaseViewThrottleSet):
     queryset = BronzeEventData.objects.all()
     serializer_class = BronzeEventDataSerializer
     pagination_class = StandardResultsSetPagination
@@ -84,7 +86,7 @@ class BronzeEventDataViewSet(viewsets.ReadOnlyModelViewSet):
         count = self.queryset.count()
         return Response({'count': count})
 
-class RouterDataViewSet(viewsets.ReadOnlyModelViewSet):
+class RouterDataViewSet(viewsets.ReadOnlyModelViewSet, BaseViewThrottleSet):
     queryset = RouterData.objects.all()
     serializer_class = RouterDataSerializer
     pagination_class = StandardResultsSetPagination
@@ -136,7 +138,7 @@ class RouterDataViewSet(viewsets.ReadOnlyModelViewSet):
         return generate_pdf_report(queryset, "RouterData", columns)
 
 
-class LogPercentageViewSet(viewsets.ViewSet):
+class LogPercentageViewSet(viewsets.ViewSet, BaseViewThrottleSet):
     serializer_class = LogCountSerializer
 
     @action(detail=False, methods=['get'])
@@ -159,7 +161,7 @@ class LogPercentageViewSet(viewsets.ViewSet):
         serializer = self.serializer_class(data)
         return Response(serializer.data)
 
-class LogAggregationViewSet(viewsets.ViewSet):
+class LogAggregationViewSet(viewsets.ViewSet, BaseViewThrottleSet):
     @action(detail=False, methods=['get'])
     def logs_per_hour(self, request):
         # Aggregate BronzeEventData logs per hour
@@ -201,7 +203,7 @@ class LogAggregationViewSet(viewsets.ViewSet):
     
 logger = logging.getLogger(__name__)
 
-class EventsToday(viewsets.ViewSet):
+class EventsToday(viewsets.ViewSet, BaseViewThrottleSet):
     @action(detail=False, methods=['get'])
     def events_today(self, request):
         # Define local timezone
@@ -217,8 +219,8 @@ class EventsToday(viewsets.ViewSet):
         today_end_utc = today_end_local.astimezone(pytz.UTC)
 
         # Log the UTC start and end of today
-        # logger.debug(f"UTC Start of today: {today_start_utc}")
-        # logger.debug(f"UTC End of today: {today_end_utc}")
+        #logger.debug(f"UTC Start of today: {today_start_utc}")
+        #logger.debug(f"UTC End of today: {today_end_utc}")
 
         # Filter EventData by UTC datetime range
         event_today_count = Alert.objects.filter(created_at__range=(today_start_utc, today_end_utc)).count()
@@ -229,7 +231,7 @@ class EventsToday(viewsets.ViewSet):
         return Response(data)
 
         
-class HostnameCountViewSet(viewsets.ViewSet):
+class HostnameCountViewSet(viewsets.ViewSet, BaseViewThrottleSet):
 
     def list(self, request):
     

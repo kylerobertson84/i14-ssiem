@@ -1,4 +1,4 @@
-django>=5.0.8
+django
 django-filter
 djangorestframework
 mysqlclient
@@ -14,5 +14,4 @@ drf-spectacular
 celery
 redis
 pytz
-mysqlclient
 reportlab

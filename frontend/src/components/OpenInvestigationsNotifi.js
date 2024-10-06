@@ -13,6 +13,11 @@ import {
 	Fab,
 	TextField,
 	MenuItem,
+	Card,
+	CardContent,
+	CardActions,
+	Grid,
+	Divider,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import NotificationsIcon from "@mui/icons-material/Notifications";
@@ -20,7 +25,9 @@ import { useAuth } from "../services/AuthContext";
 import {
 	fetchOpenInvestigations,
 	updateInvestigation,
+	fetchInvestigation,
 } from "../services/apiService";
+import { format, parseISO } from "date-fns";
 
 const NotificationFab = styled(Fab)(({ theme }) => ({
 	position: "fixed",
@@ -48,7 +55,6 @@ const OpenInvestigationsNotification = () => {
 
 	useEffect(() => {
 		fetchInvestigations();
-		// Set up an interval to fetch investigations every 5 minutes
 		const interval = setInterval(fetchInvestigations, 300000);
 		return () => clearInterval(interval);
 	}, [user, hasRole]);
@@ -56,8 +62,13 @@ const OpenInvestigationsNotification = () => {
 	const handleOpen = () => setOpen(true);
 	const handleClose = () => setOpen(false);
 
-	const handleSelectInvestigation = (investigation) => {
-		setSelectedInvestigation(investigation);
+	const handleSelectInvestigation = async (investigationId) => {
+		try {
+			const investigation = await fetchInvestigation(investigationId);
+			setSelectedInvestigation(investigation);
+		} catch (error) {
+			console.error("Error fetching investigation details:", error);
+		}
 	};
 
 	const handleUpdateInvestigation = async (status, notes) => {
@@ -73,7 +84,7 @@ const OpenInvestigationsNotification = () => {
 	const canManageInvestigation = (investigation) => {
 		return (
 			hasRole("ADMIN") ||
-			(hasRole("ANALYST") && investigation.assigned_to.id === user.id)
+			(hasRole("ANALYST") && investigation.assigned_to.user_id === user.id)
 		);
 	};
 
@@ -99,11 +110,29 @@ const OpenInvestigationsNotification = () => {
 								<ListItem
 									key={investigation.id}
 									button
-									onClick={() => handleSelectInvestigation(investigation)}
+									onClick={() => handleSelectInvestigation(investigation.id)}
 								>
 									<ListItemText
-										primary={`Alert ${investigation.alert.id}: ${investigation.alert.rule.name}`}
-										secondary={`Assigned to: ${investigation.assigned_to.email}`}
+										primary={`Alert ${investigation.alert.id}: ${investigation.alert.rule}`}
+										secondary={
+											<>
+												<Typography
+													component="span"
+													variant="body2"
+													color="text.primary"
+												>
+													Assigned to: {investigation.assigned_to.email}
+												</Typography>
+												<br />
+												<Typography
+													component="span"
+													variant="body2"
+													color="text.secondary"
+												>
+													Severity: {investigation.alert.severity}
+												</Typography>
+											</>
+										}
 									/>
 								</ListItem>
 							))}
@@ -140,53 +169,100 @@ const InvestigationDetailsDialog = ({
 		onClose();
 	};
 
+	const formatDateTime = (dateTimeString) => {
+		return format(parseISO(dateTimeString), "PPP 'at' HH:mm");
+	};
+
 	return (
 		<Dialog open={true} onClose={onClose} maxWidth="md" fullWidth>
 			<DialogTitle>{`Investigation for Alert ${investigation.alert.id}`}</DialogTitle>
 			<DialogContent>
-				<Typography variant="subtitle1">
-					Rule: {investigation.alert.rule.name}
-				</Typography>
-				<Typography variant="subtitle1">
-					Severity: {investigation.alert.severity}
-				</Typography>
-				<Typography variant="subtitle1">
-					Assigned to: {investigation.assigned_to.email}
-				</Typography>
-				{canManage && (
-					<>
-						<TextField
-							select
-							label="Status"
-							value={status}
-							onChange={(e) => setStatus(e.target.value)}
-							fullWidth
-							margin="normal"
-						>
-							<MenuItem value="OPEN">Open</MenuItem>
-							<MenuItem value="IN PROGRESS">In Progress</MenuItem>
-							<MenuItem value="CLOSED">Closed</MenuItem>
-						</TextField>
-						<TextField
-							label="Notes"
-							multiline
-							rows={4}
-							value={notes}
-							onChange={(e) => setNotes(e.target.value)}
-							fullWidth
-							margin="normal"
-						/>
-					</>
-				)}
+				<Card elevation={3}>
+					<CardContent>
+						<Grid container spacing={3}>
+							<Grid item xs={12}>
+								<Typography variant="h6">{investigation.alert.rule}</Typography>
+								<Typography variant="body2" color="text.secondary">
+									Created: {formatDateTime(investigation.created_at)}
+								</Typography>
+								<Typography variant="body2" color="text.secondary">
+									Last Updated: {formatDateTime(investigation.updated_at)}
+								</Typography>
+							</Grid>
+							<Grid item xs={12}>
+								<Divider />
+							</Grid>
+							<Grid item xs={12} sm={6}>
+								<Typography variant="subtitle1">
+									Severity: {investigation.alert.severity}
+								</Typography>
+							</Grid>
+							<Grid item xs={12} sm={6}>
+								<Typography variant="subtitle1">
+									Assigned to: {investigation.assigned_to.email}
+								</Typography>
+							</Grid>
+							<Grid item xs={12}>
+								<Typography variant="subtitle1">Event Details:</Typography>
+								<Typography variant="body2">
+									Event ID: {investigation.alert.event.EventID}
+								</Typography>
+								<Typography variant="body2">
+									User ID: {investigation.alert.event.UserID || "N/A"}
+								</Typography>
+								<Typography variant="body2">
+									Hostname: {investigation.alert.event.hostname}
+								</Typography>
+							</Grid>
+							{investigation.alert.comments && (
+								<Grid item xs={12}>
+									<Typography variant="subtitle1">Comments:</Typography>
+									<Typography variant="body2">
+										{investigation.alert.comments}
+									</Typography>
+								</Grid>
+							)}
+							{canManage && (
+								<>
+									<Grid item xs={12}>
+										<TextField
+											select
+											label="Status"
+											value={status}
+											onChange={(e) => setStatus(e.target.value)}
+											fullWidth
+											margin="normal"
+										>
+											<MenuItem value="OPEN">Open</MenuItem>
+											<MenuItem value="IN PROGRESS">In Progress</MenuItem>
+											<MenuItem value="CLOSED">Closed</MenuItem>
+										</TextField>
+									</Grid>
+									<Grid item xs={12}>
+										<TextField
+											label="Notes"
+											multiline
+											rows={4}
+											value={notes}
+											onChange={(e) => setNotes(e.target.value)}
+											fullWidth
+											margin="normal"
+										/>
+									</Grid>
+								</>
+							)}
+						</Grid>
+					</CardContent>
+					<CardActions>
+						<Button onClick={onClose}>Close</Button>
+						{canManage && (
+							<Button onClick={handleUpdate} color="primary">
+								Update
+							</Button>
+						)}
+					</CardActions>
+				</Card>
 			</DialogContent>
-			<DialogActions>
-				<Button onClick={onClose}>Close</Button>
-				{canManage && (
-					<Button onClick={handleUpdate} color="primary">
-						Update
-					</Button>
-				)}
-			</DialogActions>
 		</Dialog>
 	);
 };

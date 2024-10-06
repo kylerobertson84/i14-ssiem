@@ -1,4 +1,3 @@
-
 services:
   frontend:
     build:
@@ -57,8 +56,7 @@ services:
       - DB_PASSWORD=${DB_PASSWORD:-random_password}
       - DB_HOST=db
       - DB_PORT=3306
-    command:
-      echo 'Starting server...' &&
+    command: echo 'Starting server...' &&
       python manage.py runserver_plus --print-sql 0.0.0.0:8000"
     depends_on:
       - db
@@ -75,7 +73,13 @@ services:
       - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD:-random_password}
     ports:
       - "${DOCKER_DB_PORT:-3307}:3306"
-  
+  # For deployment better performance
+  # deploy:
+  #   resources:
+  #     limits:
+  #       cpus: '2'
+  #       memory: 4G
+
   # Message Broker, it stores and manages the tasks that need to be executed.
   redis:
     image: redis:alpine
@@ -86,12 +90,12 @@ services:
       # resources:
       #   limits:
       #     memory: '1G'
-      restart_policy:
-        condition: on-failure
-  
+      # restart_policy:
+      #   condition: on-failure
+
   # Celery constantly checks the Redis broker for new tasks and executes them.
   celery:
-    build: 
+    build:
       context: ./backend
       dockerfile: Dockerfile.celery
     command: celery -A siem worker -l info
@@ -110,12 +114,12 @@ services:
       # resources:
       #   limits:
       #     memory: '1G'
-      restart_policy:
-        condition: on-failure
+      # restart_policy:
+      # condition: on-failure
 
   # Celery Beat is a scheduler that periodically runs tasks. - sneding these tasks to Redis
   celery-beat:
-    build: 
+    build:
       context: ./backend
       dockerfile: Dockerfile.celery
     command: celery -A siem beat -l info
@@ -129,7 +133,7 @@ services:
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
 
-## Monitoring tool for Celery.
+  ## Monitoring tool for Celery.
   flower:
     image: mher/flower
     environment:
@@ -141,7 +145,7 @@ services:
     depends_on:
       - redis
       - celery
-      
+
 volumes:
   mariadb_data:
   log_files:
