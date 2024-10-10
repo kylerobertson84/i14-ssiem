@@ -100,6 +100,14 @@ const AlertsPage = () => {
 		setPage(0);
 	};
 
+	const handleKeyPress = (event) => {
+		if (event.key === "Enter") {
+			setSearchTerm(event.target.value);
+			setPage(0);
+		}
+	};
+
+
 	const handleViewDetails = (alert) => {
 		const completeAlert = {
 			...alert,
@@ -169,6 +177,7 @@ const AlertsPage = () => {
 							startAdornment: <SearchIcon color="action" sx={{ mr: 1 }} />,
 						}}
 						onChange={handleSearch}
+						onKeyDown={handleKeyPress}
 						sx={{ flexGrow: 1 }}
 					/>
 					<FormControl sx={{ minWidth: 120 }}>
@@ -243,7 +252,7 @@ const AlertsPage = () => {
 							</TableHead>
 							<TableBody>
 								{alerts.map((alert) => (
-									<StyledTableRow key={alert.id}>
+									<StyledTableRow key={alert.id} onClick={() => handleViewDetails(alert)}>
 										<TableCell>{alert.id}</TableCell>
 										<TableCell>
 											{new Date(alert.created_at).toLocaleString()}
@@ -265,10 +274,10 @@ const AlertsPage = () => {
 										</TableCell>
 										<TableCell>
 											<Tooltip title="View Details">
-												<IconButton
-													onClick={() => handleViewDetails(alert)}
-													size="small"
-												>
+												<IconButton onClick={(e) => {
+													e.stopPropagation();  // Prevents triggering row click
+													handleViewDetails(alert);
+												}} size="small">
 													<SettingsIcon />
 												</IconButton>
 											</Tooltip>
@@ -295,7 +304,7 @@ const AlertsPage = () => {
 					onClose={handleCloseDialog}
 					onAssign={handleAssign}
 				/>
-			</Container>
+			</Container >
 		</>
 	);
 };

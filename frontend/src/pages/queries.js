@@ -127,6 +127,12 @@ const LogQueries = () => {
 		}
 	};
 
+	const handleKeyPress = (event) => {
+		if (event.key === 'Enter') {
+			handleSearch();
+		}
+	}
+
 	const handleExport = async () => {
 		try {
 			if (totalResults === 0) {
@@ -276,6 +282,7 @@ const LogQueries = () => {
 								name="query"
 								value={searchParams.query}
 								onChange={handleInputChange}
+								onKeyDown={handleKeyPress}
 							/>
 						</Grid>
 						<Grid item xs={12} md={3}>
@@ -411,12 +418,12 @@ const LogQueries = () => {
 											{columns.map((column) => (
 												<TableCell key={column.id}>
 													{column.id === "iso_timestamp" ||
-													column.id === "date_time"
+														column.id === "date_time"
 														? formatDate(log[column.id])
 														: column.id === "message"
-														? log[column.id].substring(0, 100) +
-														  (log[column.id].length > 100 ? "..." : "")
-														: log[column.id]}
+															? log[column.id].substring(0, 100) +
+															(log[column.id].length > 100 ? "..." : "")
+															: log[column.id]}
 												</TableCell>
 											))}
 										</StyledTableRow>

@@ -26,20 +26,7 @@ services:
     depends_on:
       - frontend
 
-  cypress:
-    build:
-      context: ./frontend
-    volumes:
-      - ./frontend:/frontend
-      - /frontend/node_modules
-    ports:
-      - "3001:3000"
-    entrypoint:
-      - "./node_modules/.bin/cypress"
-      - "open"    
-    depends_on:
-      - frontend
-
+  
   backend:
     build:
       context: ./backend
