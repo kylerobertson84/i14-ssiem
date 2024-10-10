@@ -1,9 +1,9 @@
 
 # API Documentation
 
-## 1. Introduction
+## 1. Accounts APIs
 
-This API provides endpoints for user management, role management, employee records, and permission management. It uses RESTful principles and requires JWT (JSON Web Token) authentication for secured access to certain endpoints.
+The Account APIs provides endpoints for user management, role management, employee records, and permission management. It uses RESTful principles and requires JWT (JSON Web Token) authentication for secured access to certain endpoints.
 
 ---
 
