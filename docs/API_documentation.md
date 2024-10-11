@@ -783,4 +783,89 @@ Example:
     }
     ```
 
+## Reports API Endpoints
+
+
+### List Incident Reports
+**GET** `/api/v1/reports/incident-reports/`
+
+**Description**: Retrieve a list of all incident reports.
+
+**Query Parameters**:
+- `search` (optional): Search incident reports by title, description, rule name, or user email.
+- `type` (optional): Filter by report type (e.g., `security_incident`, `network_traffic`).
+- `status` (optional): Filter by report status (e.g., `draft`, `open`).
+- `user__email` (optional): Filter by user email.
+- `last_update` (optional): Filter by the last update date.
+
+**Response**:
+- **Status**: `200 OK`
+- **Body**: List of incident reports.
+
+---
+
+### Create Incident Report
+**POST** `/api/v1/reports/incident-reports/`
+
+**Description**: Create a new incident report.
+
+**Request Body**:
+```json
+{
+  "title": "Incident Title",
+  "type": "security_incident",
+  "status": "open",
+  "description": "Detailed description of the incident.",
+  "rule_ids": [1, 2, 3]  // List of related rule IDs
+}
+```
+
+
+**Response**:
+- **Status**: `200 OK`
+- **Body**: The created incident report.
+
+### Retrieve Incident Report
+**GET** `/api/v1/reports/incident-reports/{id}/`
+
+**Description**: Retrieve a specific incident report by ID.
+
+**Response**:
+- **Status**: `200 OK`
+- **Body**: The incident report details.
+
+### Update Incident Report
+**PUT** `/api/v1/reports/incident-reports/{id}/`
+
+**Description**:  Update an existing incident report by ID.
+
+**Response**:
+- **Status**: `200 OK`
+- **Body**: The updated incident report.
+
+### Delete Incident Report
+**DELETE** `/api/v1/reports/incident-reports/{id}/`
+
+**Description**:  Delete an incident report by ID.
+
+**Response**:
+- **Status**: `204 No Content`
+- **Body**: Success message.
+
+### Generate PDF Report
+**GET** `/api/v1/reports/incident-reports/{id}/generate_pdf/`
+
+**Description**:  Generate a PDF report for a specific incident report by ID.
+
+
+**Response**:
+- **Status**: `200 OK`
+- **Body**: The PDF content of the incident report.
+
+
+### Error Responses
+- **404 Not Found**: If the specified incident report ID does not exist.
+- **400 Bad Request**: If the request body is invalid.
+- **403 Forbidden**: If the user does not have permission to perform the action.
+
 
