@@ -627,3 +627,160 @@ Example:
   "conditions": "Failed logins > 5",
   "severity": "HIGH"
 }
+```
+
+## Logs API Endpoint
+
+## Base URL
+`/api/v1/logs/`
+
+## Bronze Event Data
+
+### List Bronze Events
+- **Endpoint:** `GET /api/v1/logs/bronze-events/`
+- **Description:** Retrieve a list of bronze event data.
+- **Query Parameters:**
+  - `query`: Search term for hostname, AccountName, or message (optional).
+  - `start_time`: Filter results to include events starting from this timestamp (optional).
+  - `end_time`: Filter results to include events up to this timestamp (optional).
+  - `event_type`: Filter results to include events of this type (optional).
+- **Response:**
+  - **200 OK**: Returns a list of bronze event data.
+  - **Example Response:**
+    ```json
+    [
+      {
+        "id": 1,
+        "iso_timestamp": "2023-01-01T00:00:00Z",
+        "hostname": "example-host",
+        "EventType": "Error",
+        "EventID": "1001",
+        "AccountName": "admin",
+        "message": "An error occurred"
+      }
+    ]
+    ```
+
+### Export Bronze Events as PDF
+- **Endpoint:** `GET /api/v1/logs/bronze-events/export_pdf/`
+- **Description:** Export the list of bronze events as a PDF report.
+- **Response:**
+  - **200 OK**: Returns a PDF document.
+
+### Count Bronze Events
+- **Endpoint:** `GET /api/v1/logs/bronze-events/count/`
+- **Description:** Retrieve the total count of bronze events.
+- **Response:**
+  - **200 OK**: Returns the count of bronze events.
+  - **Example Response:**
+    ```json
+    {
+      "count": 100
+    }
+    ```
+
+## Router Data
+
+### List Router Data
+- **Endpoint:** `GET /api/v1/logs/router-data/`
+- **Description:** Retrieve a list of router data logs.
+- **Query Parameters:**
+  - `query`: Search term for hostname or message (optional).
+  - `start_time`: Filter results to include logs starting from this timestamp (optional).
+  - `end_time`: Filter results to include logs up to this timestamp (optional).
+  - `process`: Filter results to include logs from this process (optional).
+- **Response:**
+  - **200 OK**: Returns a list of router data logs.
+  - **Example Response:**
+    ```json
+    [
+      {
+        "id": 1,
+        "date_time": "2023-01-01T00:00:00Z",
+        "hostname": "router-1",
+        "process": "router_process",
+        "message": "Router log message"
+      }
+    ]
+    ```
+
+### Export Router Data as PDF
+- **Endpoint:** `GET /api/v1/logs/router-data/export_pdf/`
+- **Description:** Export the list of router data logs as a PDF report.
+- **Response:**
+  - **200 OK**: Returns a PDF document.
+
+### Count Router Data Logs
+- **Endpoint:** `GET /api/v1/logs/router-data/router_log_count/`
+- **Description:** Retrieve the total count of router data logs.
+- **Response:**
+  - **200 OK**: Returns the count of router logs.
+  - **Example Response:**
+    ```json
+    {
+      "router_log_count": 50
+    }
+    ```
+
+## Log Percentage
+
+### Get Log Percentages
+- **Endpoint:** `GET /api/v1/logs/log-percentage/log_percentages/`
+- **Description:** Retrieve the percentage of logs from bronze event data and router data.
+- **Response:**
+  - **200 OK**: Returns the percentages.
+  - **Example Response:**
+    ```json
+    {
+      "windows_os_percentage": 66.67,
+      "network_percentage": 33.33
+    }
+    ```
+
+## Log Aggregation
+
+### Logs Per Hour
+- **Endpoint:** `GET /api/v1/logs/logs-aggregation/logs_per_hour/`
+- **Description:** Retrieve the count of logs per hour for both bronze events and router data.
+- **Response:**
+  - **200 OK**: Returns the hourly log count.
+  - **Example Response:**
+    ```json
+    [
+      {
+        "name": "12:00:00",
+        "Computer": 10,
+        "Networking": 5
+      }
+    ]
+    ```
+
+## Events Today
+
+### Count Events Today
+- **Endpoint:** `GET /api/v1/logs/events-today/events_today/`
+- **Description:** Count the number of events that occurred today.
+- **Response:**
+  - **200 OK**: Returns the count of today's events.
+  - **Example Response:**
+    ```json
+    {
+      "events_today": 20
+    }
+    ```
+
+## Hostname Count
+
+### Count Unique Hostnames
+- **Endpoint:** `GET /api/v1/logs/hostname-count/`
+- **Description:** Count the number of unique hostnames across bronze event data and router data.
+- **Response:**
+  - **200 OK**: Returns the total number of unique hostnames.
+  - **Example Response:**
+    ```json
+    {
+      "total_devices": 15
+    }
+    ```
+
+
