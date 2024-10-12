@@ -6,7 +6,8 @@ The SIEM (Security Information and Event Management) application is built using 
 
 ## 2. High-Level Architecture
 
-[NEED A DIAGRAM HERE]
+> [!WARNING]
+> [NEED DIAGRAM HERE]
 
 
 ## 3. Component Breakdown
@@ -18,7 +19,8 @@ The SIEM (Security Information and Event Management) application is built using 
   - Responsive design for various device sizes
   - Component-based structure for reusability
 
-[REQUIRE MORE INFO HERE]
+> [!WARNING]
+> [REQUIRE MORE INFO HERE]
 
 ### 3.2 Backend
 - **Framework**: Django (Python-based)
@@ -91,7 +93,8 @@ The SIEM (Security Information and Event Management) application is built using 
   - `/reports/`: Report generation and management
 
 ## 6. Security Measures
-[NEED IMPROVEMENT]
+> [!WARNING]
+> [REQUIRE MORE INFO HERE]
 - HTTPS for all client-server communication
 - JWT for API authentication
 - CORS configuration to restrict allowed origins
@@ -104,7 +107,8 @@ The SIEM (Security Information and Event Management) application is built using 
 - Traefik's API is exposed insecurely (--api.insecure=true) and should be secured in production
 
 ## 7. Scalability Considerations
-[NEED IMPROVMENT]
+> [!WARNING]
+> [REQUIRE MORE INFO HERE]
 - Stateless application design for horizontal scaling
 - Use of Celery for offloading time-consuming tasks
 - Potential for database read replicas for scaling read operations
@@ -114,7 +118,8 @@ The SIEM (Security Information and Event Management) application is built using 
 - Database scaling would require additional setup for replication or clustering
 
 ## 8. Monitoring and Maintenance
-[NEED IMPROVEMENT]
+> [!WARNING]
+> [REQUIRE MORE INFO HERE]
 - Comprehensive logging for application events and errors
 - Celery task monitoring for background job performance
 - Database query monitoring for performance optimization
@@ -176,10 +181,6 @@ The application is containerized using Docker, with services defined in a docker
 
 - Extensive use of environment variables for configuration
 - Sensitive information (API keys, passwords) should be managed securely, potentially using Docker secrets in a production swarm
-
-# SIEM Application System Architecture
-
-[Previous content remains unchanged]
 
 ## 10. Continuous Integration and Continuous Deployment (CI/CD)
 
