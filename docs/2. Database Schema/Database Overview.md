@@ -15,8 +15,8 @@
 
 ---
 
-## User Model
-[Link to Code](https://github.com/kylerobertson84/i14-ssiem/blob/develop/backend/accounts/models.py)
+## User Model - [Link to code](https://github.com/kylerobertson84/i14-ssiem/blob/develop/backend/accounts/models.py)
+
 The `User` model extends Django's `AbstractBaseUser` and `PermissionsMixin`, providing a custom user implementation for the SIEM app.
 
 ### Fields:
@@ -37,8 +37,7 @@ The `User` model extends Django's `AbstractBaseUser` and `PermissionsMixin`, pro
 
 ---
 
-## Role Model
-[Link to Code](https://github.com/kylerobertson84/i14-ssiem/blob/develop/backend/accounts/models.py)
+## Role Model - [Link to code](https://github.com/kylerobertson84/i14-ssiem/blob/develop/backend/accounts/models.py)
 The `Role` model defines user roles within the system.
 
 ### Fields:
@@ -58,8 +57,7 @@ The `Role` model defines user roles within the system.
 
 ---
 
-## Employee Model
-[Link to Code](https://github.com/kylerobertson84/i14-ssiem/blob/develop/backend/accounts/models.py)
+## Employee Model - [Link to code](https://github.com/kylerobertson84/i14-ssiem/blob/develop/backend/accounts/models.py)
 The `Employee` model extends the `User` model with additional employment-related information.
 
 ### Fields:
@@ -76,8 +74,7 @@ The `Employee` model extends the `User` model with additional employment-related
 
 ---
 
-## Permission Model
-[Link to Code](https://github.com/kylerobertson84/i14-ssiem/blob/develop/backend/accounts/models.py)
+## Permission Model - [Link to code](https://github.com/kylerobertson84/i14-ssiem/blob/develop/backend/accounts/models.py)
 The `Permission` model defines individual permissions in the system.
 
 ### Fields:
@@ -89,8 +86,7 @@ The `Permission` model defines individual permissions in the system.
 
 ---
 
-## RolePermission Model
-[Link to Code](https://github.com/kylerobertson84/i14-ssiem/blob/develop/backend/accounts/models.py)
+## RolePermission Model - [Link to code](https://github.com/kylerobertson84/i14-ssiem/blob/develop/backend/accounts/models.py)
 The `RolePermission` model serves as an intermediary between `Role` and `Permission` models.
 
 ### Fields:
@@ -105,8 +101,8 @@ The `RolePermission` model serves as an intermediary between `Role` and `Permiss
 
 ---
 
-## Alert Model
-[Link to code](https://github.com/kylerobertson84/i14-ssiem/blob/develop/backend/alerts/models.py)
+## Alert Model - [Link to code](https://github.com/kylerobertson84/i14-ssiem/blob/develop/backend/alerts/models.py)
+
 The `Alert` model represents security alerts generated in the SIEM system.
 
 ### Fields:
@@ -131,8 +127,7 @@ The `Alert` model represents security alerts generated in the SIEM system.
 
 ---
 
-## InvestigateAlert Model
-[Link to code](https://github.com/kylerobertson84/i14-ssiem/blob/develop/backend/alerts/models.py)
+## InvestigateAlert Model - [Link to code](https://github.com/kylerobertson84/i14-ssiem/blob/develop/backend/alerts/models.py)
 The `InvestigateAlert` model represents the investigation process for an alert.
 
 ### Fields:
@@ -153,8 +148,7 @@ The `InvestigateAlert` model represents the investigation process for an alert.
 
 ---
 
-## Rule Model
-[Link to code](https://github.com/kylerobertson84/i14-ssiem/blob/develop/backend/core/models.py)
+## Rule Model - [Link to code](https://github.com/kylerobertson84/i14-ssiem/blob/develop/backend/core/models.py)
 The `Rule` model defines detection rules for generating alerts.
 
 ### Fields:
@@ -176,8 +170,8 @@ The `Rule` model defines detection rules for generating alerts.
 
 ---
 
-## BronzeEventData Model
-[Link to code](https://github.com/kylerobertson84/i14-ssiem/blob/develop/backend/logs/models.py)
+## BronzeEventData Model - [Link to code](https://github.com/kylerobertson84/i14-ssiem/blob/develop/backend/logs/models.py)
+
 The `BronzeEventData` model stores raw event data from various sources.
 
 ### Fields:
@@ -219,8 +213,7 @@ The `BronzeEventData` model stores raw event data from various sources.
 
 ---
 
-## RouterData Model
-[Link to code](https://github.com/kylerobertson84/i14-ssiem/blob/develop/backend/logs/models.py)
+## RouterData Model - [Link to code](https://github.com/kylerobertson84/i14-ssiem/blob/develop/backend/logs/models.py)
 The `RouterData` model stores network router-specific event data.
 
 ### Fields:
@@ -236,8 +229,7 @@ The `RouterData` model stores network router-specific event data.
 
 ---
 
-## IncidentReport Model
-[Link to code](https://github.com/kylerobertson84/i14-ssiem/blob/develop/backend/reports/views.py)
+## IncidentReport Model - [Link to code](https://github.com/kylerobertson84/i14-ssiem/blob/develop/backend/reports/views.py)
 The `IncidentReport` model represents security incident reports generated in the SIEM system.
 
 ### Fields:
