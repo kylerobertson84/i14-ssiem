@@ -75,6 +75,3 @@ Common issues and solutions:
 - Slow performance: Try narrowing time ranges for queries
 - Login issues: Verify network connectivity and user account status
 
-For additional support, contact the IT helpdesk at support@company.com or call 987-123-4567.
-
-Remember to log out when you're done to protect the security of your account and the SIEM system.
