@@ -129,7 +129,8 @@ const AlertsPage = () => {
 				comments: comment,
 			});
 			setAlerts(
-				alerts.map((alert) => (alert.id === alertId ? updatedAlert : alert))
+				//alerts.map((alert) => (alert.id === alertId ? updatedAlert : alert))
+				alerts.filter((alert) => alert.id !== alertId)
 			);
 			setTimeout(() => {
 				window.location.reload();

@@ -45,7 +45,9 @@ const OpenInvestigationsNotification = () => {
 		if (user && (hasRole("ANALYST") || hasRole("ADMIN"))) {
 			fetchOpenInvestigations()
 				.then((data) => {
-					setInvestigations(data);
+					// Filter out closed investigations
+					const openInvestigations = data.filter(investigation => investigation.status !== 'CLOSED');
+					setInvestigations(openInvestigations);
 				})
 				.catch((error) =>
 					console.error("Error fetching open investigations:", error)

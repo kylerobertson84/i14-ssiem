@@ -16,10 +16,10 @@ import {
 	Box,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-
 import apiRequest from "../services/apiRequest";
 import API_ENDPOINTS from "../services/apiConfig";
 import { assignAlert } from "../services/apiService";
+import { useAuth } from "../services/AuthContext";
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
 	"& .MuiDialogTitle-root": {
@@ -45,7 +45,8 @@ const AlertDetailsDialog = ({ alert, open, onClose, onAssign }) => {
 	const [users, setUsers] = useState([]);
 	const [loadingUsers, setLoadingUsers] = useState(true);
 	const [error, setError] = useState("");
-
+	//Fetching user and roles from AuthContext
+	const { user, isAdmin, isAnalyst } = useAuth();
 	useEffect(() => {
 		if (open) {
 			apiRequest(API_ENDPOINTS.auth.users)
@@ -80,7 +81,9 @@ const AlertDetailsDialog = ({ alert, open, onClose, onAssign }) => {
 			.then((response) => {
 				console.log("Alert assigned successfully:", response);
 				onAssign(alert.id, selectedUser ? selectedUser.user_id : "", comment);
-				onClose();
+				if (onClose) {
+					onclose(alert.id);
+				}
 			})
 			.catch((error) => {
 				console.error("Failed to assign alert:", error);
@@ -107,18 +110,41 @@ const AlertDetailsDialog = ({ alert, open, onClose, onAssign }) => {
 		if (error) {
 			return <MenuItem value="">Error fetching users</MenuItem>;
 		}
-		return [
-			<MenuItem key="unassigned" value="">
-				Unassigned
-			</MenuItem>,
-			...users.map((user) => (
+		if (isAdmin()) {
+			// Admin can see all users
+			return [
+				<MenuItem key="unassigned" value="">
+					Unassigned
+				</MenuItem>,
+				...users.map((userItem) => (
+					<MenuItem key={userItem.user_id} value={userItem.email}>
+						{userItem.email}
+					</MenuItem>
+				)),
+			];
+		} else if (isAnalyst()) {
+			// Analysts can only see their own email
+			return (
 				<MenuItem key={user.user_id} value={user.email}>
 					{user.email}
 				</MenuItem>
-			)),
-		];
+			);
+		}
+		return null;
 	};
-
+	/*
+			return [
+				<MenuItem key="unassigned" value="">
+					Unassigned
+				</MenuItem>,
+				...users.map((user) => (
+					<MenuItem key={user.user_id} value={user.email}>
+						{user.email}
+					</MenuItem>
+				)),
+			];
+		};
+	*/
 	return (
 		<StyledDialog open={open} onClose={onClose} maxWidth="md" fullWidth>
 			<DialogTitle>Alert Details</DialogTitle>
@@ -143,6 +169,26 @@ const AlertDetailsDialog = ({ alert, open, onClose, onAssign }) => {
 						</Grid>
 					</Grid>
 				</StyledPaper>
+
+				{/* Investigation Details */}
+				{alert.investigation && (
+					<>
+						<Typography variant="h6" gutterBottom>
+							Investigation Details
+						</Typography>
+						<StyledPaper>
+							<Grid container spacing={2}>
+								<Grid item xs={12} md={6}>
+									{renderAlertDetail("Assigned To", alert.investigation.assigned_to.email)}
+									{renderAlertDetail("Status", alert.investigation.status)}
+								</Grid>
+								<Grid item xs={12} md={6}>
+									{renderAlertDetail("Investigation Notes", alert.investigation.notes || "N/A")}
+								</Grid>
+							</Grid>
+						</StyledPaper>
+					</>
+				)}
 
 				<Typography variant="h6" gutterBottom>
 					Assignment
