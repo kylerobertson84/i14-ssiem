@@ -85,6 +85,15 @@ class InvestigateAlertViewSet(BaseAlertViewSet):
     filterset_class = InvestigateAlertFilter 
     ordering_fields = ['created_at', 'updated_at']
     permission_classes = [IsAuthenticated]
+
+    @action(detail=False, methods=['get'])
+    def assigned_alerts(self, request):
+        user =request.user
+        assigned_alerts = InvestigateAlert.object.filter(assigned_to=user)
+        
+        serializer = self.get_serializer(assigned_alerts, many = True)
+
+        return Response(serializer.data, status=200) 
     
     @action(detail=True, methods=['patch'])
     def update_investigation(self, request, pk=None):

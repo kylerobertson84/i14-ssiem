@@ -253,3 +253,4 @@ export const fetchOpenInvestigations = () => {
 export const updateInvestigation = (id, data) => {
 	return apiRequest(`${API_ENDPOINTS.investigate.base}${id}/`, "PATCH", data);
 };
+

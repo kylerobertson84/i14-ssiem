@@ -57,6 +57,7 @@ const Dashboard = () => {
 	const [latestAlerts, setLatestAlerts] = useState({});
 	const [hostnameCount, setHostnameCount] = useState({});
 	const [investigationCount, setInvestigationCount] = useState({});
+	const [assignedAlerts, setAssignedAlerts] = useState({}); // added for view assigned alerts
 
 	const logsByDeviceData = [
 		{ name: "Windows OS", value: logPercentages.windows_os_percentage },
@@ -84,6 +85,8 @@ const Dashboard = () => {
 					fetchedLatestAlerts,
 					fetchedHostnameCount,
 					fetchedInvestigationCount,
+					fetchOpenInvestigations,
+					//userAssignedAlerts, //fetch user assigned alerts
 				] = await Promise.all([
 					fetchUser(),
 					fetchLogCount(),
@@ -94,6 +97,8 @@ const Dashboard = () => {
 					fetchLatestAlerts(),
 					fetchHostnameCount(),
 					fetchInvestigationsCount(),
+					fetchOpenInvestigations(),
+					//fetchUserAssignedAlerts(userData.id), //Fetch alerts for the user
 				]);
 
 				setUser(userData);
@@ -105,6 +110,8 @@ const Dashboard = () => {
 				setLatestAlerts(fetchedLatestAlerts);
 				setHostnameCount(fetchedHostnameCount);
 				setInvestigationCount(fetchedInvestigationCount);
+				setAssignedAlerts(fetchOpenInvestigations);
+				//setAssignedAlerts(userAssignedAlerts); //set user-assigned alerts
 				setLoading(false);
 			} catch (error) {
 				console.error("Error loading dashboard data", error);
@@ -168,6 +175,91 @@ const Dashboard = () => {
 			</Box>
 		);
 	}
+
+	const AssignedAlertsSection = () => (
+		<Paper
+			elevation={3}
+			sx={{ overflow: "hidden", borderRadius: 2, height: "100%" }}
+		>
+			<Box
+				sx={{
+					p: 2,
+					bgcolor: theme.palette.primary.main,
+					color: "white",
+					display: "flex",
+					alignItems: "center",
+				}}
+			>
+				<WarningAmber sx={{ mr: 1 }} />
+				<Typography variant="h5" component="h2" fontWeight="bold">
+					My Assigned Alerts
+				</Typography>
+			</Box>
+			<Box sx={{ height: isMobile ? 300 : 400, overflowY: "auto" }}>
+				{assignedAlerts.results && assignedAlerts.results.length > 0 ? (
+					assignedAlerts.results.map((alert, index) => (
+						<Box
+							key={index}
+							sx={{
+								p: 2,
+								borderBottom:
+									index < assignedAlerts.results.length - 1
+										? "1px solid #e0e0e0"
+										: "none",
+								"&:hover": { bgcolor: "#f5f5f5" },
+								transition: "background-color 0.3s",
+							}}
+						>
+							<Box
+								sx={{
+									display: "flex",
+									justifyContent: "space-between",
+									alignItems: "center",
+									mb: 1,
+								}}
+							>
+								<Typography variant="subtitle2" fontWeight="medium">
+									Device: {alert.event.hostname}
+								</Typography>
+								<Chip
+									label={alert.severity}
+									size="small"
+									sx={{
+										bgcolor: severityColors[alert.severity],
+										color: "white",
+										fontWeight: "bold",
+									}}
+								/>
+							</Box>
+							<Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+								<strong>{alert.rule}</strong>
+							</Typography>
+							<Box
+								sx={{
+									display: "flex",
+									justifyContent: "space-between",
+									alignItems: "center",
+								}}
+							>
+								<Typography variant="caption" color="text.secondary">
+									{new Date(alert.created_at).toLocaleString()}
+								</Typography>
+								<IconButton
+									size="small"
+									color="primary"
+									aria-label="investigate"
+								>
+									<Search />
+								</IconButton>
+							</Box>
+						</Box>
+					))
+				) : (
+					<Typography sx={{ p: 2 }}>No assigned alerts.</Typography>
+				)}
+			</Box>
+		</Paper>
+	);
 
 	
 	const LatestAlertsSection = () => (
@@ -336,6 +428,9 @@ const Dashboard = () => {
 
 					<Grid item xs={12} lg={4}>
 						<Grid container spacing={3}>
+							<Grid item xs={12}>
+								<AssignedAlertsSection/> {/* New section */}
+							</Grid>
 							<Grid item xs={12}>
 								<LatestAlertsSection />
 							</Grid>
