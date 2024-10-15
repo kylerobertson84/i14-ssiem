@@ -9,6 +9,7 @@ The SIEM (Security Information and Event Management) application is built using 
 > [!WARNING]
 > [NEED DIAGRAM HERE]
 
+![image](https://github.com/user-attachments/assets/fa7dcf69-1df1-4794-81d2-229eb9a77ed3)
 
 ## 3. Component Breakdown
 
