@@ -37,6 +37,8 @@ import {
 } from "@mui/icons-material";
 import AdminForm from "../components/AdminForm";
 import { fetchUsers } from "../services/apiService";
+import { deleteUser } from "../services/apiService";
+
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
 	padding: theme.spacing(3),
@@ -119,6 +121,18 @@ const AdminPage = () => {
 
 	const handleTabChange = (event, newValue) => {
 		setActiveTab(newValue);
+	};
+
+	const handleDeleteUser = async (userId) => {
+		if (window.confirm("Are you sure you want to delete this user?")) {
+			try {
+				await deleteUser(userId); //calls api
+				setUsers(users.filter(user => user.user_id !== userId)) //updates list of users
+			} catch (err) {
+				console.error("Error deleting user:", err);
+				setError("Failed to delete user, Please try again.")
+			}
+		}
 	};
 
 	return (
@@ -209,6 +223,7 @@ const AdminPage = () => {
 															edge="end"
 															aria-label="delete"
 															size={isMobile ? "small" : "medium"}
+															onClick={handleDeleteUser}
 														>
 															<DeleteIcon />
 														</IconButton>

@@ -238,6 +238,7 @@ export const updateUser = (userId, userData) => {
 
 // New function to delete a user
 export const deleteUser = (userId) => {
+	console.log('deleting user with ID', userId); //debug log
 	return apiRequest(`${API_ENDPOINTS.auth.users}${userId}/`, "DELETE");
 };
 
