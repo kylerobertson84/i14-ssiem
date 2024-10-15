@@ -254,3 +254,7 @@ export const updateInvestigation = (id, data) => {
 	return apiRequest(`${API_ENDPOINTS.investigate.base}${id}/`, "PATCH", data);
 };
 
+
+export const fetchAssignedAlerts = () => {
+	return apiRequest(API_ENDPOINTS.investigate.assignedAlerts);
+};

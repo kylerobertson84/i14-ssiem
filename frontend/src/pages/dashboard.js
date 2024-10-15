@@ -41,6 +41,7 @@ import {
 	fetchLatestAlerts,
 	fetchHostnameCount,
 	fetchInvestigationsCount,
+	fetchAssignedAlerts,
 } from "../services/apiService.js";
 
 const Dashboard = () => {
@@ -85,7 +86,7 @@ const Dashboard = () => {
 					fetchedLatestAlerts,
 					fetchedHostnameCount,
 					fetchedInvestigationCount,
-					fetchOpenInvestigations,
+					fetchedAssignedAlerts,
 					//userAssignedAlerts, //fetch user assigned alerts
 				] = await Promise.all([
 					fetchUser(),
@@ -97,7 +98,7 @@ const Dashboard = () => {
 					fetchLatestAlerts(),
 					fetchHostnameCount(),
 					fetchInvestigationsCount(),
-					fetchOpenInvestigations(),
+					fetchAssignedAlerts(),
 					//fetchUserAssignedAlerts(userData.id), //Fetch alerts for the user
 				]);
 
@@ -110,7 +111,8 @@ const Dashboard = () => {
 				setLatestAlerts(fetchedLatestAlerts);
 				setHostnameCount(fetchedHostnameCount);
 				setInvestigationCount(fetchedInvestigationCount);
-				setAssignedAlerts(fetchOpenInvestigations);
+				setAssignedAlerts(fetchedAssignedAlerts);
+				console.log("Test1", fetchAssignedAlerts);
 				//setAssignedAlerts(userAssignedAlerts); //set user-assigned alerts
 				setLoading(false);
 			} catch (error) {
