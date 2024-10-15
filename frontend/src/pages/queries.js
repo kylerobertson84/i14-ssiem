@@ -42,6 +42,7 @@ import {
 } from "../services/apiService";
 import SEO from "../Design/SEO.js";
 import LogDetailDialog from "../components/LogDetails.js";
+import DOMPurify from "dompurify"; // Import DOMPurify for sanitization
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
 	transition: "box-shadow 0.3s ease-in-out",
@@ -256,7 +257,7 @@ const LogQueries = () => {
 
 	return (
 		<>
-			<SEO title="Queries" />
+			<SEO title="Logs" />
 			<Container maxWidth="xl" sx={{ py: 4 }}>
 				<Typography
 					variant="h4"
@@ -414,9 +415,11 @@ const LogQueries = () => {
 													column.id === "date_time"
 														? formatDate(log[column.id])
 														: column.id === "message"
-														? log[column.id].substring(0, 100) +
-														  (log[column.id].length > 100 ? "..." : "")
-														: log[column.id]}
+														? DOMPurify.sanitize(
+																log[column.id].substring(0, 100) +
+																	(log[column.id].length > 100 ? "..." : "")
+														  )
+														: DOMPurify.sanitize(log[column.id])}
 												</TableCell>
 											))}
 										</StyledTableRow>
