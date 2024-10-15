@@ -88,7 +88,7 @@ class InvestigateAlertViewSet(BaseAlertViewSet):
 
     @action(detail=False, methods=['get'])
     def assigned_alerts(self, request):
-        user =request.user
+        user = request.user
         assigned_alerts = InvestigateAlert.object.filter(assigned_to=user)
         
         serializer = self.get_serializer(assigned_alerts, many = True)

@@ -135,6 +135,15 @@ const Dashboard = () => {
 			});
 	}, []);
 
+	const handleAssignedAlert = async (UserId) => {
+		try {
+			const investigation = await fetchInvestigation(investigationId);
+			setSelectedInvestigation(investigation);
+		} catch (error) {
+			console.error("Error fetching investigation details:", error);
+		}
+	};
+
 	const navigate = useNavigate();
 	const handleViewMoreClick = () => {
 		navigate("/alerts");

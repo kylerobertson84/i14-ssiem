@@ -255,6 +255,6 @@ export const updateInvestigation = (id, data) => {
 };
 
 
-export const fetchAssignedAlerts = () => {
-	return apiRequest(API_ENDPOINTS.investigate.assignedAlerts);
+export const fetchAssignedAlerts = (userId) => {
+	return apiRequest(`${API_ENDPOINTS.investigate.assignedAlerts}${userId}/`, "GET");
 };
