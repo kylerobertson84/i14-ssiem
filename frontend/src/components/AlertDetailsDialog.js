@@ -20,7 +20,6 @@ import { styled } from "@mui/material/styles";
 import apiRequest from "../services/apiRequest";
 import API_ENDPOINTS from "../services/apiConfig";
 import { assignAlert } from "../services/apiService";
-import DOMPurify from "dompurify"; // Importing DOMPurify for sanitization
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
 	"& .MuiDialogTitle-root": {
@@ -91,11 +90,11 @@ const AlertDetailsDialog = ({ alert, open, onClose, onAssign }) => {
 	const renderAlertDetail = (label, value) => (
 		<Box sx={{ mb: 2 }}>
 			<Typography variant="subtitle2" color="text.secondary">
-				{DOMPurify.sanitize(label)}
+				{label}
 			</Typography>
 			<Typography variant="body1">
 				{value !== null && value !== undefined && value !== ""
-					? DOMPurify.sanitize(value.toString())
+					? value.toString()
 					: "N/A"}
 			</Typography>
 		</Box>
@@ -114,7 +113,7 @@ const AlertDetailsDialog = ({ alert, open, onClose, onAssign }) => {
 			</MenuItem>,
 			...users.map((user) => (
 				<MenuItem key={user.user_id} value={user.email}>
-					{DOMPurify.sanitize(user.email)}
+					{user.email}
 				</MenuItem>
 			)),
 		];
@@ -122,7 +121,7 @@ const AlertDetailsDialog = ({ alert, open, onClose, onAssign }) => {
 
 	return (
 		<StyledDialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-			<DialogTitle>{DOMPurify.sanitize("Alert Details")}</DialogTitle>
+			<DialogTitle>Alert Details</DialogTitle>
 			<DialogContent>
 				<StyledPaper>
 					<Grid container spacing={2}>
@@ -146,14 +145,14 @@ const AlertDetailsDialog = ({ alert, open, onClose, onAssign }) => {
 				</StyledPaper>
 
 				<Typography variant="h6" gutterBottom>
-					{DOMPurify.sanitize("Assignment")}
+					Assignment
 				</Typography>
 				<FormControl fullWidth sx={{ mb: 2 }}>
-					<InputLabel>{DOMPurify.sanitize("Assign To")}</InputLabel>
+					<InputLabel>Assign To</InputLabel>
 					<Select
 						value={assignee}
 						onChange={(e) => setAssignee(e.target.value)}
-						label={DOMPurify.sanitize("Assign To")}
+						label="Assign To"
 						disabled={loadingUsers}
 					>
 						{renderSelectOptions()}
@@ -161,7 +160,7 @@ const AlertDetailsDialog = ({ alert, open, onClose, onAssign }) => {
 				</FormControl>
 
 				<Typography variant="h6" gutterBottom>
-					{DOMPurify.sanitize("Comments")}
+					Comments
 				</Typography>
 				<TextField
 					fullWidth
@@ -169,13 +168,13 @@ const AlertDetailsDialog = ({ alert, open, onClose, onAssign }) => {
 					rows={4}
 					value={comment}
 					onChange={(e) => setComment(e.target.value)}
-					placeholder={DOMPurify.sanitize("Add a comment...")}
+					placeholder="Add a comment..."
 				/>
 			</DialogContent>
 			<DialogActions>
-				<Button onClick={onClose}>{DOMPurify.sanitize("Close")}</Button>
+				<Button onClick={onClose}>Close</Button>
 				<Button onClick={handleAssign} color="primary" variant="contained">
-					{DOMPurify.sanitize("Save Changes")}
+					Save Changes
 				</Button>
 			</DialogActions>
 		</StyledDialog>

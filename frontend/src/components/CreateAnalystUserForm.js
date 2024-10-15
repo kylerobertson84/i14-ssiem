@@ -1,8 +1,8 @@
+
 import React, { useState, useEffect } from 'react';
 import { TextField, Button } from '@mui/material';
 import apiRequest from '../services/apiRequest';
 import API_ENDPOINTS from '../services/apiConfig';
-import DOMPurify from 'dompurify'; // Import DOMPurify
 
 const CreateAnalystUserForm = () => {
     const [formData, setFormData] = useState({
@@ -73,8 +73,8 @@ const CreateAnalystUserForm = () => {
     return (
         <div>
             <h2>Create Analyst User</h2>
-            {error && <p style={{ color: 'red' }}>{DOMPurify.sanitize(error)}</p>}
-            {success && <p style={{ color: 'green' }}>{DOMPurify.sanitize(success)}</p>}
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+            {success && <p style={{ color: 'green' }}>{success}</p>}
             <form onSubmit={handleSubmit}>
                 <TextField
                     label="Email"

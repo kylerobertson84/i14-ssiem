@@ -37,6 +37,7 @@ import {
 } from "@mui/icons-material";
 import AdminForm from "../components/AdminForm";
 import { fetchUsers } from "../services/apiService";
+import DOMPurify from "dompurify"; // Import DOMPurify for sanitization
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
 	padding: theme.spacing(3),
@@ -188,8 +189,10 @@ const AdminPage = () => {
 										{users.map((user) => (
 											<ListItem key={user.user_id}>
 												<ListItemText
-													primary={user.email}
-													secondary={`Role: ${user.role.name}`}
+													primary={DOMPurify.sanitize(user.email)}
+													secondary={`Role: ${DOMPurify.sanitize(
+														user.role.name
+													)}`}
 													primaryTypographyProps={{
 														variant: isMobile ? "body2" : "body1",
 													}}
