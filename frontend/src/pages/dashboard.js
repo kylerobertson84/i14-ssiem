@@ -130,6 +130,12 @@ const Dashboard = () => {
 	const handleViewMoreClick = () => {
 		navigate("/alerts");
 	};
+	const handleCardClick = () => {
+		navigate("/investigations"); 
+	};
+	const handleCardClick1 = () => {
+		navigate("/queries");
+	}
 
 	if (loading) {
 		return (
@@ -163,6 +169,7 @@ const Dashboard = () => {
 		);
 	}
 
+	
 	const LatestAlertsSection = () => (
 		<Paper
 			elevation={3}
@@ -280,27 +287,40 @@ const Dashboard = () => {
 								title="Logs"
 								value={recordCount + routerLogCount}
 								icon={Notes}
+								sx={{ cursor: "pointer" }}
+								onClick={handleCardClick1}
 							/>
 							<InfoCard
 								title="Events per Day"
 								value={eventsToday.events_today}
 								icon={EditCalendar}
+								sx={{ cursor: "pointer" }}
+								onClick={handleViewMoreClick}
 							/>
-							<InfoCard
-								title="Open Investigations"
-								value={investigationCount.open_count}
-								icon={Search}
-							/>
-							<InfoCard
-								title="In Progress Investigations"
-								value={investigationCount.in_progress_count}
-								icon={Search}
-							/>
-							<InfoCard
-								title="Closed Investigations"
-								value={investigationCount.closed_count}
-								icon={AssignmentTurnedInOutlined}
-							/>
+							
+								<InfoCard
+									title="Open Investigations"
+									value={investigationCount.open_count}
+									icon={Search}
+									sx={{ cursor: "pointer" }}
+									onClick={handleCardClick}
+								/>
+							
+								<InfoCard
+									title="In Progress Investigations"
+									value={investigationCount.in_progress_count}
+									icon={Search}
+									sx={{ cursor: "pointer" }}
+									onClick={handleCardClick}
+								/>
+								<InfoCard
+									title="Closed Investigations"
+									value={investigationCount.closed_count}
+									icon={AssignmentTurnedInOutlined}
+									sx={{ cursor: "pointer" }}
+									onClick={handleCardClick}
+								/>
+								
 							<Grid item xs={12} md={6}>
 								<Paper sx={{ p: 2, height: "100%" }}>
 									<LogsPerHourChart data={logsPerHour} />
@@ -319,6 +339,7 @@ const Dashboard = () => {
 							<Grid item xs={12}>
 								<LatestAlertsSection />
 							</Grid>
+							
 							<Grid item xs={12}>
 								<Paper
 									elevation={3}
@@ -352,12 +373,18 @@ const Dashboard = () => {
 				</Grid>
 			</Box>
 		</>
-	);
+	
+
+
+
+);
+
 };
 
-const InfoCard = ({ icon: IconComponent, value, title }) => (
+const InfoCard = ({ icon: IconComponent, value, title, onClick, sx }) => (
 	<Grid item xs={12} sm={6} md={4}>
-		<Paper sx={{ p: 2, height: "100%" }}>
+		<Paper sx={{ p: 2, height: "100%", cursor: "pointer", ...sx}}
+			onClick={onClick}>
 			<Box
 				sx={{
 					display: "flex",

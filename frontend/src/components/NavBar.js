@@ -67,7 +67,7 @@ const Navbar = () => {
 			roles: ["ADMIN", "ANALYST"],
 		},
 		{
-			label: "Queries",
+			label: "Stored Logs",
 			path: "/queries",
 			icon: <QueriesIcon />,
 			roles: ["ADMIN", "ANALYST"],
