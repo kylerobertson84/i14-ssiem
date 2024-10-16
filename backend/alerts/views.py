@@ -10,6 +10,7 @@ from accounts.models import User
 from django.db.models import Q
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import APIException
 
 
 class AlertFilter(FilterSet):
@@ -106,16 +107,19 @@ class InvestigateAlertViewSet(BaseAlertViewSet):
     
     @action(detail=False, methods=['get'])
     def assigned_alerts(self, request):
-        user = request.user
-        assigned_alerts = self.get_queryset().filter(assigned_to=user)
-        
-        page = self.paginate_queryset(assigned_alerts)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-        
-        serializer = self.get_serializer(assigned_alerts, many=True)
-        return Response(serializer.data)
+        try:
+            user = request.user
+            assigned_alerts = self.get_queryset().filter(assigned_to=user)
+            
+            page = self.paginate_queryset(assigned_alerts)
+            if page is not None:
+                serializer = self.get_serializer(page, many=True)
+                return self.get_paginated_response(serializer.data)
+            
+            serializer = self.get_serializer(assigned_alerts, many=True)
+            return Response(serializer.data)
+        except Exception as e:
+            raise APIException(f"An error occurred: {str(e)}")
     
     @action(detail=True, methods=['patch'])
     def update_investigation(self, request, pk=None):
