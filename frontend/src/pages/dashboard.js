@@ -100,22 +100,24 @@ const Dashboard = () => {
                     fetchAssignedAlerts()
                 ]);
 
-                setUser(userData);
-                setRecordCount(logCountData.count);
-                setRouterLogCount(routerLogCountData.router_log_count);
-                setLogPercentages(logPercentages);
-                setLogsPerHour(logsPerHour);
-                setEventsToday(fetchedEventsToday);
-                setLatestAlerts(fetchedLatestAlerts);
-                setHostnameCount(fetchedHostnameCount);
-                setInvestigationCount(fetchedInvestigationCount);
-                setAssignedAlerts(fetchedAssignedAlerts);
-                setLoading(false);
-            } catch (error) {
-                console.error("Error loading dashboard data", error);
-                setLoading(false);
-            }
-        };
+				setUser(userData);
+				setRecordCount(logCountData.count);
+				setRouterLogCount(routerLogCountData.router_log_count);
+				setLogPercentages(logPercentages);
+				setLogsPerHour(logsPerHour);
+				setEventsToday(fetchedEventsToday);
+				setLatestAlerts(fetchedLatestAlerts);
+				setHostnameCount(fetchedHostnameCount);
+				setInvestigationCount(fetchedInvestigationCount);
+				setAssignedAlerts(fetchedAssignedAlerts);
+				console.log("Test1", fetchAssignedAlerts);
+				//setAssignedAlerts(userAssignedAlerts); //set user-assigned alerts
+				setLoading(false);
+			} catch (error) {
+				console.error("Error loading dashboard data", error);
+				setLoading(false);
+			}
+		};
 
         loadData();
     }, []);
