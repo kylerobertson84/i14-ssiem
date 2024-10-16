@@ -134,7 +134,7 @@ const LandingPage = () => {
 							to="/login"
 							sx={{ fontWeight: "bold" }}
 						>
-							Start Demo
+							Log In
 						</Button>
 					</Box>
 				</HeroContent>

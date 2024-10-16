@@ -43,6 +43,7 @@ import {
     fetchInvestigationsCount,
     fetchAssignedAlerts
 } from "../services/apiService.js";
+import InvestigationDetails from "../components/InvestigationDetails.js";
 
 const Dashboard = () => {
     const theme = useTheme();
@@ -59,6 +60,8 @@ const Dashboard = () => {
     const [hostnameCount, setHostnameCount] = useState({});
     const [investigationCount, setInvestigationCount] = useState({});
     const [assignedAlerts, setAssignedAlerts] = useState({});
+	const [open, setOpen] = useState(false); // modal state
+    const [selectedAlert, setSelectedAlert] = useState(null); // selected alert for modal
 
     const logsByDeviceData = [
         { name: "Windows OS", value: logPercentages.windows_os_percentage },
@@ -134,20 +137,19 @@ const Dashboard = () => {
     }, []);
 
     const navigate = useNavigate();
+	//Navigat to alerts page
     const handleViewMoreClick = () => {
         navigate("/alerts");
     };
+	//Navigation to investigation detail page
     const handleCardClick = () => {
         navigate("/investigations"); 
     };
+	//Navigation to logs queries page
     const handleCardClick1 = () => {
         navigate("/queries");
     };
 
-    const handleInvestigation = (id) => {
-        // Implement navigation to investigation detail page
-        navigate(`/investigations/${id}`);
-    };
 
     if (loading) {
         return (
@@ -181,6 +183,16 @@ const Dashboard = () => {
         );
     }
 
+	const handleOpenDialog = (alert) => {
+        setSelectedAlert(alert);
+        setOpen(true);
+    };
+
+    const handleCloseDialog = () => {
+        setOpen(false);
+        setSelectedAlert(null);
+    };
+
     const AssignedAlertsSection = () => (
         <Paper
             elevation={3}
@@ -213,7 +225,10 @@ const Dashboard = () => {
                                         : "none",
                                 "&:hover": { bgcolor: "#f5f5f5" },
                                 transition: "background-color 0.3s",
+								cursor: "pointer",
+                                
                             }}
+							onClick= {() => handleOpenDialog(investigation.alert)} //passes alert to popup
                         >
                             <Box
                                 sx={{
@@ -253,10 +268,11 @@ const Dashboard = () => {
                                     size="small"
                                     color="primary"
                                     aria-label="investigate"
-                                    onClick={() => handleInvestigation(investigation.id)}
+                                    //onClick={() => handleInvestigation(investigation.id)}
                                 >
                                     <Search />
                                 </IconButton>
+
                             </Box>
                         </Box>
                     ))
@@ -299,7 +315,9 @@ const Dashboard = () => {
                                         : "none",
                                 "&:hover": { bgcolor: "#f5f5f5" },
                                 transition: "background-color 0.3s",
+								cursor: "pointer",
                             }}
+							onClick= {() => handleOpenDialog(alert)} //passes alert to popup
                         >
                             <Box
                                 sx={{
@@ -339,7 +357,7 @@ const Dashboard = () => {
                                     size="small"
                                     color="primary"
                                     aria-label="investigate"
-                                    onClick={() => handleInvestigation(alert.id)}
+                                    //onClick={() => handleInvestigation(alert.id)}
                                 >
                                     <Search />
                                 </IconButton>
@@ -469,6 +487,11 @@ const Dashboard = () => {
                     </Grid>
                 </Grid>
             </Box>
+			<InvestigationDetails
+                open={open}
+                onClose={handleCloseDialog}
+                alert={selectedAlert} // Pass the selected alert to the modal
+            />
         </>
     );
 };
