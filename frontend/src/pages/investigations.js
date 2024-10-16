@@ -37,6 +37,7 @@ import {
 	fetchInvestigations,
 	updateInvestigationStatus,
 	fetchRules,
+	fetchRelatedLogs,
 } from "../services/apiService";
 import { useAuth } from "../services/AuthContext";
 import SEO from "../Design/SEO";
@@ -93,6 +94,7 @@ const InvestigationPage = () => {
 	const [rowsPerPage, setRowsPerPage] = useState(10);
 	const [openDialog, setOpenDialog] = useState(false);
 	const [selectedAlert, setSelectedAlert] = useState(null);
+	const [relatedLogs, setRelatedLogs] = useState([]);
 	const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
 	const [openReportGenerator, setOpenReportGenerator] = useState(false);
 	const [selectedInvestigationId, setSelectedInvestigationId] = useState(null);
@@ -129,16 +131,22 @@ const InvestigationPage = () => {
 		}
 	}, []);
 
-	const handleOpenDialog = (alert) => {
+	const handleOpenDialog = async (alert) => {
 		setSelectedAlert(alert);
 		setAlertStatus(alert.status);
 		setNotes(alert.notes || "");
+
+		const logs = await fetchRelatedLogs(alert);
+		setRelatedLogs(logs);
+
 		setOpenDialog(true);
 	};
 
 	const handleCloseDialog = () => {
 		setOpenDialog(false);
 		setSelectedAlert(null);
+
+		setRelatedLogs([]);
 	};
 
 	const handleStatusChange = (event) => {
@@ -418,7 +426,34 @@ const InvestigationPage = () => {
 									{selectedAlert?.alert?.rule || "N/A"}
 								</Typography>
 							</Grid>
+							<Grid item xs={12}>
+								<Typography variant="subtitle2" color="text.secondary">
+									Related Logs
+								</Typography>
+								{relatedLogs.length > 0 ? (
+									relatedLogs.map((log, index) => (
+										<Box key={index} sx={{ mb: 2 }}>
+											<Typography variant="body2">
+												<strong>Log {index + 1}:</strong> {log.message}
+											</Typography>
+											<Typography variant="body2" color="text.secondary">
+												Hostname: {log.hostname}, Event ID: {log.event_id}, Account Name: {log.AccountName}
+											</Typography>
+											<Typography variant="body2" color="text.secondary">
+												Timestamp: {new Date(log.iso_timestamp).toLocaleString()}
+											</Typography>
+										</Box>
+									))
+								) : (
+									<Typography variant="body2">No related logs found.</Typography>
+								)}
+							</Grid>
 						</Grid>
+
+						<Typography variant="subtitle2" color="text.secondary">
+							Assigned Analyst: {selectedAlert?.assigned_to?.email || "Unassigned"}
+						</Typography>
+
 
 						<FormControl fullWidth sx={{ mt: 2 }}>
 							<Typography variant="subtitle1" sx={{ mb: 2 }}>

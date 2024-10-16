@@ -66,6 +66,25 @@ export const fetchRouterLogs = (searchParams, page = 1, pageSize = 10) => {
 	return apiRequest(`${API_ENDPOINTS.logs.router}?${params}`);
 };
 
+export const fetchRelatedLogs = async (alert) => {
+	try {
+		// Ensures alert and event have the necessary fields
+		const response = await apiRequest('/api/v1/logs/bronze-events/', 'GET', null, {
+			params: {
+				query: alert.hostname || alert.event_id || alert.message,
+				start_time: alert.created_at,
+				event_type: alert.event_type,
+			},
+		});
+
+		// Assuming the response contains the logs data
+		return response.data;
+	} catch (error) {
+		console.error('Error fetching related logs:', error);
+		return [];
+	}
+};
+
 export const exportPDF = (logType, searchParams) => {
 	const params = new URLSearchParams({
 		query: searchParams.query,

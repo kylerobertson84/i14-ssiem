@@ -18,6 +18,8 @@ class IncidentReportFilter(FilterSet):
         model = IncidentReport
         fields = ['type', 'status', 'user__email', 'last_update']
 
+
+
 class IncidentReportViewSet(BaseViewThrottleSet):
     queryset = IncidentReport.objects.all()
     serializer_class = IncidentReportSerializer
