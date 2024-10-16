@@ -255,3 +255,11 @@ export const updateInvestigation = (id, data) => {
 	return apiRequest(`${API_ENDPOINTS.investigate.base}${id}/`, "PATCH", data);
 };
 
+export const fetchAssignedAlerts = (page = 1, pageSize = 10) => {
+    const params = new URLSearchParams({
+        page,
+        page_size: pageSize,
+    });
+    return apiRequest(`${API_ENDPOINTS.investigate.assignedAlerts}?${params}`);
+};
+

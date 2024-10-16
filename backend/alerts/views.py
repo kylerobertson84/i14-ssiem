@@ -10,6 +10,7 @@ from accounts.models import User
 from django.db.models import Q
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import APIException
 
 
 class AlertFilter(FilterSet):
@@ -86,14 +87,39 @@ class InvestigateAlertViewSet(BaseAlertViewSet):
     ordering_fields = ['created_at', 'updated_at']
     permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        user = self.request.user
+        if user.role.name == 'ADMIN':
+            return InvestigateAlert.objects.all()
+        elif user.role.name == 'ANALYST':
+            return InvestigateAlert.objects.filter(assigned_to=user)
+        else:
+            return InvestigateAlert.objects.none()
+        
+    # @action(detail=False, methods=['get'])
+    # def assigned_alerts(self, request):
+    #     user =request.user
+    #     assigned_alerts = InvestigateAlert.object.filter(assigned_to=user)
+        
+    #     serializer = self.get_serializer(assigned_alerts, many = True)
+
+    #     return Response(serializer.data, status=200) 
+    
     @action(detail=False, methods=['get'])
     def assigned_alerts(self, request):
-        user =request.user
-        assigned_alerts = InvestigateAlert.object.filter(assigned_to=user)
-        
-        serializer = self.get_serializer(assigned_alerts, many = True)
-
-        return Response(serializer.data, status=200) 
+        try:
+            user = request.user
+            assigned_alerts = self.get_queryset().filter(assigned_to=user)
+            
+            page = self.paginate_queryset(assigned_alerts)
+            if page is not None:
+                serializer = self.get_serializer(page, many=True)
+                return self.get_paginated_response(serializer.data)
+            
+            serializer = self.get_serializer(assigned_alerts, many=True)
+            return Response(serializer.data)
+        except Exception as e:
+            raise APIException(f"An error occurred: {str(e)}")
     
     @action(detail=True, methods=['patch'])
     def update_investigation(self, request, pk=None):
@@ -108,15 +134,6 @@ class InvestigateAlertViewSet(BaseAlertViewSet):
         serializer.save()
 
         return Response(serializer.data)
-
-    def get_queryset(self):
-        user = self.request.user
-        if user.role.name == 'ADMIN':
-            return InvestigateAlert.objects.all()
-        elif user.role.name == 'ANALYST':
-            return InvestigateAlert.objects.filter(assigned_to=user)
-        else:
-            return InvestigateAlert.objects.none()
 
     @action(detail=False, methods=['get'])
     def investigation_status_count(self, request):
