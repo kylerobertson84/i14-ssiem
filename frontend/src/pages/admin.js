@@ -223,7 +223,7 @@ const AdminPage = () => {
 															edge="end"
 															aria-label="delete"
 															size={isMobile ? "small" : "medium"}
-															onClick={handleDeleteUser}
+															onClick={() => handleDeleteUser(user.user_id)}
 														>
 															<DeleteIcon />
 														</IconButton>

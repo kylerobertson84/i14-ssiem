@@ -85,8 +85,6 @@ const Dashboard = () => {
 					fetchedLatestAlerts,
 					fetchedHostnameCount,
 					fetchedInvestigationCount,
-					fetchOpenInvestigations,
-					//userAssignedAlerts, //fetch user assigned alerts
 				] = await Promise.all([
 					fetchUser(),
 					fetchLogCount(),
@@ -97,8 +95,7 @@ const Dashboard = () => {
 					fetchLatestAlerts(),
 					fetchHostnameCount(),
 					fetchInvestigationsCount(),
-					fetchOpenInvestigations(),
-					//fetchUserAssignedAlerts(userData.id), //Fetch alerts for the user
+
 				]);
 
 				setUser(userData);
@@ -110,8 +107,6 @@ const Dashboard = () => {
 				setLatestAlerts(fetchedLatestAlerts);
 				setHostnameCount(fetchedHostnameCount);
 				setInvestigationCount(fetchedInvestigationCount);
-				setAssignedAlerts(fetchOpenInvestigations);
-				//setAssignedAlerts(userAssignedAlerts); //set user-assigned alerts
 				setLoading(false);
 			} catch (error) {
 				console.error("Error loading dashboard data", error);
