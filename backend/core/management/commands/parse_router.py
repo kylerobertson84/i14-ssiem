@@ -2,6 +2,11 @@
 from django.core.management.base import BaseCommand
 from logs.models import *
 import re
+from datetime import datetime
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 
@@ -24,7 +29,12 @@ def insert_data(a_dict):
     except Exception as e:
         print(f"Error inserting data: {a_dict}\nError: {e}")
 
-
+def convert_network_dt_into_iso(network_dt):
+    dt = datetime.strptime(network_dt, "%b %d %H:%M:%S")
+    current_year = datetime.now().year
+    dt = dt.replace(year=current_year)
+    logger.info(f"Converted datetime: {dt.isoformat()}")
+    return dt.isoformat()
 
 def parse_line(line):
 
@@ -87,11 +97,14 @@ def parse_line(line):
             message = " ".join(slice_list)
 
         # place router fields into a dictionary
+
+        network_iso = convert_network_dt_into_iso(date_time)
+        print("network_iso", network_iso)
         
         log_dict = dict()
 
         log_dict["severity"] = int(severity)
-        log_dict["date_time"] = date_time
+        log_dict["date_time"] = network_iso 
         log_dict["hostname"] = hostname
         log_dict["process"] = process
         log_dict["message"] = message
