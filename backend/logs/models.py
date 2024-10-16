@@ -45,7 +45,7 @@ class BronzeEventData(BaseModel, BaseViewThrottleSet):
 class RouterData(BaseModel, BaseViewThrottleSet):
     created_at = models.DateTimeField(auto_now_add=True)
     severity = models.IntegerField(null = True, blank = True)
-    date_time = models.CharField(max_length=100,null=True,blank=True)
+    date_time = models.DateTimeField(null=True,blank=True)
     hostname = models.CharField(max_length=100,null=True,blank=True)
     process = models.CharField(max_length=100,null=True,blank=True)
     message = models.TextField(null=True, blank=True)
