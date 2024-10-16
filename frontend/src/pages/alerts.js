@@ -132,9 +132,11 @@ const AlertsPage = () => {
 				//alerts.map((alert) => (alert.id === alertId ? updatedAlert : alert))
 				alerts.filter((alert) => alert.id !== alertId)
 			);
+			/*
 			setTimeout(() => {
 				window.location.reload();
 			}, 500);
+			*/
 		} catch (error) {
 			console.error("Failed to update alert:", error);
 		}

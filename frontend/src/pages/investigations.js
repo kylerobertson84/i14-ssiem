@@ -102,7 +102,13 @@ const InvestigationPage = () => {
 		setLoading(true);
 		try {
 			const fetchedInvestigations = await fetchInvestigations();
-			setInvestigations(fetchedInvestigations);
+			const openInvestigations = fetchedInvestigations.results.filter(
+				investigation => investigation.status !== "CLOSED"
+			);
+			setInvestigations({
+				results: openInvestigations,
+				count: openInvestigations.length,
+			});
 		} catch (error) {
 			console.error("Error loading investigations data", error);
 		} finally {
