@@ -153,6 +153,11 @@ const AdminPage = () => {
 		}
 	};
 
+	const handleUserCreated = (newUser) => {
+		setUsers((prevUsers) => [...prevUsers, newUser]); // Add the new user to the existing list
+	};
+
+
 	return (
 		<Container maxWidth="lg">
 			<Box sx={{ my: 4 }}>
@@ -193,7 +198,7 @@ const AdminPage = () => {
 								>
 									<PersonAddIcon sx={{ mr: 1 }} /> Add New User
 								</Typography>
-								<AdminForm />
+								<AdminForm onUserCreated={handleUserCreated} />
 							</StyledPaper>
 						</Grid>
 						<Grid item xs={12} md={6}>

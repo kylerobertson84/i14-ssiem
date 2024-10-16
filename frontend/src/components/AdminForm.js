@@ -15,7 +15,7 @@ import apiRequest from '../services/apiRequest';
 import API_ENDPOINTS from '../services/apiConfig';
 import DOMPurify from 'dompurify';
 
-const AdminForm = () => {
+const AdminForm = ({onUserCreated}) => {
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -107,6 +107,7 @@ const AdminForm = () => {
 
             setSuccess('User created successfully');
             setError('');
+            onUserCreated(userResponse);
             setFormData({
                 email: '',
                 password: '',
