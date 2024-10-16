@@ -1100,13 +1100,11 @@ paths:
           type: string
           enum:
           - CLOSED
-          - NEW
-          - PENDING
-          - RESOLVED
+          - IN PROGRESS
+          - OPEN
         description: |-
-          * `NEW` - New
-          * `PENDING` - Pending
-          * `RESOLVED` - Resolved
+          * `OPEN` - Open
+          * `IN PROGRESS` - In Progress
           * `CLOSED` - Closed
       tags:
       - investigate
@@ -1248,6 +1246,84 @@ paths:
       responses:
         '204':
           description: No response body
+  /api/v1/investigate/{id}/update_investigation/:
+    patch:
+      operationId: investigate_update_investigation_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this investigate alert.
+        required: true
+      tags:
+      - investigate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedInvestigateAlert'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedInvestigateAlert'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedInvestigateAlert'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvestigateAlert'
+          description: ''
+  /api/v1/investigate/assigned_alerts/:
+    get:
+      operationId: investigate_assigned_alerts_retrieve
+      tags:
+      - investigate
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvestigateAlert'
+          description: ''
+  /api/v1/investigate/investigation_status_count/:
+    get:
+      operationId: investigate_investigation_status_count_retrieve
+      tags:
+      - investigate
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvestigateAlert'
+          description: ''
+  /api/v1/investigate/open_investigations/:
+    get:
+      operationId: investigate_open_investigations_retrieve
+      tags:
+      - investigate
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvestigateAlert'
+          description: ''
   /api/v1/logs/bronze-events/:
     get:
       operationId: logs_bronze_events_list
@@ -1288,6 +1364,31 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedBronzeEventDataList'
           description: ''
+    post:
+      operationId: logs_bronze_events_create
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BronzeEventData'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BronzeEventData'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BronzeEventData'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BronzeEventData'
+          description: ''
   /api/v1/logs/bronze-events/{id}/:
     get:
       operationId: logs_bronze_events_retrieve
@@ -1310,6 +1411,87 @@ paths:
               schema:
                 $ref: '#/components/schemas/BronzeEventData'
           description: ''
+    put:
+      operationId: logs_bronze_events_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this bronze event data.
+        required: true
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BronzeEventData'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BronzeEventData'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BronzeEventData'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BronzeEventData'
+          description: ''
+    patch:
+      operationId: logs_bronze_events_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this bronze event data.
+        required: true
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedBronzeEventData'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedBronzeEventData'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedBronzeEventData'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BronzeEventData'
+          description: ''
+    delete:
+      operationId: logs_bronze_events_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this bronze event data.
+        required: true
+      tags:
+      - logs
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
   /api/v1/logs/bronze-events/count/:
     get:
       operationId: logs_bronze_events_count_retrieve
@@ -1340,6 +1522,92 @@ paths:
               schema:
                 $ref: '#/components/schemas/BronzeEventData'
           description: ''
+  /api/v1/logs/events-today/:
+    get:
+      operationId: logs_events_today_retrieve
+      tags:
+      - logs
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: logs_events_today_create
+      tags:
+      - logs
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          description: No response body
+  /api/v1/logs/events-today/{id}/:
+    get:
+      operationId: logs_events_today_retrieve_2
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - logs
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+    put:
+      operationId: logs_events_today_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - logs
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+    patch:
+      operationId: logs_events_today_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - logs
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+    delete:
+      operationId: logs_events_today_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - logs
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
   /api/v1/logs/events-today/events_today/:
     get:
       operationId: logs_events_today_events_today_retrieve
@@ -1350,6 +1618,235 @@ paths:
       - cookieAuth: []
       responses:
         '200':
+          description: No response body
+  /api/v1/logs/hostname-count/:
+    get:
+      operationId: logs_hostname_count_retrieve
+      tags:
+      - logs
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: logs_hostname_count_create
+      tags:
+      - logs
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          description: No response body
+  /api/v1/logs/hostname-count/{id}/:
+    get:
+      operationId: logs_hostname_count_retrieve_2
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - logs
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+    put:
+      operationId: logs_hostname_count_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - logs
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+    patch:
+      operationId: logs_hostname_count_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - logs
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+    delete:
+      operationId: logs_hostname_count_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - logs
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/logs/log-percentage/:
+    get:
+      operationId: logs_log_percentage_list
+      tags:
+      - logs
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LogCount'
+          description: ''
+    post:
+      operationId: logs_log_percentage_create
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogCount'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LogCount'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LogCount'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogCount'
+          description: ''
+  /api/v1/logs/log-percentage/{id}/:
+    get:
+      operationId: logs_log_percentage_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - logs
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogCount'
+          description: ''
+    put:
+      operationId: logs_log_percentage_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogCount'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LogCount'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LogCount'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogCount'
+          description: ''
+    patch:
+      operationId: logs_log_percentage_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedLogCount'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedLogCount'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedLogCount'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogCount'
+          description: ''
+    delete:
+      operationId: logs_log_percentage_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - logs
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
           description: No response body
   /api/v1/logs/log-percentage/log_percentages/:
     get:
@@ -1366,6 +1863,92 @@ paths:
               schema:
                 $ref: '#/components/schemas/LogCount'
           description: ''
+  /api/v1/logs/logs-aggregation/:
+    get:
+      operationId: logs_logs_aggregation_retrieve
+      tags:
+      - logs
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: logs_logs_aggregation_create
+      tags:
+      - logs
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          description: No response body
+  /api/v1/logs/logs-aggregation/{id}/:
+    get:
+      operationId: logs_logs_aggregation_retrieve_2
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - logs
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+    put:
+      operationId: logs_logs_aggregation_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - logs
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+    patch:
+      operationId: logs_logs_aggregation_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - logs
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+    delete:
+      operationId: logs_logs_aggregation_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - logs
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
   /api/v1/logs/logs-aggregation/logs_per_hour/:
     get:
       operationId: logs_logs_aggregation_logs_per_hour_retrieve
@@ -1417,6 +2000,31 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedRouterDataList'
           description: ''
+    post:
+      operationId: logs_router_data_create
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RouterData'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RouterData'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RouterData'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RouterData'
+          description: ''
   /api/v1/logs/router-data/{id}/:
     get:
       operationId: logs_router_data_retrieve
@@ -1439,6 +2047,87 @@ paths:
               schema:
                 $ref: '#/components/schemas/RouterData'
           description: ''
+    put:
+      operationId: logs_router_data_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this router data.
+        required: true
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RouterData'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RouterData'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RouterData'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RouterData'
+          description: ''
+    patch:
+      operationId: logs_router_data_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this router data.
+        required: true
+      tags:
+      - logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRouterData'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedRouterData'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedRouterData'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RouterData'
+          description: ''
+    delete:
+      operationId: logs_router_data_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this router data.
+        required: true
+      tags:
+      - logs
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
   /api/v1/logs/router-data/export_pdf/:
     get:
       operationId: logs_router_data_export_pdf_retrieve
@@ -1473,6 +2162,11 @@ paths:
     get:
       operationId: reports_incident_reports_list
       parameters:
+      - in: query
+        name: last_update
+        schema:
+          type: string
+          format: date-time
       - name: ordering
         required: false
         in: query
@@ -1502,14 +2196,18 @@ paths:
         schema:
           type: string
           enum:
+          - approved
           - archived
-          - closed
           - draft
-          - ongoing
+          - open
+          - pending
+          - rejected
         description: |-
           * `draft` - Draft
-          * `ongoing` - Ongoing
-          * `closed` - Closed
+          * `open` - Open
+          * `pending` - Pending
+          * `approved` - Approved
+          * `rejected` - Rejected
           * `archived` - Archived
       - in: query
         name: type
@@ -1673,9 +2371,9 @@ paths:
       responses:
         '204':
           description: No response body
-  /api/v1/reports/incident-reports/{id}/generate_pdf/:
-    post:
-      operationId: reports_incident_reports_generate_pdf_create
+  /api/v1/reports/incident-reports/{id}/delete_report/:
+    delete:
+      operationId: reports_incident_reports_delete_report_destroy
       parameters:
       - in: path
         name: id
@@ -1685,31 +2383,22 @@ paths:
         required: true
       tags:
       - reports
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/IncidentReport'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/IncidentReport'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/IncidentReport'
-        required: true
       security:
       - jwtAuth: []
       - cookieAuth: []
       responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/IncidentReport'
-          description: ''
-  /api/v1/reports/incident-reports/get_rules/:
+        '204':
+          description: No response body
+  /api/v1/reports/incident-reports/{id}/generate_pdf/:
     get:
-      operationId: reports_incident_reports_get_rules_retrieve
+      operationId: reports_incident_reports_generate_pdf_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this incident report.
+        required: true
       tags:
       - reports
       security:
@@ -1722,6 +2411,153 @@ paths:
               schema:
                 $ref: '#/components/schemas/IncidentReport'
           description: ''
+  /api/v1/rules/:
+    get:
+      operationId: rules_list
+      tags:
+      - rules
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Rule'
+          description: ''
+    post:
+      operationId: rules_create
+      tags:
+      - rules
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Rule'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Rule'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Rule'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rule'
+          description: ''
+  /api/v1/rules/{id}/:
+    get:
+      operationId: rules_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this rule.
+        required: true
+      tags:
+      - rules
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rule'
+          description: ''
+    put:
+      operationId: rules_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this rule.
+        required: true
+      tags:
+      - rules
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Rule'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Rule'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Rule'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rule'
+          description: ''
+    patch:
+      operationId: rules_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this rule.
+        required: true
+      tags:
+      - rules
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRule'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedRule'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedRule'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rule'
+          description: ''
+    delete:
+      operationId: rules_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this rule.
+        required: true
+      tags:
+      - rules
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
 components:
   schemas:
     Alert:
@@ -1891,6 +2727,7 @@ components:
           type: array
           items:
             type: integer
+            writeOnly: true
           writeOnly: true
         created_at:
           type: string
@@ -1900,6 +2737,9 @@ components:
           type: string
           format: date-time
           readOnly: true
+        title:
+          type: string
+          maxLength: 255
         type:
           $ref: '#/components/schemas/TypeEnum'
         status:
@@ -1915,9 +2755,9 @@ components:
       - description
       - id
       - pdf_url
+      - rule_ids
       - rules
       - source
-      - status
       - type
       - updated_at
       - user
@@ -1942,14 +2782,18 @@ components:
     IncidentReportStatusEnum:
       enum:
       - draft
-      - ongoing
-      - closed
+      - open
+      - pending
+      - approved
+      - rejected
       - archived
       type: string
       description: |-
         * `draft` - Draft
-        * `ongoing` - Ongoing
-        * `closed` - Closed
+        * `open` - Open
+        * `pending` - Pending
+        * `approved` - Approved
+        * `rejected` - Rejected
         * `archived` - Archived
     IncidentReportUser:
       type: object
@@ -2000,15 +2844,13 @@ components:
       - updated_at
     InvestigateAlertStatusEnum:
       enum:
-      - NEW
-      - PENDING
-      - RESOLVED
+      - OPEN
+      - IN PROGRESS
       - CLOSED
       type: string
       description: |-
-        * `NEW` - New
-        * `PENDING` - Pending
-        * `RESOLVED` - Resolved
+        * `OPEN` - Open
+        * `IN PROGRESS` - In Progress
         * `CLOSED` - Closed
     LogCount:
       type: object
@@ -2160,6 +3002,35 @@ components:
         comments:
           type: string
           nullable: true
+    PatchedBronzeEventData:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        iso_timestamp:
+          type: string
+          format: date-time
+          nullable: true
+        hostname:
+          type: string
+          nullable: true
+          maxLength: 255
+        EventType:
+          type: string
+          nullable: true
+          maxLength: 50
+        EventID:
+          type: string
+          nullable: true
+          maxLength: 50
+        AccountName:
+          type: string
+          nullable: true
+          maxLength: 255
+        message:
+          type: string
+          nullable: true
     PatchedEmployee:
       type: object
       properties:
@@ -2216,6 +3087,7 @@ components:
           type: array
           items:
             type: integer
+            writeOnly: true
           writeOnly: true
         created_at:
           type: string
@@ -2225,6 +3097,9 @@ components:
           type: string
           format: date-time
           readOnly: true
+        title:
+          type: string
+          maxLength: 255
         type:
           $ref: '#/components/schemas/TypeEnum'
         status:
@@ -2262,6 +3137,15 @@ components:
           type: string
           format: date-time
           readOnly: true
+    PatchedLogCount:
+      type: object
+      properties:
+        windows_os_percentage:
+          type: number
+          format: double
+        network_percentage:
+          type: number
+          format: double
     PatchedPermission:
       type: object
       properties:
@@ -2294,6 +3178,41 @@ components:
           $ref: '#/components/schemas/Role'
         permission:
           $ref: '#/components/schemas/Permission'
+    PatchedRouterData:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        date_time:
+          type: string
+          nullable: true
+          maxLength: 100
+        hostname:
+          type: string
+          nullable: true
+          maxLength: 100
+        process:
+          type: string
+          nullable: true
+          maxLength: 100
+        message:
+          type: string
+          nullable: true
+    PatchedRule:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+          maxLength: 255
+        conditions:
+          type: string
     PatchedUser:
       type: object
       properties:
@@ -2389,6 +3308,25 @@ components:
           nullable: true
       required:
       - id
+    Rule:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+          maxLength: 255
+        conditions:
+          type: string
+      required:
+      - conditions
+      - description
+      - id
+      - name
     SeverityEnum:
       enum:
       - INFO
