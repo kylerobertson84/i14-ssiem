@@ -230,6 +230,19 @@ const InvestigationPage = () => {
 		setSelectedInvestigationId(null);
 	};
 
+	//updated time format
+	const formatDate = (dateString) => {
+	const date = new Date(dateString);
+	const day = String(date.getDate()).padStart(2, '0');
+	const month = String(date.getMonth() + 1).padStart(2, '0');
+	const year = date.getFullYear();
+	const hours = String(date.getHours()).padStart(2, '0');
+	const minutes = String(date.getMinutes()).padStart(2, '0');
+	const seconds = String(date.getSeconds()).padStart(2, '0');
+	
+	return `${day}/${month}/${year}, ${hours}:${minutes}:${seconds}`;
+};
+
 	return (
 		<>
 			<SEO title="Investigations" />
@@ -287,7 +300,7 @@ const InvestigationPage = () => {
 													/>
 												</TableCell>
 												<TableCell>
-													{new Date(result.alert?.created_at).toLocaleString()}
+													{formatDate(result.alert?.created_at)}
 												</TableCell>
 												<TableCell>
 													{result.assigned_to?.email || "Unassigned"}
@@ -383,9 +396,7 @@ const InvestigationPage = () => {
 									Created At
 								</Typography>
 								<Typography variant="body1">
-									{selectedAlert?.alert?.created_at
-										? new Date(selectedAlert.alert.created_at).toLocaleString()
-										: "N/A"}
+									{selectedAlert?.alert?.created_at ? formatDate(selectedAlert.alert.created_at) : "N/A"}
 								</Typography>
 							</Grid>
 							<Grid item xs={12} md={6}>
