@@ -132,19 +132,21 @@ const AlertDetailsDialog = ({ alert, open, onClose, onAssign }) => {
 		}
 		return null;
 	};
-	/*
-			return [
-				<MenuItem key="unassigned" value="">
-					Unassigned
-				</MenuItem>,
-				...users.map((user) => (
-					<MenuItem key={user.user_id} value={user.email}>
-						{user.email}
-					</MenuItem>
-				)),
-			];
-		};
-	*/
+
+	//updated time format
+	const formatDate = (dateString) => {
+		const date = new Date(dateString);
+		const day = String(date.getDate()).padStart(2, '0');
+		const month = String(date.getMonth() + 1).padStart(2, '0');
+		const year = date.getFullYear();
+		const hours = String(date.getHours()).padStart(2, '0');
+		const minutes = String(date.getMinutes()).padStart(2, '0');
+		const seconds = String(date.getSeconds()).padStart(2, '0');
+
+		return `${day}/${month}/${year}, ${hours}:${minutes}:${seconds}`;
+	};
+
+
 	return (
 		<StyledDialog open={open} onClose={onClose} maxWidth="md" fullWidth>
 			<DialogTitle>Alert Details</DialogTitle>
@@ -155,7 +157,7 @@ const AlertDetailsDialog = ({ alert, open, onClose, onAssign }) => {
 							{renderAlertDetail("Alert ID", alert.id)}
 							{renderAlertDetail(
 								"Created At",
-								new Date(alert.created_at).toLocaleString()
+								formatDate(alert.created_at)
 							)}
 							{renderAlertDetail("Severity", alert.severity)}
 						</Grid>

@@ -159,6 +159,20 @@ const AlertsPage = () => {
 		setPage(0);
 	};
 
+
+	//Updated Time Format
+	const formatDate = (dateString) => {
+		const date = new Date(dateString);
+		const day = String(date.getDate()).padStart(2, '0');
+		const month = String(date.getMonth() + 1).padStart(2, '0');
+		const year = date.getFullYear();
+		const hours = String(date.getHours()).padStart(2, '0');
+		const minutes = String(date.getMinutes()).padStart(2, '0');
+		const seconds = String(date.getSeconds()).padStart(2, '0');
+		
+		return `${day}/${month}/${year}, ${hours}:${minutes}:${seconds}`;
+	};
+
 	return (
 		<>
 			<SEO title="Alerts" />
@@ -258,7 +272,7 @@ const AlertsPage = () => {
 									<StyledTableRow key={alert.id} onClick={() => handleViewDetails(alert)}>
 										<TableCell>{alert.id}</TableCell>
 										<TableCell>
-											{new Date(alert.created_at).toLocaleString()}
+											{formatDate(alert.created_at)}
 										</TableCell>
 										<TableCell>{alert.event?.hostname || "N/A"}</TableCell>
 										<TableCell>

@@ -257,6 +257,7 @@ export const updateUser = (userId, userData) => {
 
 // New function to delete a user
 export const deleteUser = (userId) => {
+	console.log('deleting user with ID', userId); //debug log
 	return apiRequest(`${API_ENDPOINTS.auth.users}${userId}/`, "DELETE");
 };
 
@@ -272,3 +273,12 @@ export const fetchOpenInvestigations = () => {
 export const updateInvestigation = (id, data) => {
 	return apiRequest(`${API_ENDPOINTS.investigate.base}${id}/`, "PATCH", data);
 };
+
+export const fetchAssignedAlerts = (page = 1, pageSize = 10) => {
+    const params = new URLSearchParams({
+        page,
+        page_size: pageSize,
+    });
+    return apiRequest(`${API_ENDPOINTS.investigate.assignedAlerts}?${params}`);
+};
+

@@ -20,6 +20,11 @@ import {
 	Alert,
 	useTheme,
 	useMediaQuery,
+	Dialog,
+	DialogActions,
+	DialogContent,
+	DialogContentText,
+	DialogTitle,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import {
@@ -37,6 +42,8 @@ import {
 } from "@mui/icons-material";
 import AdminForm from "../components/AdminForm";
 import { fetchUsers } from "../services/apiService";
+import { deleteUser } from "../services/apiService";
+
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
 	padding: theme.spacing(3),
@@ -99,6 +106,8 @@ const AdminPage = () => {
 	const [error, setError] = useState(null);
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+	const [openDialog, setOpenDialog] = useState(false);
+	const [selectedUser, setSelectedUser] = useState(null);
 
 	useEffect(() => {
 		const loadUsers = async () => {
@@ -120,6 +129,34 @@ const AdminPage = () => {
 	const handleTabChange = (event, newValue) => {
 		setActiveTab(newValue);
 	};
+
+	const handleOpenDialog = (user) => {
+		setSelectedUser(user);
+		setOpenDialog(true);
+	};
+
+	const handleCloseDialog = () => {
+		setOpenDialog(false);
+		setSelectedUser(null);
+	};
+
+	const handleDeleteUser = async () => {
+		try {
+			await deleteUser(selectedUser.user_id);
+			setUsers(users.filter(user => user.user_id !== selectedUser.user_id));
+			setOpenDialog(false);
+		} catch (err) {
+			console.error("Error deleting user:", err);
+			setError("Failed to delete user, Please try again.");
+		} finally {
+			handleCloseDialog();
+		}
+	};
+
+	const handleUserCreated = (newUser) => {
+		setUsers((prevUsers) => [...prevUsers, newUser]); // Add the new user to the existing list
+	};
+
 
 	return (
 		<Container maxWidth="lg">
@@ -161,7 +198,7 @@ const AdminPage = () => {
 								>
 									<PersonAddIcon sx={{ mr: 1 }} /> Add New User
 								</Typography>
-								<AdminForm />
+								<AdminForm onUserCreated={handleUserCreated} />
 							</StyledPaper>
 						</Grid>
 						<Grid item xs={12} md={6}>
@@ -195,20 +232,13 @@ const AdminPage = () => {
 													}}
 												/>
 												<ListItemSecondaryAction>
-													<Tooltip title="Edit User">
-														<IconButton
-															edge="end"
-															aria-label="edit"
-															size={isMobile ? "small" : "medium"}
-														>
-															<EditIcon />
-														</IconButton>
-													</Tooltip>
+													
 													<Tooltip title="Delete User">
 														<IconButton
 															edge="end"
 															aria-label="delete"
 															size={isMobile ? "small" : "medium"}
+															onClick={() => handleOpenDialog(user)}
 														>
 															<DeleteIcon />
 														</IconButton>
@@ -291,6 +321,30 @@ const AdminPage = () => {
 					</StyledPaper>
 				</TabPanel>
 			</Box>
+			{/* Delete Confirmation Dialog */}
+			<Dialog
+				open={openDialog}
+				onClose={handleCloseDialog}
+				aria-labelledby="confirm-dialog-title"
+				aria-describedby="confirm-dialog-description"
+			>
+				<DialogTitle id="confirm-dialog-title">Confirm Delete</DialogTitle>
+				<DialogContent>
+					<DialogContentText id="confirm-dialog-description">
+						Are you sure you want to delete the user <strong>{selectedUser?.email}</strong>? This action cannot be undone.
+					</DialogContentText>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={handleCloseDialog} color="primary">
+						Cancel
+					</Button>
+					<Button onClick={handleDeleteUser} color="secondary" variant="contained">
+						Delete
+					</Button>
+				</DialogActions>
+			</Dialog>
+
+
 		</Container>
 	);
 };

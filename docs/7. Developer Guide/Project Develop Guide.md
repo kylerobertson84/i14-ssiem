@@ -54,6 +54,7 @@ i14-ssiem/
 ├── frontend/
 │   ├── src/
 │   │   ├── components/
+│   │   │   ├── tests/
 │   │   ├── pages/
 │   │   └── services/
 │   └── public/
@@ -77,14 +78,18 @@ i14-ssiem/
 5. Require code review before merging
 
 ## Testing
-- Backend: Use Django's testing framework
-  ```
-  python manage.py test
-  ```
-- Frontend: Use Jest and React Testing Library
-  ```
-  npm test
-  ```
+### Automate testing:
+- The project has been set up to include automate testing you can run this by the following code:
+- Backend:
+   ```
+   ./scripts/run_backend_unit_tests.sh
+   ```
+- Frontend:
+   ```
+   ./scripts/run_frontend_tests.sh
+   ```
+
+
 - Write unit tests for all new features
 - Maintain integration tests for critical user flows
 
@@ -94,7 +99,7 @@ i14-ssiem/
 3. Once develop is stable, merge into main
 4. Run the deployment script:
    ```
-   ./scripts/deploy.sh
+   ./scripts/setup_dev_environment.sh
    ```
 
 ## Troubleshooting
