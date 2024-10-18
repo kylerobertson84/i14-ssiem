@@ -8,8 +8,6 @@ This documentation aims to provide a high-level breakdown of how each of the top
 
 To quote directly from the website “94% of applications were tested for some form of broken access control”. Which is one of the major factors for why it is ranked as the #1 vulnerability.
 
-### Prevention
-
 To prevent broken access control this is the recommended:
 
 - **Deny access by default, except for public resources:**
@@ -17,6 +15,9 @@ To prevent broken access control this is the recommended:
   By default, no one should have access to resources unless explicitly allowed. Only resources meant to be public should be open to all. 
 
   This has been addressed by protected routing, meaning that no one has access to the SIEM pages unless they are logged and have the correct role permissions. Additionally, they cannot navigate to restricted pages by URLs alone.
+
+  ![image](https://github.com/user-attachments/assets/f842d77c-fe0e-4204-91d6-dce90c1c5d3d)
+
 
 - **Centralize and reuse access control mechanisms across the application:**
 
