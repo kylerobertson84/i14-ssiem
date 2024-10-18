@@ -47,12 +47,12 @@ const StyledButton = styled(Button)(({ theme }) => ({
 	marginBottom: theme.spacing(2),
 }));
 
-const DEMO_ACCOUNTS = {
-	user1: { email: "user1@siem.com", password: "abc123", role: "ANALYST" },
-	user2: { email: "user2@siem.com", password: "abc123", role: "ANALYST" },
-	admin1: { email: "admin1@siem.com", password: "abc123", role: "ADMIN" },
-	admin2: { email: "admin2@siem.com", password: "abc123", role: "ADMIN" },
-};
+// const DEMO_ACCOUNTS = {
+// 	user1: { email: "user1@siem.com", password: "abc123", role: "ANALYST" },
+// 	user2: { email: "user2@siem.com", password: "abc123", role: "ANALYST" },
+// 	admin1: { email: "admin1@siem.com", password: "abc123", role: "ADMIN" },
+// 	admin2: { email: "admin2@siem.com", password: "abc123", role: "ADMIN" },
+// };
 
 const Login = () => {
 	const [email, setEmail] = useState("");
@@ -64,13 +64,13 @@ const Login = () => {
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-	useEffect(() => {
-		if (selectedAccount) {
-			const account = DEMO_ACCOUNTS[selectedAccount];
-			setEmail(account.email);
-			setPassword(account.password);
-		}
-	}, [selectedAccount]);
+	// useEffect(() => {
+	// 	if (selectedAccount) {
+	// 		const account = DEMO_ACCOUNTS[selectedAccount];
+	// 		setEmail(account.email);
+	// 		setPassword(account.password);
+	// 	}
+	// }, [selectedAccount]);
 
 	const handleLogin = async (e) => {
 		e.preventDefault();
@@ -184,7 +184,7 @@ const Login = () => {
 								Sign in
 							</Typography>
 							<Box component="form" onSubmit={handleLogin} noValidate>
-								<FormControl fullWidth margin="normal">
+								{/* <FormControl fullWidth margin="normal">
 									<InputLabel id="account-select-label">
 										Select Demo Account
 									</InputLabel>
@@ -204,7 +204,7 @@ const Login = () => {
 											</MenuItem>
 										))}
 									</Select>
-								</FormControl>
+								</FormControl> */}
 								<TextField
 									margin="normal"
 									required
