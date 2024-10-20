@@ -25,14 +25,22 @@ To prevent broken access control this is the recommended:
 
   Only have access to the backend if you’re from ssiem.dev or localhost3000 which is necessary.
 
+  ![image](https://github.com/user-attachments/assets/ce060537-99c8-4003-b1d8-d89ebab592d0)
+
+
 - **Enforce ownership and business rules in data models:**
 
   Ensure that users can only manage records they own (e.g., edit or delete their own data).
 
   Users can only access and manage resources they have access to (analyst and admins) with admins only being able to delete and create users.
 
-  - Logged in as Analyst and do not have access to Admin page.
-  - Logged in as an Admin and do have access to Admin page.
+![image](https://github.com/user-attachments/assets/26f493da-1117-4e3a-a8c3-2c343f0e4024)
+
+Logged in as Analyst and do not have access to Admin page.
+
+![image](https://github.com/user-attachments/assets/8376bbaf-9acb-499a-b999-bc6f109fc2de)
+
+Logged in as an Admin and do have access to Admin page.
 
 - **Secure the web server by disabling directory listings and protecting sensitive files:**
 
@@ -40,7 +48,7 @@ To prevent broken access control this is the recommended:
 
   Log storage and passwords storage is done outside of the application and it privatized.
 
-  ![Image](https://cdn.discordapp.com/attachments/1285138814876258325/1295322532915970099/image.png?ex=670e3a9d&is=670ce91d&hm=a363336ba9aff1364f6e7503b7c3f1d0556aa2dc832e574a6bccd8c659875171&)
+![image](https://github.com/user-attachments/assets/a170dba3-c968-4a5f-93c3-53237401b47a)
 
 - **Monitor access control failures and alert admins when needed:**
 
@@ -88,7 +96,10 @@ To prevent broken access control this is the recommended:
 
   Our website has https enabled as well as an SSL cert.
 
-  For proof go on to [SSIM](https://ssiem.dev/) and refer to the certificate.
+  For proof go on to [SSIEM](https://ssiem.dev/) and refer to the certificate.
+
+  ![image](https://github.com/user-attachments/assets/41237b85-37f1-49e9-9151-623c112d9841)
+
 
 - **Do not rely on custom or homegrown cryptography:**
 
@@ -128,13 +139,23 @@ To prevent broken access control this is the recommended:
 
   Below is a quick test of the DOMFury in action:
 
+  ![image](https://github.com/user-attachments/assets/f4fdaff2-c2f3-48c8-9cdf-0f026b297be0)
+
+
 Within the development environment of the SSIEM, a simple test was made. Two images rendered with unsafe HTML. One is sanitized, and the other is not.
 
-Inserting image...
+![image](https://github.com/user-attachments/assets/4880089c-d652-408e-9b21-0abc73d52ea5)
+
 
 When clicking on the sanitized HTML, nothing appears but when clicking on the unsafe tag, the following alert is shown to demonstrate that possible XSS can be done.
 
+![image](https://github.com/user-attachments/assets/ca23d7ee-8e60-445a-a60f-b3f403b4c483)
+
+
 Here is the source code for how the test is done.
+
+
+
 
 - **Disable dangerous database features:**
 
@@ -150,7 +171,13 @@ Here is the source code for how the test is done.
 
   We are using NPM to ensure our tools are up to date as well as dependabot from GitHub. Although it is important to note, we are shipping this solution as an ‘out of box’ experience, therefore post-shipping of this application, updating is not our responsibility.
 
+![image](https://github.com/user-attachments/assets/6e839d6d-263f-4485-b718-239b2b901630)
+
 Using NPM, we can see packages that need to be updated.
+
+![image](https://github.com/user-attachments/assets/9afdf58b-a5e9-4c9d-b27f-38a8114584df)
+
+![image](https://github.com/user-attachments/assets/a51bf676-1e84-4aa4-8b27-f5bff2e2d038)
 
 We can do an automated update of all these packages, when the command is run again it confirms that everything is up to date.
 
@@ -162,11 +189,17 @@ We can do an automated update of all these packages, when the command is run aga
 
   All data retrieved by the web app via the API requires a valid token associated with their account, ensuring that data is only accessible to those who are authorized.
 
+  ![image](https://github.com/user-attachments/assets/05fca33e-803b-47ce-b12b-8eb7dadc0afa)
+
+
 - **Encrypted Communication**
 
   Use cryptographic functions and protocols to protect data in transit and at rest, such as HTTPS and encryption.
 
   Traefik manages an ACME DNS challenge to generate a Let's Encrypt certificate for HTTPS communication. The systems administrator can configure LUKS or BitLocker depending on their environment to ensure data is encrypted at rest.
+
+  ![image](https://github.com/user-attachments/assets/c964deb2-4f87-4848-bd6e-7000ea50ff49)
+
 
 - **Internal Network Isolation**
 
@@ -174,11 +207,17 @@ We can do an automated update of all these packages, when the command is run aga
 
   External-reaching services are placed behind a reverse proxy and on its own Docker network, while internal services are on a non-exposed Docker private network.
 
+  ![image](https://github.com/user-attachments/assets/575c995c-5961-4f40-bb45-04d18c698664)
+
+
 - **Least Privilege and Separation of Duties**
 
   Least Privilege is a security principle that states that users should only be given the minimum amount of access necessary to perform their job. This means that users should only be given access to the resources they need to do their job, and no more.
 
   Users have limited access; only authenticated users can access and modify data, role-based access control ensures separation of duties by limiting permissions based on user roles. This ensures the principle of Least Privilege and separation of duties, reducing the likelihood of unauthorized access to sensitive resources.
+
+  ![image](https://github.com/user-attachments/assets/dbf994f8-df49-4630-b0bb-222bc15b254f)
+
 
 ## OWASP #5 Security Misconfiguration
 
@@ -233,6 +272,9 @@ We can do an automated update of all these packages, when the command is run aga
   - 1 uppercase character
   - 1 number
 
+![image](https://github.com/user-attachments/assets/704f4d14-9d8b-4ae7-91fe-433131b432ee)
+
+
 - **Enable multi-factor authentication (MFA):**
 
   Add an extra layer of security by requiring users to verify their identity with something they have (like a phone) in addition to their password.
@@ -247,7 +289,7 @@ We can do an automated update of all these packages, when the command is run aga
 
   Passwords are secured and encrypted at rest.
 
-  ![Image](https://cdn.discordapp.com/attachments/1285138814876258325/1295322532915970099/image.png?ex=670e3a9d&is=670ce91d&hm=a363336ba9aff1364f6e7503b7c3f1d0556aa2dc832e574a6bccd8c659875171&)
+  ![image](https://github.com/user-attachments/assets/0c607e64-46f8-46a1-8d7a-a6b48093ef38)
 
 - **Use secure session management:**
 
@@ -256,6 +298,9 @@ We can do an automated update of all these packages, when the command is run aga
   Session tokens only last 1 day, meaning that you need to re-login every day.
 
   [GitHub Link](https://github.com/kylerobertson84/i14-ssiem/blob/develop/backend/siem/settings.py)
+
+  ![image](https://github.com/user-attachments/assets/def991de-33de-4f9c-b4e7-00765bc88d20)
+
 
 ## OWASP #8 Software and Data Integrity Failures
 
@@ -281,11 +326,17 @@ We can do an automated update of all these packages, when the command is run aga
 
   Currently, the system logs account activities such as failed or successful logins, data retrieved by a user and any modifications that an administrator user may to do other user accounts i.e. creation, deletion or modification.
 
+  ![image](https://github.com/user-attachments/assets/3d3148b5-47c1-4e1f-8de8-555e51243cdd)
+
+
 - **Logging system events.**
 
   Logging server side events that can be used for analysis after breach.
 
   The system also logs any SQL queries that are performed on the database allowing for further visibility and the ability to cross-reference any malicious events that may occur.
+
+  ![image](https://github.com/user-attachments/assets/2dbf84a5-15d0-4a75-b95b-f5f7b8b0c038)
+
 
 ## OWASP #10 Server-Side Request Forgery (SSRF)
 
