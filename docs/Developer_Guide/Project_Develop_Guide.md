@@ -43,25 +43,24 @@ Key components:
    - API Documentation: http://localhost:8000/api/docs/
 
 ## Project Structure
-```
 i14-ssiem/
-├── backend/
-│   ├── siem_project/
-│   ├── accounts/
-│   ├── logs/
-│   ├── alerts/
-│   └── reports/
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── tests/
-│   │   ├── pages/
-│   │   └── services/
-│   └── public/
-├── database/
-├── docs/
-└── scripts/
-```
+  - backend/
+    - siem_project/
+    - accounts/
+    - logs/
+    - alerts/
+    - reports/
+  - frontend/
+    - src/
+      - components/
+        - tests/
+      - pages/
+      - services/
+    - public/
+  - database/
+  - docs/
+  - scripts/
+
 
 ## Coding Standards
 - Python: Follow PEP 8 style guide
