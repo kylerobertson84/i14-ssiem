@@ -6,24 +6,23 @@ The SIEM (Security Information and Event Management) application is built using 
 
 ## 2. High-Level Architecture
 
-> [!WARNING]
-> [NEED DIAGRAM HERE]
-
-![image](https://github.com/user-attachments/assets/fa7dcf69-1df1-4794-81d2-229eb9a77ed3)
+![image](https://github.com/user-attachments/assets/fa7dcf69-1df1-4794-81d2-229eb9a77ed3)  
+_Fig:1 Architecture Diagram_
 
 ## 3. Component Breakdown
 
 ### 3.1 Frontend
+
 - **Technology**: React with Material UI
 - **Key Features**:
   - Single Page Application (SPA) architecture
   - Responsive design for various device sizes
   - Component-based structure for reusability
 
-> [!WARNING]
-> [REQUIRE MORE INFO HERE]
+> [!WARNING] > [REQUIRE MORE INFO HERE]
 
 ### 3.2 Backend
+
 - **Framework**: Django (Python-based)
 - **Key Components**:
   - **Django REST Framework**: For building RESTful APIs
@@ -33,30 +32,35 @@ The SIEM (Security Information and Event Management) application is built using 
   - **DRF Spectacular**: For API documentation
 
 ### 3.3 Database
+
 - **Technology**: MySQL
 - **Key Aspects**:
   - Stores user data, alerts, logs, and other application-specific information
   - Configured with environment variables for flexibility
 
 ### 3.4 Caching and Message Broker
+
 - **Technology**: Redis
 - **Uses**:
   - Celery broker for task queue management
   - Potential use for caching frequently accessed data
 
 ### 3.5 Task Queue
+
 - **Technology**: Celery
 - **Key Tasks**:
   - Periodic log checking and processing
   - Background processing of time-consuming operations
 
 ### 3.6 Logging
+
 - **Implementation**:
   - Custom logging configuration
   - File-based logging with rotating log files
   - Console logging for development
 
 ### 3.7 Authentication and Authorization
+
 - **Method**: JWT (JSON Web Tokens)
 - **Features**:
   - Token-based authentication for API access
@@ -64,16 +68,25 @@ The SIEM (Security Information and Event Management) application is built using 
 
 ## 4. Data Flow
 
+![alt text](Images/image-3.png)  
+_Fig:2 Data Flow Diagram_
+
+![alt text](Images/image.png)  
+_Fig:3 ERD database Diagram_
+
 1. **Log Ingestion**:
+
    - External systems write logs to a designated directory
    - Celery task (`check_and_process_logs`) periodically checks for new logs
    - New logs are processed and stored in the `BronzeEventData` model
 
 2. **Alert Generation**:
+
    - Processed log data is analyzed against defined rules
    - Matching events trigger the creation of `Alert` objects
 
 3. **User Interaction**:
+
    - Users interact with the React frontend
    - API requests are sent to Django backend
    - Django processes requests, interacting with the database as needed
@@ -94,8 +107,9 @@ The SIEM (Security Information and Event Management) application is built using 
   - `/reports/`: Report generation and management
 
 ## 6. Security Measures
-> [!WARNING]
-> [REQUIRE MORE INFO HERE]
+
+> [!WARNING] > [REQUIRE MORE INFO HERE]
+
 - HTTPS for all client-server communication
 - JWT for API authentication
 - CORS configuration to restrict allowed origins
@@ -108,8 +122,9 @@ The SIEM (Security Information and Event Management) application is built using 
 - Traefik's API is exposed insecurely (--api.insecure=true) and should be secured in production
 
 ## 7. Scalability Considerations
-> [!WARNING]
-> [REQUIRE MORE INFO HERE]
+
+> [!WARNING] > [REQUIRE MORE INFO HERE]
+
 - Stateless application design for horizontal scaling
 - Use of Celery for offloading time-consuming tasks
 - Potential for database read replicas for scaling read operations
@@ -119,14 +134,16 @@ The SIEM (Security Information and Event Management) application is built using 
 - Database scaling would require additional setup for replication or clustering
 
 ## 8. Monitoring and Maintenance
-> [!WARNING]
-> [REQUIRE MORE INFO HERE]
+
+> [!WARNING] > [REQUIRE MORE INFO HERE]
+
 - Comprehensive logging for application events and errors
 - Celery task monitoring for background job performance
 - Database query monitoring for performance optimization
 - Traefik is configured with debug-level logging
 - Application logs are likely captured by the Docker logging driver
 - Consider integrating with a centralized logging solution for production
+
 ## 9. Development and Deployment
 
 ### 9.1 Container Orchestration
@@ -134,6 +151,7 @@ The SIEM (Security Information and Event Management) application is built using 
 The application is containerized using Docker, with services defined in a docker-compose file for easy deployment and scaling. The key components in the production environment are:
 
 1. **Frontend**
+
    - Built from a custom Dockerfile in the `./frontend` directory
    - Exposed via Traefik reverse proxy
    - Environment variables:
@@ -143,12 +161,14 @@ The application is containerized using Docker, with services defined in a docker
      - `DOMAIN`: Domain name for the application
 
 2. **Backend**
+
    - Built from a custom Dockerfile in the `./backend` directory
    - Runs on port 8000 internally, mapped to a configurable external port
    - Also listens on UDP port 514 (likely for syslog ingestion)
    - Uses environment variables for configuration
 
 3. **Database**
+
    - Uses MariaDB 10.5
    - Data persisted in a named volume
    - Initializes with a custom SQL script
@@ -194,10 +214,12 @@ The CI pipeline is triggered on pushes to `main` and `develop` branches, as well
 Key steps in the CI process:
 
 1. **Environment Setup**:
+
    - Uses Ubuntu latest as the runner
    - Sets up a MariaDB service container for testing
 
 2. **Backend Testing**:
+
    - Sets up Python 3.12
    - Installs backend dependencies
    - Runs Django tests against the MariaDB test database
@@ -218,6 +240,7 @@ The CD pipeline is triggered on pushes to the `main` branch, automating the depl
 Key steps in the CD process:
 
 1. **Docker Image Building and Pushing**:
+
    - Sets up Docker Buildx
    - Logs in to Docker Hub using secrets
    - Builds Docker images using `docker-compose.prod.yml`
