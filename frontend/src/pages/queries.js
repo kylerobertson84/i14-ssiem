@@ -1,26 +1,31 @@
 import React, { useState, useEffect } from "react";
 import {
-	Container,
-	Typography,
-	TextField,
-	Button,
-	Paper,
-	Grid,
-	Box,
-	Tabs,
-	Tab,
-	IconButton,
-	Tooltip,
-	Table,
-	TableBody,
-	TableCell,
-	TableContainer,
-	TableHead,
-	TableRow,
-	TableSortLabel,
-	TablePagination,
-	Snackbar,
-	Alert,
+  Container,
+  Typography,
+  TextField,
+  Button,
+  Paper,
+  Grid,
+  Box,
+  Tabs,
+  Tab,
+  IconButton,
+  Tooltip,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TableSortLabel,
+  TablePagination,
+  Snackbar,
+  Alert,
+  Select,
+  MenuItem,
+  useTheme,
+  useMediaQuery,
+  CircularProgress,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
@@ -28,62 +33,90 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { enAU } from "date-fns/locale";
 import {
-	Search as SearchIcon,
-	GetApp as ExportIcon,
-	Refresh as RefreshIcon,
-	Clear as ClearIcon,
-	FirstPage as FirstPageIcon,
-	LastPage as LastPageIcon,
+  Search as SearchIcon,
+  GetApp as ExportIcon,
+  Refresh as RefreshIcon,
+  Clear as ClearIcon,
+  FirstPage as FirstPageIcon,
+  LastPage as LastPageIcon,
 } from "@mui/icons-material";
 import {
-	fetchComputerLogs,
-	fetchRouterLogs,
-	exportPDF,
+  fetchComputerLogs,
+  fetchRouterLogs,
+  exportPDF,
 } from "../services/apiService";
 import SEO from "../Design/SEO.js";
 import LogDetailDialog from "../components/LogDetails.js";
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
 	transition: "box-shadow 0.3s ease-in-out",
+	padding: theme.spacing(3),
+	marginBottom: theme.spacing(3),
+	borderRadius: theme.shape.borderRadius,
 	"&:hover": {
-		boxShadow: "0 8px 16px rgba(0, 0, 0, 0.1)",
+	  boxShadow: "0 8px 16px rgba(0, 0, 0, 0.1)",
 	},
-}));
-
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  }));
+  
+  const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
+	maxHeight: 440,
+	overflowX: "auto",
+	"&::-webkit-scrollbar": {
+	  width: 8,
+	  height: 8,
+	},
+	"&::-webkit-scrollbar-thumb": {
+	  backgroundColor: theme.palette.primary.light,
+	  borderRadius: 4,
+	},
+  }));
+  
+  const StyledTableRow = styled(TableRow)(({ theme }) => ({
 	cursor: "pointer",
 	"&:hover": {
-		backgroundColor: theme.palette.action.hover,
+	  backgroundColor: theme.palette.action.hover,
 	},
-}));
-
-const StyledTableSortLabel = styled(TableSortLabel)(({ theme }) => ({
-	color: "white",
+  }));
+  
+  const StyledTableSortLabel = styled(TableSortLabel)(({ theme }) => ({
+	color: theme.palette.primary.contrastText,
 	"&.MuiTableSortLabel-root:hover": {
-		color: "white",
+	  color: theme.palette.primary.contrastText,
 	},
 	"&.MuiTableSortLabel-root.Mui-active": {
-		color: "white",
+	  color: theme.palette.primary.contrastText,
 	},
 	"& .MuiTableSortLabel-icon": {
-		color: "white !important",
+	  color: `${theme.palette.primary.contrastText} !important`,
 	},
-}));
-
-//updated time format
-const formatDate = (dateString) => {
+  }));
+  
+  const StyledButton = styled(Button)(({ theme }) => ({
+	margin: theme.spacing(1, 0),
+  }));
+  
+  const formatDate = (dateString) => {
 	const date = new Date(dateString);
-	const day = String(date.getDate()).padStart(2, '0');
-	const month = String(date.getMonth() + 1).padStart(2, '0');
-	const year = date.getFullYear();
-	const hours = String(date.getHours()).padStart(2, '0');
-	const minutes = String(date.getMinutes()).padStart(2, '0');
-	const seconds = String(date.getSeconds()).padStart(2, '0');
-	
-	return `${day}/${month}/${year}, ${hours}:${minutes}:${seconds}`;
-};
+	return date.toLocaleString("en-AU", {
+	  day: "2-digit",
+	  month: "2-digit",
+	  year: "numeric",
+	  hour: "2-digit",
+	  minute: "2-digit",
+	  second: "2-digit",
+	  hour12: false,
+	});
+  };
+  
+  const RELATIVE_TIME_OPTIONS = [
+	{ label: 'Last Hour', value: 60 * 60 * 1000 },
+	{ label: 'Last 24 Hours', value: 24 * 60 * 60 * 1000 },
+	{ label: 'Last 7 Days', value: 7 * 24 * 60 * 60 * 1000 },
+  ];
 
 const LogQueries = () => {
+	const theme = useTheme();
+	const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 	const [activeTab, setActiveTab] = useState(0);
 	const [searchParams, setSearchParams] = useState({
 		query: "",
@@ -105,376 +138,382 @@ const LogQueries = () => {
 		severity: "info",
 	});
 
-	const handleSearch = async () => {
-		setLoading(true);
-		try {
-			const fetchFunction =
-				activeTab === 0 ? fetchComputerLogs : fetchRouterLogs;
-			const response = await fetchFunction(
-				searchParams,
-				page + 1,
-				rowsPerPage,
-				orderBy,
-				order
-			);
-			setLogs(response.results);
-			setTotalResults(response.count);
-		} catch (error) {
-			console.error("Error fetching search results:", error);
-		} finally {
-			setLoading(false);
-		}
-	};
 
-	const handleKeyPress = (event) => {
-		if (event.key === 'Enter') {
-			handleSearch();
-		}
-	}
+  const handleSearch = async () => {
+    setLoading(true);
+    try {
+      const fetchFunction = activeTab === 0 ? fetchComputerLogs : fetchRouterLogs;
+      const response = await fetchFunction(
+        searchParams,
+        page + 1,
+        rowsPerPage,
+        orderBy,
+        order
+      );
+      setLogs(response.results);
+      setTotalResults(response.count);
+    } catch (error) {
+      console.error("Error fetching search results:", error);
+      setSnackbar({
+        open: true,
+        message: "Error fetching search results. Please try again.",
+        severity: "error",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
-	const handleExport = async () => {
-		try {
-			if (totalResults === 0) {
-				setSnackbar({
-					open: true,
-					message: "No data to export. Please perform a search first.",
-					severity: "warning",
-				});
-				return;
-			}
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      handleSearch();
+    }
+  }
 
-			const response = await exportPDF(
-				activeTab === 0 ? "computer" : "router",
-				searchParams
-			);
-			const blob = new Blob([response], { type: "application/pdf" });
-			const url = window.URL.createObjectURL(blob);
-			const link = document.createElement("a");
-			link.href = url;
-			link.setAttribute(
-				"download",
-				`${activeTab === 0 ? "computer" : "router"}_logs.pdf`
-			);
-			document.body.appendChild(link);
-			link.click();
-			link.parentNode.removeChild(link);
-		} catch (error) {
-			console.error("Error exporting PDF:", error);
-			let errorMessage = "Failed to export PDF. Please try again.";
-			if (error.response) {
-				if (error.response.status === 404) {
-					errorMessage = "The requested data for export could not be found.";
-				} else if (error.response.status === 400) {
-					errorMessage =
-						"Invalid request. Please check your search parameters.";
-				}
-			}
-			setSnackbar({
-				open: true,
-				message: errorMessage,
-				severity: "error",
-			});
-		}
-	};
+  const handleExport = async () => {
+    try {
+      if (totalResults === 0) {
+        setSnackbar({
+          open: true,
+          message: "No data to export. Please perform a search first.",
+          severity: "warning",
+        });
+        return;
+      }
 
-	const handleInputChange = (event) => {
-		const { name, value } = event.target;
-		setSearchParams((prevParams) => ({ ...prevParams, [name]: value }));
-	};
+      const response = await exportPDF(
+        activeTab === 0 ? "computer" : "router",
+        searchParams
+      );
+      const blob = new Blob([response], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute(
+        "download",
+        `${activeTab === 0 ? "computer" : "router"}_logs.pdf`
+      );
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+    } catch (error) {
+      console.error("Error exporting PDF:", error);
+      setSnackbar({
+        open: true,
+        message: "Failed to export PDF. Please try again.",
+        severity: "error",
+      });
+    }
+  };
 
-	const handleDateChange = (name, value) => {
-		setSearchParams((prevParams) => ({ ...prevParams, [name]: value }));
-	};
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setSearchParams((prevParams) => ({ ...prevParams, [name]: value }));
+  };
 
-	const handleTabChange = (event, newValue) => {
-		setActiveTab(newValue);
-		setPage(0);
-	};
+  const handleDateChange = (name, value) => {
+    setSearchParams((prevParams) => ({ ...prevParams, [name]: value }));
+  };
 
-	const handleRequestSort = (property) => {
-		const isAsc = orderBy === property && order === "asc";
-		setOrder(isAsc ? "desc" : "asc");
-		setOrderBy(property);
-	};
+  const handleTabChange = (event, newValue) => {
+    setActiveTab(newValue);
+    setPage(0);
+  };
 
-	const handleChangePage = (event, newPage) => {
-		setPage(newPage);
-	};
+  const handleRequestSort = (property) => {
+    const isAsc = orderBy === property && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
+    setOrderBy(property);
+  };
 
-	const handleChangeRowsPerPage = (event) => {
-		setRowsPerPage(parseInt(event.target.value, 10));
-		setPage(0);
-	};
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
 
-	const handleRowClick = (log) => {
-		setSelectedLog(log);
-		setDialogOpen(true);
-	};
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
-	const handleClearFilters = () => {
-		setSearchParams({
-			query: "",
-			startTime: null,
-			endTime: null,
-		});
-		setPage(0);
-		setOrderBy("");
-		setOrder("asc");
-	};
+  const handleRowClick = (log) => {
+    setSelectedLog(log);
+    setDialogOpen(true);
+  };
 
-	const handleFirstPage = () => {
-		setPage(0);
-	};
+  const handleClearFilters = () => {
+    setSearchParams({
+      query: "",
+      startTime: null,
+      endTime: null,
+    });
+    setPage(0);
+    setOrderBy("");
+    setOrder("asc");
+  };
 
-	const handleLastPage = () => {
-		setPage(Math.max(0, Math.ceil(totalResults / rowsPerPage) - 1));
-	};
+  const handleFirstPage = () => {
+    setPage(0);
+  };
 
-	useEffect(() => {
-		handleSearch();
-	}, [activeTab, page, rowsPerPage, orderBy, order]);
+  const handleLastPage = () => {
+    setPage(Math.max(0, Math.ceil(totalResults / rowsPerPage) - 1));
+  };
 
-	const computerColumns = [
-		{ id: "iso_timestamp", label: "Timestamp", minWidth: 170 },
-		{ id: "hostname", label: "Hostname", minWidth: 100 },
-		{ id: "EventType", label: "Event Type", minWidth: 100 },
-		{ id: "EventID", label: "EventID", minWidth: 100 },
-		{ id: "AccountName", label: "Account", minWidth: 100 },
-		{ id: "message", label: "Message", minWidth: 200 },
-	];
+  const handleRelativeTimeFilter = (milliseconds) => {
+    const endTime = new Date();
+    const startTime = new Date(endTime - milliseconds);
+    setSearchParams((prevParams) => ({
+      ...prevParams,
+      startTime: startTime,
+      endTime: endTime,
+    }));
+    handleSearch();
+  };
 
-	const routerColumns = [
-		{ id: "date_time", label: "Timestamp", minWidth: 170 },
-		{ id: "hostname", label: "Hostname", minWidth: 100 },
-		{ id: "process", label: "Process", minWidth: 100 },
-		{ id: "message", label: "Message", minWidth: 200 },
-	];
+  useEffect(() => {
+    handleSearch();
+  }, [activeTab, page, rowsPerPage, orderBy, order]);
 
-	const handleCloseSnackbar = (event, reason) => {
-		if (reason === "clickaway") {
-			return;
-		}
-		setSnackbar({ ...snackbar, open: false });
-	};
+  const computerColumns = [
+    { id: "iso_timestamp", label: "Timestamp", minWidth: 170 },
+    { id: "hostname", label: "Hostname", minWidth: 100 },
+    { id: "EventType", label: "Event Type", minWidth: 100 },
+    { id: "EventID", label: "EventID", minWidth: 100 },
+    { id: "AccountName", label: "Account", minWidth: 100 },
+    { id: "message", label: "Message", minWidth: 200 },
+  ];
 
-	const columns = activeTab === 0 ? computerColumns : routerColumns;
+  const routerColumns = [
+    { id: "date_time", label: "Timestamp", minWidth: 170 },
+    { id: "hostname", label: "Hostname", minWidth: 100 },
+    { id: "process", label: "Process", minWidth: 100 },
+    { id: "message", label: "Message", minWidth: 200 },
+  ];
 
-	return (
-		<>
-			<SEO title="Queries" />
-			<Container maxWidth="xl" sx={{ py: 4 }}>
-				<Typography
-					variant="h4"
-					component="h1"
-					gutterBottom
-					sx={{ mb: 3, fontWeight: "bold" }}
-				>
-					Log Queries
-				</Typography>
-				<StyledPaper elevation={3} sx={{ mb: 3, p: 3 }}>
-					<Grid container spacing={2} alignItems="center">
-						<Grid item xs={12} md={4}>
-							<TextField
-								fullWidth
-								variant="outlined"
-								label="Search hostname, process or message"
-								name="query"
-								value={searchParams.query}
-								onChange={handleInputChange}
-								onKeyDown={handleKeyPress}
-							/>
-						</Grid>
-						<Grid item xs={12} md={3}>
-							<LocalizationProvider
-								dateAdapter={AdapterDateFns}
-								adapterLocale={enAU}
-							>
-								<DateTimePicker
-									label="Start Time"
-									value={searchParams.startTime}
-									onChange={(newValue) =>
-										handleDateChange("startTime", newValue)
-									}
-									renderInput={(params) => <TextField {...params} fullWidth />}
-									ampm={false}
-								/>
-							</LocalizationProvider>
-						</Grid>
-						<Grid item xs={12} md={3}>
-							<LocalizationProvider
-								dateAdapter={AdapterDateFns}
-								adapterLocale={enAU}
-							>
-								<DateTimePicker
-									label="End Time"
-									value={searchParams.endTime}
-									onChange={(newValue) => handleDateChange("endTime", newValue)}
-									renderInput={(params) => <TextField {...params} fullWidth />}
-									ampm={false}
-								/>
-							</LocalizationProvider>
-						</Grid>
-						<Grid item xs={12} md={2}>
-							<Button
-								fullWidth
-								variant="contained"
-								color="primary"
-								startIcon={<SearchIcon />}
-								onClick={handleSearch}
-								sx={{ mb: 1 }}
-							>
-								Search
-							</Button>
-							<Button
-								fullWidth
-								variant="outlined"
-								color="secondary"
-								startIcon={<ClearIcon />}
-								onClick={handleClearFilters}
-							>
-								Clear Filters
-							</Button>
-						</Grid>
-					</Grid>
-				</StyledPaper>
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnackbar({ ...snackbar, open: false });
+  };
 
-				<StyledPaper elevation={3}>
-					<Tabs
-						value={activeTab}
-						onChange={handleTabChange}
-						centered
-						sx={{ borderBottom: 1, borderColor: "divider" }}
-					>
-						<Tab label="Computer Logs" />
-						<Tab label="Router Logs" />
-					</Tabs>
+  const columns = activeTab === 0 ? computerColumns : routerColumns;
 
-					<Box sx={{ p: 2 }}>
-						<Box
-							sx={{
-								display: "flex",
-								justifyContent: "space-between",
-								alignItems: "center",
-								mb: 2,
-							}}
-						>
-							<Typography variant="h6">Results: {totalResults}</Typography>
-							<Box>
-								<Tooltip title="Refresh">
-									<IconButton onClick={handleSearch} color="primary">
-										<RefreshIcon />
-									</IconButton>
-								</Tooltip>
-								<Tooltip title="Export to PDF">
-									<IconButton onClick={handleExport} color="primary">
-										<ExportIcon />
-									</IconButton>
-								</Tooltip>
-							</Box>
-						</Box>
+  return (
+    <>
+      <SEO title="Queries" />
+      <Container maxWidth="xl" sx={{ py: 4 }}>
+        <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 3, fontWeight: "bold", color: "primary.main" }}>
+          Log Queries
+        </Typography>
+        <StyledPaper elevation={3}>
+          <Grid container spacing={2} alignItems="center">
+            <Grid item xs={12} md={4}>
+              <TextField
+                fullWidth
+                variant="outlined"
+                label="Search hostname, process or message"
+                name="query"
+                value={searchParams.query}
+                onChange={handleInputChange}
+                onKeyDown={handleKeyPress}
+              />
+            </Grid>
+            <Grid item xs={12} md={3}>
+              <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enAU}>
+                <DateTimePicker
+                  label="Start Time"
+                  value={searchParams.startTime}
+                  onChange={(newValue) => handleDateChange("startTime", newValue)}
+                  renderInput={(params) => <TextField {...params} fullWidth />}
+                  ampm={false}
+                />
+              </LocalizationProvider>
+            </Grid>
+            <Grid item xs={12} md={3}>
+              <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enAU}>
+                <DateTimePicker
+                  label="End Time"
+                  value={searchParams.endTime}
+                  onChange={(newValue) => handleDateChange("endTime", newValue)}
+                  renderInput={(params) => <TextField {...params} fullWidth />}
+                  ampm={false}
+                />
+              </LocalizationProvider>
+            </Grid>
+            <Grid item xs={12} md={2}>
+              <Select
+                fullWidth
+                value=""
+                onChange={(e) => handleRelativeTimeFilter(e.target.value)}
+                displayEmpty
+              >
+                <MenuItem value="" disabled>
+                  Quick Time Filter
+                </MenuItem>
+                {RELATIVE_TIME_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <StyledButton
+                fullWidth
+                variant="contained"
+                color="primary"
+                startIcon={<SearchIcon />}
+                onClick={handleSearch}
+              >
+                Search
+              </StyledButton>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <StyledButton
+                fullWidth
+                variant="outlined"
+                color="secondary"
+                startIcon={<ClearIcon />}
+                onClick={handleClearFilters}
+              >
+                Clear Filters
+              </StyledButton>
+            </Grid>
+          </Grid>
+        </StyledPaper>
 
-						<Snackbar
-							open={snackbar.open}
-							autoHideDuration={6000}
-							onClose={handleCloseSnackbar}
-							anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-						>
-							<Alert
-								onClose={handleCloseSnackbar}
-								severity={snackbar.severity}
-								sx={{ width: "100%" }}
-							>
-								{snackbar.message}
-							</Alert>
-						</Snackbar>
+        <StyledPaper elevation={3}>
+          <Tabs
+            value={activeTab}
+            onChange={handleTabChange}
+            centered
+            sx={{ borderBottom: 1, borderColor: "divider", mb: 2 }}
+          >
+            <Tab label="Computer Logs" />
+            <Tab label="Router Logs" />
+          </Tabs>
 
-						<TableContainer>
-							<Table sx={{ minWidth: 650 }} aria-label="log table">
-								<TableHead>
-									<TableRow sx={{ bgcolor: "primary.main" }}>
-										{columns.map((column) => (
-											<TableCell
-												key={column.id}
-												sx={{ color: "white", fontWeight: "bold" }}
-											>
-												<StyledTableSortLabel
-													active={orderBy === column.id}
-													direction={orderBy === column.id ? order : "asc"}
-													onClick={() => handleRequestSort(column.id)}
-												>
-													{column.label}
-												</StyledTableSortLabel>
-											</TableCell>
-										))}
-									</TableRow>
-								</TableHead>
-								<TableBody>
-									{logs.map((log) => (
-										<StyledTableRow
-											key={log.id}
-											onClick={() => handleRowClick(log)}
-										>
-											{columns.map((column) => (
-												<TableCell key={column.id}>
-													{column.id === "iso_timestamp" ||
-														column.id === "date_time"
-														? formatDate(log[column.id])
-														: column.id === "message"
-															? log[column.id].substring(0, 100) +
-															(log[column.id].length > 100 ? "..." : "")
-															: log[column.id]}
-												</TableCell>
-											))}
-										</StyledTableRow>
-									))}
-								</TableBody>
-							</Table>
-						</TableContainer>
-						<Box
-							sx={{
-								display: "flex",
-								justifyContent: "space-between",
-								alignItems: "center",
-								mt: 2,
-							}}
-						>
-							<Box>
-								<Tooltip title="First Page">
-									<IconButton onClick={handleFirstPage} disabled={page === 0}>
-										<FirstPageIcon />
-									</IconButton>
-								</Tooltip>
-								<Tooltip title="Last Page">
-									<IconButton
-										onClick={handleLastPage}
-										disabled={page >= Math.ceil(totalResults / rowsPerPage) - 1}
-									>
-										<LastPageIcon />
-									</IconButton>
-								</Tooltip>
-							</Box>
-							<TablePagination
-								rowsPerPageOptions={[10, 25, 100]}
-								component="div"
-								count={totalResults}
-								rowsPerPage={rowsPerPage}
-								page={page}
-								onPageChange={handleChangePage}
-								onRowsPerPageChange={handleChangeRowsPerPage}
-							/>
-						</Box>
-					</Box>
-				</StyledPaper>
+          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+            <Typography variant="h6" color="primary">Results: {totalResults}</Typography>
+            <Box>
+              <Tooltip title="Refresh">
+                <IconButton onClick={handleSearch} color="primary" disabled={loading}>
+                  <RefreshIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Export to PDF">
+                <IconButton onClick={handleExport} color="primary" disabled={loading}>
+                  <ExportIcon />
+                </IconButton>
+              </Tooltip>
+            </Box>
+          </Box>
 
-				<LogDetailDialog
-					log={selectedLog}
-					open={dialogOpen}
-					onClose={() => setDialogOpen(false)}
-					isComputerLog={activeTab === 0}
-				/>
-			</Container>
-		</>
-	);
+          {loading ? (
+            <Box sx={{ display: "flex", justifyContent: "center", my: 4 }}>
+              <CircularProgress />
+            </Box>
+          ) : (
+            <StyledTableContainer>
+              <Table stickyHeader aria-label="log table">
+                <TableHead>
+                  <TableRow>
+                    {columns.map((column) => (
+                      <TableCell
+                        key={column.id}
+                        sx={{ 
+                          backgroundColor: "primary.main", 
+                          color: "primary.contrastText", 
+                          fontWeight: "bold",
+                          ...(isMobile && column.id !== "iso_timestamp" && column.id !== "message" && { display: "none" })
+                        }}
+                      >
+                        <StyledTableSortLabel
+                          active={orderBy === column.id}
+                          direction={orderBy === column.id ? order : "asc"}
+                          onClick={() => handleRequestSort(column.id)}
+                        >
+                          {column.label}
+                        </StyledTableSortLabel>
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {logs.map((log) => (
+                    <StyledTableRow key={log.id} onClick={() => handleRowClick(log)}>
+                      {columns.map((column) => (
+                        <TableCell 
+                          key={column.id}
+                          sx={isMobile && column.id !== "iso_timestamp" && column.id !== "message" ? { display: "none" } : {}}
+                        >
+                          {column.id === "iso_timestamp" || column.id === "date_time"
+                            ? formatDate(log[column.id])
+                            : column.id === "message"
+                            ? log[column.id].substring(0, isMobile ? 50 : 100) + (log[column.id].length > (isMobile ? 50 : 100) ? "..." : "")
+                            : log[column.id]}
+                        </TableCell>
+                      ))}
+                    </StyledTableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </StyledTableContainer>
+          )}
+
+          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mt: 2 }}>
+            <Box>
+              <Tooltip title="First Page">
+                <IconButton onClick={handleFirstPage} disabled={page === 0}>
+                  <FirstPageIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Last Page">
+                <IconButton
+                  onClick={handleLastPage}
+                  disabled={page >= Math.ceil(totalResults / rowsPerPage) - 1}
+                >
+                  <LastPageIcon />
+                </IconButton>
+              </Tooltip>
+            </Box>
+            <TablePagination
+              rowsPerPageOptions={[10, 25, 100]}
+              component="div"
+              count={totalResults}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </Box>
+        </StyledPaper>
+
+        <LogDetailDialog
+          log={selectedLog}
+          open={dialogOpen}
+          onClose={() => setDialogOpen(false)}
+          isComputerLog={activeTab === 0}
+        />
+
+        <Snackbar
+          open={snackbar.open}
+          autoHideDuration={6000}
+          onClose={handleCloseSnackbar}
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        >
+          <Alert
+            onClose={handleCloseSnackbar}
+            severity={snackbar.severity}
+            sx={{ width: "100%" }}
+          >
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
+      </Container>
+    </>
+  );
 };
 
 export default LogQueries;

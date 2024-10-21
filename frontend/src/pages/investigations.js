@@ -407,6 +407,14 @@ const InvestigationPage = () => {
 							</Grid>
 							<Grid item xs={12} md={6}>
 								<Typography variant="subtitle2" color="text.secondary">
+									Severity
+								</Typography>
+								<Typography variant="body1">
+									{selectedAlert?.alert?.severity || "N/A"}
+								</Typography>
+							</Grid>
+							<Grid item xs={12} md={6}>
+								<Typography variant="subtitle2" color="text.secondary">
 									Created At
 								</Typography>
 								<Typography variant="body1">
@@ -415,10 +423,10 @@ const InvestigationPage = () => {
 							</Grid>
 							<Grid item xs={12} md={6}>
 								<Typography variant="subtitle2" color="text.secondary">
-									Severity
+									Updated At
 								</Typography>
 								<Typography variant="body1">
-									{selectedAlert?.alert?.severity || "N/A"}
+									{selectedAlert?.alert?.updated_at ? formatDate(selectedAlert.alert.updated_at) : "N/A"}
 								</Typography>
 							</Grid>
 							<Grid item xs={12} md={6}>

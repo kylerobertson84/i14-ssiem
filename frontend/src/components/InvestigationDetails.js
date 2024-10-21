@@ -76,6 +76,10 @@ const InvestigationDetails = ({ open, onClose, alert }) => {
               <strong>Created At:</strong>{" "}
               {formatDate(alert.created_at)}
             </Typography>
+            <Typography variant="body2" sx={{ mb: 1 }}>
+              <strong>Created At:</strong>{" "}
+              {formatDate(alert.updated_at)}
+            </Typography>
             <Typography variant="body2" sx={{ mb: 2 }}>
               <strong>Notes:</strong> {alert.notes || "No notes"}
             </Typography>

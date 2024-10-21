@@ -1,6 +1,3 @@
-
-# logs/views.py
-
 from io import BytesIO
 from datetime import datetime
 import logging
@@ -115,6 +112,10 @@ class RouterDataViewSet(viewsets.ReadOnlyModelViewSet, BaseViewThrottleSet):
         if end_time:
             end_datetime = parse_datetime(end_time)
             queryset = queryset.filter(date_time__lte=end_datetime)
+        
+        # Optimize for recent logs
+        recent_logs = timezone.now() - timezone.timedelta(days=30)
+        queryset = queryset.filter(iso_timestamp__gte=recent_logs)
         
         if process:
             queryset = queryset.filter(process=process)
