@@ -100,8 +100,13 @@ Advanced features:
 
 ## Reporting
 
+![alt text](Images/Report.png)
+
 1. Go to the "Reports" section
 2. Choose from pre-defined report templates or create a custom report
+
+   ![alt text](Images/Report_generate.PNG)
+
 3. Set parameters (time range, data sources, etc.)
 4. Generate report in various formats (PDF, CSV, HTML)
 5. View Generated reports
