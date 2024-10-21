@@ -49,7 +49,6 @@ const Dashboard = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
     const [user, setUser] = useState(null);
-    const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [recordCount, setRecordCount] = useState(0);
     const [routerLogCount, setRouterLogCount] = useState(0);
@@ -113,8 +112,6 @@ const Dashboard = () => {
 				setHostnameCount(fetchedHostnameCount);
 				setInvestigationCount(fetchedInvestigationCount);
 				setAssignedAlerts(fetchedAssignedAlerts);
-				console.log("Test1", fetchAssignedAlerts);
-				//setAssignedAlerts(userAssignedAlerts); //set user-assigned alerts
 				setLoading(false);
 			} catch (error) {
 				console.error("Error loading dashboard data", error);
@@ -123,17 +120,6 @@ const Dashboard = () => {
 		};
 
         loadData();
-    }, []);
-
-    useEffect(() => {
-        fetch("/data.json")
-            .then((response) => response.json())
-            .then((json) => {
-                setData(json);
-            })
-            .catch((error) => {
-                console.error("Error loading data:", error);
-            });
     }, []);
 
     const navigate = useNavigate();
@@ -166,22 +152,6 @@ const Dashboard = () => {
         );
     }
 
-    if (!data) {
-        return (
-            <Box
-                sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: "100vh",
-                }}
-            >
-                <Typography variant="h6" color="error">
-                    Error loading data.
-                </Typography>
-            </Box>
-        );
-    }
 
 	const handleOpenDialog = (alert) => {
         setSelectedAlert(alert);
@@ -469,34 +439,7 @@ const Dashboard = () => {
                             <Grid item xs={12}>
                                 <LatestAlertsSection />
                             </Grid>
-                            <Grid item xs={12}>
-                                <Paper
-                                    elevation={3}
-                                    sx={{ overflow: "hidden", borderRadius: 2 }}
-                                >
-                                    <Box
-                                        sx={{
-                                            p: 2,
-                                            bgcolor: theme.palette.primary.main,
-                                            color: "white",
-                                            display: "flex",
-                                            alignItems: "center",
-                                        }}
-                                    >
-                                        <MonitorHeartOutlined sx={{ mr: 1 }} />
-                                        <Typography variant="h5" sx={{ fontWeight: "bold" }}>
-                                            SIEM Database Server Status
-                                        </Typography>
-                                    </Box>
-                                    <Box sx={{ p: 2 }}>
-									<SystemStat
-                                            dataDisk={data.graphs.diskData}
-                                            dataRam={data.graphs.ramData}
-                                            dataCpu={data.graphs.cpuData}
-                                        />
-                                    </Box>
-                                </Paper>
-                            </Grid>
+                            
                         </Grid>
                     </Grid>
                 </Grid>
@@ -538,32 +481,6 @@ const InfoCard = ({ icon: IconComponent, value, title, onClick, sx }) => (
             </Box>
         </Paper>
     </Grid>
-);
-
-const SystemStat = ({ dataCpu, dataDisk, dataRam }) => (
-    <Box>
-        <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-            <SaveOutlined sx={{ fontSize: 24, color: "#6c757d", mr: 2 }} />
-            <Box sx={{ flexGrow: 1 }}>
-                <Typography variant="body2">Disk Used: {dataDisk[5].value}%</Typography>
-            </Box>
-            <DiskUsageChart data={dataDisk} />
-        </Box>
-        <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-            <MemoryOutlined sx={{ fontSize: 24, color: "#6c757d", mr: 2 }} />
-            <Box sx={{ flexGrow: 1 }}>
-                <Typography variant="body2">RAM Load: {dataRam[5].value}%</Typography>
-            </Box>
-            <RamUsageChart data={dataRam} />
-        </Box>
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-            <DeveloperBoardOutlined sx={{ fontSize: 24, color: "#6c757d", mr: 2 }} />
-            <Box sx={{ flexGrow: 1 }}>
-                <Typography variant="body2">CPU Load: {dataCpu[5].value}%</Typography>
-            </Box>
-            <CpuLoadChart data={dataCpu} />
-        </Box>
-    </Box>
 );
 
 export default Dashboard;
