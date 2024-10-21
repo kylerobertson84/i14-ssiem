@@ -3,6 +3,8 @@
 
 The following rules are configured to generate alerts in the Security Information and Event Management (SIEM) system based on specific event conditions. Each rule has a defined severity level, which indicates the potential impact or priority of the alert.
 
+[Link to code](https://github.com/kylerobertson84/i14-ssiem/blob/develop/backend/core/management/commands/create_rules_preload_reports.py)
+
 ### 1. Multiple Failed Logins
 - **Description**: Detects multiple failed login attempts within a short timeframe across the Application or Security channels.
 - **Conditions**:
