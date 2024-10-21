@@ -105,7 +105,7 @@ Advanced features:
 
 ## Reporting
 
-![Report Management](Images/Report.png)
+![Report Management](Images/Report.PNG)
 
 1. Go to the "Reports" section
 2. Choose from pre-defined report templates or create a custom report
@@ -116,7 +116,7 @@ Advanced features:
 4. Generate report in various formats (PDF, CSV, HTML)
 5. View Generated reports
 
-![Report Details](Images/Report_details.PNG)
+![Report Details](Images/Report_Details.PNG)
 
 ## Preferences
 

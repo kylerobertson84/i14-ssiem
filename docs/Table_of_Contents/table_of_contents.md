@@ -52,7 +52,7 @@
 [api-details-link]: https://github.com/kylerobertson84/i14-ssiem/blob/develop/docs/API_Documentation/API_Details.md
 [security-link]: https://github.com/kylerobertson84/i14-ssiem/blob/develop/docs/Security/OWASP_Top_10.md
 [testing-overview-link]: https://github.com/kylerobertson84/i14-ssiem/blob/develop/docs/Test_Documentation/Testing_Overview.md
-[user-manual-link]: https://github.com/kylerobertson84/i14-ssiem/blob/develop/docs/User_Guide/User_Manual.md
+[user-manual-link]: https://github.com/kylerobertson84/i14-ssiem/blob/develop/docs/User_Manual/User_Manual.md
 [troubleshooting-link]: https://github.com/kylerobertson84/i14-ssiem/blob/develop/docs/Troubleshooting_and_FAQs/Troubleshooting.md
 
 

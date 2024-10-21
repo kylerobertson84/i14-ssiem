@@ -19,8 +19,6 @@ _Fig:1 Architecture Diagram_
   - Responsive design for various device sizes
   - Component-based structure for reusability
 
-> [!WARNING] > [REQUIRE MORE INFO HERE]
-
 ### 3.2 Backend
 
 - **Framework**: Django (Python-based)
@@ -108,7 +106,7 @@ _Fig:3 ERD database Diagram_
 
 ## 6. Security Measures
 
-> [!WARNING] > [REQUIRE MORE INFO HERE]
+
 
 - HTTPS for all client-server communication
 - JWT for API authentication
@@ -123,7 +121,7 @@ _Fig:3 ERD database Diagram_
 
 ## 7. Scalability Considerations
 
-> [!WARNING] > [REQUIRE MORE INFO HERE]
+
 
 - Stateless application design for horizontal scaling
 - Use of Celery for offloading time-consuming tasks
@@ -135,7 +133,7 @@ _Fig:3 ERD database Diagram_
 
 ## 8. Monitoring and Maintenance
 
-> [!WARNING] > [REQUIRE MORE INFO HERE]
+
 
 - Comprehensive logging for application events and errors
 - Celery task monitoring for background job performance
