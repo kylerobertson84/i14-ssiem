@@ -18,7 +18,7 @@ Welcome to the SIEM (Security Information and Event Management) system. This man
 
 ## Getting Started
 
-1. Access the SIEM web interface at: https://i14-ssiem.com
+1. Access the SIEM web interface at: https://ssiem.dev
 
    ![Landing Page](Images/login1.PNG)
 
