@@ -1,116 +1,394 @@
+import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import {
+	TextField,
+	Button,
+	Select,
+	MenuItem,
+	FormControl,
+	InputLabel,
+	Grid,
+	Box,
+	Snackbar,
+	Alert,
+	Autocomplete,
+	Chip,
+	Typography,
+	Tooltip,
+	IconButton,
+	CircularProgress,
+} from "@mui/material";
+import { Help as HelpIcon, Refresh as RefreshIcon } from "@mui/icons-material";
+import {
+	createReport,
+	generateReportPDF,
+	fetchInvestigation,
+	fetchUser,
+	fetchRules,
+} from "../../services/apiService";
 
-import React, { useState } from 'react';
-import '../../Design/Report.css';
+const reportTypes = [
+	"Security Incident",
+	"Network Traffic Analysis",
+	"User Activity",
+	"System Performance",
+	"Compliance Audit",
+];
 
-const ReportGenerator = ({ onGenerate }) => {
-    const [reportName, setReportName] = useState('')
-    const [reportType, setReportType] = useState('');
-    const [status, setStatus] = useState('');
-    const [dataSource, setDataSource] = useState('');
-    const [ruleId, setRuleId] = useState('');
-    const [userId, setUserId] = useState('');
-    const [description, setDescription] = useState('');
+const reportStatuses = ["Draft", "Open"];
 
-    const handleGenerate = (e) => {
-        e.preventDefault();
-        const newReport = { reportName, reportType, status, dataSource, ruleId, userId, description };
-        onGenerate(newReport);
-        setReportName('');
-        setReportType('');
-        setStatus('');
-        setDataSource('');
-        setRuleId('');
-        setUserId('');
-        setDescription('');
-    };
+const reportTypeMapping = {
+	"Security Incident": "security_incident",
+	"Network Traffic Analysis": "network_traffic",
+	"User Activity": "user_activity",
+	"System Performance": "system_performance",
+	"Compliance Audit": "compliance_audit",
+};
 
-    return (
-        <form className="reporting-form" onSubmit={handleGenerate}>
-            <div className="left-section">
-                <div className="form-group">
-                    <label htmlFor="reportName" className="form-label">Name of Report</label>
-                    <input
-                        type="text"
-                        id="reportName"
-                        placeholder="Name of Report"
-                        className="form-input"
-                        value={reportName}
-                        onChange={(e) => setReportName(e.target.value)}
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="reportType" className="form-label">Type</label>
-                    <input
-                        type="text"
-                        id="reportType"
-                        placeholder="Type of Report"
-                        className="form-input"
-                        value={reportType}
-                        onChange={(e) => setReportType(e.target.value)}
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="status" className="form-label">Status</label>
-                    <input
-                        type="text"
-                        id="status"
-                        placeholder="Status of Report"
-                        className="form-input"
-                        value={status}
-                        onChange={(e) => setStatus(e.target.value)}
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="dataSource" className="form-label">Data Source</label>
-                    <input
-                        type="text"
-                        id="dataSource"
-                        placeholder="Data Source Origin For Report"
-                        className="form-input"
-                        value={dataSource}
-                        onChange={(e) => setDataSource(e.target.value)}
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="ruleId" className="form-label">Rule ID</label>
-                    <input
-                        type="text"
-                        id="ruleId"
-                        placeholder="Which Rule Triggered This Report"
-                        className="form-input"
-                        value={ruleId}
-                        onChange={(e) => setRuleId(e.target.value)}
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="userId" className="form-label">User ID</label>
-                    <input
-                        type="text"
-                        id="userId"
-                        placeholder="User Who Triggered The Report"
-                        className="form-input"
-                        value={userId}
-                        onChange={(e) => setUserId(e.target.value)}
-                    />
-                </div>
-            </div>
-            <div className="right-section">
-                <div className="form-group">
-                    <label htmlFor="description" className="form-label">Description</label>
-                    <textarea
-                        id="description"
-                        placeholder="Describe the Alert and its reasoning in detail"
-                        className="form-textarea"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                    ></textarea>
-                </div>
-            </div>
-            <div className="submit-section">
-                <button type="submit" className="submit-button">Submit</button>
-            </div>
-        </form>
-    );
+const reportStatusMapping = {
+	Draft: "draft",
+	Open: "open",
+};
+
+const ReportGenerator = ({
+	investigationId,
+	onClose,
+	isFromInvestigationPage,
+}) => {
+	const [reportData, setReportData] = useState({
+		title: "",
+		type: "",
+		status: "Draft",
+		description: "",
+		rules: [],
+		author: "",
+	});
+
+	const [error, setError] = useState(null);
+	const [allRules, setAllRules] = useState([]);
+	const [isRefreshing, setIsRefreshing] = useState(false);
+	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [snackbar, setSnackbar] = useState({
+		open: false,
+		message: "",
+		severity: "success",
+	});
+
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				const [rulesData, userData] = await Promise.all([
+					fetchRules(),
+					fetchUser(),
+				]);
+
+				setAllRules(rulesData);
+				setReportData((prevData) => ({
+					...prevData,
+					author: userData.email,
+				}));
+
+				if (isFromInvestigationPage && investigationId) {
+					const investigationData = await fetchInvestigation(investigationId);
+
+					const autoGeneratedTitle = `Report of Investigation with Alert ID ${
+						investigationData.alert?.id
+					} at ${new Date(
+						investigationData.alert?.created_at
+					).toLocaleString()} with ${
+						investigationData.alert?.severity
+					} Severity`;
+
+					const associatedRule = investigationData.alert?.rule
+						? rulesData.find((r) => r.name === investigationData.alert.rule)
+						: null;
+
+					setReportData((prevData) => ({
+						...prevData,
+						title: autoGeneratedTitle,
+						type: "Security Incident", // Default to Security Incident for investigations
+						description: investigationData.notes || "",
+						rules: associatedRule ? [associatedRule] : [],
+					}));
+				}
+			} catch (err) {
+				console.error("Error fetching data:", err);
+				setError(`Failed to fetch data: ${err.message}. Please try again.`);
+			}
+		};
+
+		fetchData();
+	}, [investigationId, isFromInvestigationPage]);
+
+	const handleChange = (e) => {
+		const { name, value } = e.target;
+		setReportData((prevData) => ({
+			...prevData,
+			[name]: value,
+		}));
+	};
+
+	const handleRuleChange = (event, newValue) => {
+		setReportData((prevData) => ({
+			...prevData,
+			rules: newValue,
+		}));
+	};
+
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		if (reportData.rules.length === 0) {
+			setError("Please select at least one rule.");
+			return;
+		}
+		setIsSubmitting(true);
+		setError(null);
+
+		try {
+			const reportToSubmit = {
+				...reportData,
+				type: reportTypeMapping[reportData.type],
+				status: reportStatusMapping[reportData.status],
+				rule_ids: reportData.rules.map((rule) => rule.id),
+			};
+			const createdReport = await createReport(reportToSubmit);
+			if (isFromInvestigationPage) {
+				await generateReportPDF(createdReport.id);
+			}
+
+			setSnackbar({
+				open: true,
+				message: "Report created successfully",
+				severity: "success",
+			});
+			setTimeout(() => {
+				window.location.reload();
+			}, 2000);
+		} catch (err) {
+			console.error("Error creating report:", err);
+			setError(
+				isFromInvestigationPage
+					? `Failed to create and download report: ${err.message}. Please try again.`
+					: `Failed to create report: ${err.message}. Please try again.`
+			);
+		} finally {
+			setIsSubmitting(false);
+		}
+	};
+
+	const handleRefresh = async () => {
+		setIsRefreshing(true);
+		try {
+			const [rulesData, userData] = await Promise.all([
+				fetchRules(),
+				fetchUser(),
+			]);
+			setAllRules(rulesData);
+			setReportData((prevData) => ({
+				...prevData,
+				author: userData.email,
+			}));
+			setSnackbar({
+				open: true,
+				message: "Data refreshed successfully",
+				severity: "success",
+			});
+		} catch (err) {
+			console.error("Error refreshing data:", err);
+			setError(`Failed to refresh data: ${err.message}. Please try again.`);
+		} finally {
+			setIsRefreshing(false);
+		}
+	};
+
+	const handleCloseSnackbar = (event, reason) => {
+		if (reason === "clickaway") {
+			return;
+		}
+		setSnackbar({ ...snackbar, open: false });
+	};
+
+	return (
+		<form onSubmit={handleSubmit}>
+			<Typography
+				variant="h5"
+				component="h2"
+				gutterBottom
+				sx={{
+					mb: 4,
+					fontWeight: "bold",
+					color: "primary.main",
+					display: "flex",
+					alignItems: "center",
+					justifyContent: "space-between",
+				}}
+			>
+				Generate New Report
+				<Box>
+					<Tooltip title="Refresh form">
+						<IconButton
+							onClick={handleRefresh}
+							disabled={isRefreshing || isSubmitting}
+						>
+							{isRefreshing ? <CircularProgress size={24} /> : <RefreshIcon />}
+						</IconButton>
+					</Tooltip>
+					<Tooltip title="Fill in the details step by step to generate a new report">
+						<IconButton>
+							<HelpIcon />
+						</IconButton>
+					</Tooltip>
+				</Box>
+			</Typography>
+			<Grid container spacing={3}>
+				<Grid item xs={12}>
+					<TextField
+						fullWidth
+						label="Report Title"
+						name="title"
+						value={reportData.title}
+						onChange={handleChange}
+						required
+						helperText="Enter a concise and descriptive title for your report"
+					/>
+				</Grid>
+				<Grid item xs={12}>
+					<FormControl fullWidth required>
+						<InputLabel>Report Type</InputLabel>
+						<Select
+							name="type"
+							value={reportData.type}
+							onChange={handleChange}
+							label="Report Type"
+						>
+							{reportTypes.map((type) => (
+								<MenuItem key={type} value={type}>
+									{type}
+								</MenuItem>
+							))}
+						</Select>
+					</FormControl>
+				</Grid>
+				<Grid item xs={12}>
+					<FormControl fullWidth required>
+						<InputLabel>Status</InputLabel>
+						<Select
+							name="status"
+							value={reportData.status}
+							onChange={handleChange}
+							label="Status"
+						>
+							{reportStatuses.map((status) => (
+								<MenuItem key={status} value={status}>
+									{status}
+								</MenuItem>
+							))}
+						</Select>
+					</FormControl>
+				</Grid>
+				<Grid item xs={12}>
+					<Autocomplete
+						multiple
+						id="rules-select"
+						options={allRules}
+						getOptionLabel={(option) => `${option.id}: ${option.name}`}
+						value={reportData.rules}
+						onChange={handleRuleChange}
+						renderInput={(params) => (
+							<TextField
+								{...params}
+								variant="outlined"
+								label="Rules"
+								placeholder="Select rules"
+								error={reportData.rules.length === 0}
+								helperText={
+									reportData.rules.length === 0
+										? "At least one rule is required"
+										: "Select all applicable rules for this report"
+								}
+							/>
+						)}
+						renderTags={(value, getTagProps) =>
+							value.map((option, index) => (
+								<Chip
+									variant="outlined"
+									label={`${option.id}: ${option.name}`}
+									{...getTagProps({ index })}
+								/>
+							))
+						}
+					/>
+				</Grid>
+				<Grid item xs={12}>
+					<TextField
+						fullWidth
+						multiline
+						rows={4}
+						label="Description"
+						name="description"
+						value={reportData.description}
+						onChange={handleChange}
+						required
+					/>
+				</Grid>
+				<Grid item xs={12}>
+					<TextField
+						fullWidth
+						disabled
+						label="Author"
+						name="author"
+						value={reportData.author}
+						InputProps={{
+							readOnly: true,
+						}}
+					/>
+				</Grid>
+			</Grid>
+			<Box sx={{ mt: 3, display: "flex", justifyContent: "flex-end" }}>
+				<Button onClick={onClose} sx={{ mr: 1 }}>
+					Cancel
+				</Button>
+				<Button
+					type="submit"
+					variant="contained"
+					color="primary"
+					disabled={isSubmitting || reportData.rules.length === 0}
+				>
+					{isSubmitting ? (
+						<CircularProgress size={24} />
+					) : isFromInvestigationPage ? (
+						"Generate and Download Report"
+					) : (
+						"Generate Report"
+					)}
+				</Button>
+			</Box>
+			<Snackbar
+				open={snackbar.open}
+				autoHideDuration={6000}
+				onClose={handleCloseSnackbar}
+			>
+				<Alert
+					onClose={handleCloseSnackbar}
+					severity={snackbar.severity}
+					sx={{ width: "100%" }}
+				>
+					{snackbar.message}
+				</Alert>
+			</Snackbar>
+		</form>
+	);
+};
+
+ReportGenerator.propTypes = {
+	investigationId: PropTypes.number,
+	onClose: PropTypes.func,
+	isFromInvestigationPage: PropTypes.bool,
+};
+
+ReportGenerator.defaultProps = {
+	onClose: () => {},
+	isFromInvestigationPage: false,
 };
 
 export default ReportGenerator;

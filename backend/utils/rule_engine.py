@@ -19,13 +19,16 @@ class RuleEngine:
     def _check_conditions(self, event, conditions):
         for key, value in conditions.items():
             if key == 'EventID':
-                if int(event.EventID) != value:
+                if str(event.EventID) != str(value):
                     return False
             elif key == 'frequency':
                 if not self._check_frequency(event, value):
                     return False
-            elif key == 'time_range':
-                if not self._check_time_range(event, value):
+            elif key == 'Channel':
+                if isinstance(value, list):
+                    if event.Channel not in value:
+                        return False
+                elif event.Channel != value:
                     return False
         return True
 
@@ -33,21 +36,13 @@ class RuleEngine:
         count = frequency['count']
         timeframe = frequency['timeframe']
         timeframe_minutes = int(timeframe[:-1])
-        start_time = timezone.now() - timedelta(minutes=timeframe_minutes)
+        start_time = event.iso_timestamp - timedelta(minutes=timeframe_minutes)
         
         similar_events = BronzeEventData.objects.filter(
             EventID=event.EventID,
-            iso_timestamp__gte=start_time
+            iso_timestamp__gte=start_time,
+            iso_timestamp__lte=event.iso_timestamp,
+            Channel__in=["Application", "Security"]
         ).count()
         
         return similar_events >= count
-
-    def _check_time_range(self, event, time_range):
-        event_time = event.iso_timestamp.time()
-        start_time = datetime.strptime(time_range['start'], '%H:%M').time()
-        end_time = datetime.strptime(time_range['end'], '%H:%M').time()
-        
-        if start_time < end_time:
-            return not (start_time <= event_time <= end_time)
-        else:  # Range spans midnight
-            return not (start_time <= event_time or event_time <= end_time)

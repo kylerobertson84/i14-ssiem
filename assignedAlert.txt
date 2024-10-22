@@ -1,0 +1,30 @@
+class AlertViewSet(BaseAlertViewSet):
+    queryset = Alert.objects.all()
+
+    @action(detail=True, methods=['post'])
+    def assign(self, request, pk=None):
+        alert = self.get_object()
+
+        assigned_to_id = request.data.get('assigned_to')
+        if not assigned_to_id:
+            return Response({'error': 'No analyst ID provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            assigned_to = User.objects.get(pk=assigned_to_id)
+        except User.DoesNotExist:
+            return Response({'error': 'Analyst not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Update the alert with the assigned user
+        alert.assigned_to = assigned_to
+        alert.save()
+
+        # Send email notification after the alert is assigned to a user
+        if alert.severity in ['Critical', 'High']:  # Only send emails for Critical and High alerts
+            subject = f"New {alert.severity} Alert Assigned: {alert.hostname}"
+            message = f"An alert with {alert.severity} severity has been assigned to you. Details: {alert.message}"
+            recipient_list = [assigned_to.email]  # Email the assigned user
+
+            # Send the alert email
+            send_alert_email(subject, message, recipient_list)
+
+        return Response({'status': 'Alert assigned successfully'}, status=status.HTTP_200_OK)

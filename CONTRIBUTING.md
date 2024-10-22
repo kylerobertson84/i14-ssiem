@@ -3,6 +3,7 @@
 Thank you for your interest in contributing to our SIEM (Security Information and Event Management) project. This document provides guidelines for contributing to the project and instructions for setting up your development environment.
 
 ## Table of Contents
+
 1. [Code of Conduct](#code-of-conduct)
 2. [Getting Started](#getting-started)
 3. [Development Workflow](#development-workflow)
@@ -17,6 +18,7 @@ By participating in this project, you are expected to uphold our Code of Conduct
 ## Getting Started
 
 ### Prerequisites
+
 - Git
 - Docker and Docker Compose
 - Python 3.9+
@@ -25,17 +27,20 @@ By participating in this project, you are expected to uphold our Code of Conduct
 ### Setting Up Your Development Environment
 
 1. Clone the repository:
+
    ```
    gh repo clone kylerobertson84/i14-ssiem
    cd i14-ssiem
    ```
 
 2. Create a new branch for your feature or bug fix:
+
    ```
    git checkout -b feature/your-feature-name
    ```
 
 3. Set up the development environment:
+
    ```
    ./scripts/setup_dev_environment.sh
    ```
@@ -50,12 +55,14 @@ The application should now be running at `http://localhost:3000` (frontend) and 
 ## Development Workflow
 
 1. Ensure you're working on the latest version of the `develop` branch:
+
    ```
    git checkout develop
    git pull origin develop
    ```
 
 2. Create a new branch for your feature or bug fix:
+
    ```
    git checkout -b feature/your-feature-name
    ```
@@ -65,12 +72,14 @@ The application should now be running at `http://localhost:3000` (frontend) and 
 4. Write or update tests for your changes.
 
 5. Ensure all tests pass:
+
    ```
    docker-compose run backend python manage.py test
    docker-compose run frontend npm test
    ```
 
 6. Push your branch to GitHub:
+
    ```
    git push origin feature/your-feature-name
    ```

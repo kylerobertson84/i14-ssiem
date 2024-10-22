@@ -1,16 +1,21 @@
 FROM python:3.12
+
 WORKDIR /backend
+
+RUN apt-get update && apt-get install -y --fix-missing netcat-openbsd
+
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 COPY . .
 
-# Copy the entrypoint script and set correct line endings
+# Copy and prepare the entrypoint script
 COPY entrypoint.sh /entrypoint.sh
 RUN sed -i 's/\r$//g' /entrypoint.sh
 RUN chmod +x /entrypoint.sh
-RUN apt-get update && apt-get install -y netcat-openbsd
 
 # Set the entrypoint
-ENTRYPOINT ["/bin/sh", "/entrypoint.sh"]
-CMD ["python", "manage.py", "runserver_plus", "--print-sql", "0.0.0.0:8000"]
+ENTRYPOINT ["/entrypoint.sh"]
+
+EXPOSE 8000
+

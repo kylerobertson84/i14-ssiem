@@ -1,377 +1,486 @@
-import React, { useEffect, useState } from 'react';
-
-/* Icons */
-import { 
-  EditCalendar, 
-  Search, 
-  Notes, 
-  Devices, 
-  AddToQueue, 
-  AssignmentTurnedInOutlined, 
-  MonitorHeartOutlined, 
-  MemoryOutlined, 
-  DeveloperBoardOutlined,
-  SaveOutlined } 
-from '@mui/icons-material';
-
-
-import { Link } from 'react-router-dom';
-import { Grid, Paper, Typography, Box } from '@mui/material';
-import Navbar from '../components/NavBar.js';
-import { LogsPerDayChart, LogsByDeviceChart, CpuLoadChart, RamUsageChart, DiskUsageChart } from '../components/dashboardGraphs.js';
-
-import { fetchUser, fetchLogCount, fetchRouterLogCount, fetchLogPercentages } from '../services/apiService.js';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import SEO from "../Design/SEO.js";
+import {
+    Grid,
+    Paper,
+    Typography,
+    Box,
+    useTheme,
+    Chip,
+    IconButton,
+    useMediaQuery,
+    CircularProgress,
+} from "@mui/material";
+import {
+    EditCalendar,
+    Search,
+    Notes,
+    Devices,
+    AssignmentTurnedInOutlined,
+    MonitorHeartOutlined,
+    MemoryOutlined,
+    DeveloperBoardOutlined,
+    SaveOutlined,
+    WarningAmber,
+} from "@mui/icons-material";
+import {
+    LogsPerHourChart,
+    LogsByDeviceChart,
+    CpuLoadChart,
+    RamUsageChart,
+    DiskUsageChart,
+} from "../components/dashboardGraphs.js";
+import {
+    fetchUser,
+    fetchLogCount,
+    fetchRouterLogCount,
+    fetchLogPercentages,
+    fetchLogsPerHour,
+    fetchEventsToday,
+    fetchLatestAlerts,
+    fetchHostnameCount,
+    fetchInvestigationsCount,
+    fetchAssignedAlerts
+} from "../services/apiService.js";
+import InvestigationDetails from "../components/InvestigationDetails.js";
 
 const Dashboard = () => {
-  const [user, setUser] = useState(null);
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [recordCount, setRecordCount] = useState(0);
-  const [routerLogCount, setRouterLogCount] = useState(0);
-  const [logPercentages, setLogPercentages] = useState({});
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [recordCount, setRecordCount] = useState(0);
+    const [routerLogCount, setRouterLogCount] = useState(0);
+    const [logPercentages, setLogPercentages] = useState({});
+    const [logsPerHour, setLogsPerHour] = useState([]);
+    const [eventsToday, setEventsToday] = useState({});
+    const [latestAlerts, setLatestAlerts] = useState({});
+    const [hostnameCount, setHostnameCount] = useState({});
+    const [investigationCount, setInvestigationCount] = useState({});
+    const [assignedAlerts, setAssignedAlerts] = useState({});
+	const [open, setOpen] = useState(false); // modal state
+    const [selectedAlert, setSelectedAlert] = useState(null); // selected alert for modal
 
-  const logsByDeviceData = [
-    { name: 'Windows OS', value: logPercentages.windows_os_percentage },
-    { name: 'Network', value: logPercentages.network_percentage }
-  ];
+    const logsByDeviceData = [
+        { name: "Windows OS", value: logPercentages.windows_os_percentage },
+        { name: "Network", value: logPercentages.network_percentage },
+    ];
 
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const [userData, logCountData, routerLogCountData, logPercentages] = await Promise.all([
-          fetchUser(),
-          fetchLogCount(),
-          fetchRouterLogCount(),
-          fetchLogPercentages(),
-        ]);
-
-        setUser(userData);
-        setRecordCount(logCountData.count);
-        setRouterLogCount(routerLogCountData.router_log_count);
-        setLogPercentages(logPercentages);
-        console.log("logPercentages",logPercentages);
-      } catch (error) {
-        console.error('Error loading dashboard data', error);
-      }
+    const severityColors = {
+        INFO: "#2196f3",
+        LOW: "#4caf50",
+        MEDIUM: "#ff9800",
+        HIGH: "#f44336",
+        CRITICAL: "#9c27b0",
     };
 
-    loadData();
-  }, []);
+    useEffect(() => {
+        const loadData = async () => {
+            try {
+                const [
+                    userData,
+                    logCountData,
+                    routerLogCountData,
+                    logPercentages,
+                    logsPerHour,
+                    fetchedEventsToday,
+                    fetchedLatestAlerts,
+                    fetchedHostnameCount,
+                    fetchedInvestigationCount,
+                    fetchedAssignedAlerts
+                ] = await Promise.all([
+                    fetchUser(),
+                    fetchLogCount(),
+                    fetchRouterLogCount(),
+                    fetchLogPercentages(),
+                    fetchLogsPerHour(),
+                    fetchEventsToday(),
+                    fetchLatestAlerts(),
+                    fetchHostnameCount(),
+                    fetchInvestigationsCount(),
+                    fetchAssignedAlerts()
+                ]);
 
-  useEffect(() => {
-    fetch('/data.json')
-      .then(response => response.json())
-      .then(json => {
-        setData(json);
-        setLoading(false); // Data is now loaded
-      })
-      .catch(error => {
-        console.error('Error loading data:', error);
-        setLoading(false); // Even if there's an error, stop the loading state
-      });
-  }, []);
+				setUser(userData);
+				setRecordCount(logCountData.count);
+				setRouterLogCount(routerLogCountData.router_log_count);
+				setLogPercentages(logPercentages);
+				setLogsPerHour(logsPerHour);
+				setEventsToday(fetchedEventsToday);
+				setLatestAlerts(fetchedLatestAlerts);
+				setHostnameCount(fetchedHostnameCount);
+				setInvestigationCount(fetchedInvestigationCount);
+				setAssignedAlerts(fetchedAssignedAlerts);
+				setLoading(false);
+			} catch (error) {
+				console.error("Error loading dashboard data", error);
+				setLoading(false);
+			}
+		};
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+        loadData();
+    }, []);
 
-  if (!data) {
-    return <div>Error loading data.</div>;
-  }
-
-
-  return (
-    <div>
-      <Navbar />
-      <Box
-        sx={{
-          marginBottom: 5,
-          marginLeft: 5,
-          marginRight: 5,
-          display: 'flex',
-          flexDirection: 'column',
-        }}>
-
-        <Title />
-        
-        {/* Alerts, database stats and graph grids */}
-        <Grid container spacing={3}>
-          
-          {/* Info cards and two graph grid */}
-          <Grid item xs={12} md={8}>
-            
-            {/* Info cards and graph spacing */}
-            <Grid container spacing={3} >
-              
-              {/* Info cards styling padding and grid items */}
-              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3 }}>
-                <Paper sx={{ padding: 2 }}>
-                  <InfoCard title="Total Devices" value={data.infoCards.values[0]} icon={Devices}/>
-                  
-                </Paper>
-              </Grid>
-              
-              
-              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3 }}>
-                <Paper sx={{ padding: 2 }}>
-
-                  <InfoCard title="Logs" value={recordCount + routerLogCount} icon={Notes}/>
-
-                </Paper>
-              </Grid>
-
-             
-              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3 }}>
-                <Paper sx={{ padding: 2 }}>
-                  
-                  <InfoCard title="New Devices (24hr)" value={data.infoCards.values[2]} icon={AddToQueue}/>
-                </Paper>
-              </Grid>
-
-           
-              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3 }}>
-                <Paper sx={{ padding: 2 }}>
-                  
-                  <InfoCard title="Open Investigations" value={data.infoCards.values[3]} icon={Search}/>
-                </Paper>
-              </Grid>
-
-              
-              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3 }}>
-                <Paper sx={{ padding: 2 }}>
-                 
-                  <InfoCard title="Events per Day" value={data.infoCards.values[4]} icon={EditCalendar}/>
-                </Paper>
-              </Grid>
-
-             
-
-              <Grid item xs={12} sm={6} md={4} sx={{ padding: 3 }}>
-                <Paper sx={{ padding: 2 }}>
-                  
-                  <InfoCard title="Closed Investigations" value={data.infoCards.values[5]} icon={AssignmentTurnedInOutlined}/>
-                </Paper>
-              </Grid>
-
-              {/* Graphs Section */}
-              <Grid item xs={12} md={6}>
-                <Paper sx={{ padding: 2 }}>
-                  <LogsPerDayChart data={data.graphs.dataBar} />
-                </Paper>
-              </Grid>
-              
-
-              <Grid item xs={12} md={6}>
-                <Paper sx={{ padding: 2 }}>
-                  
-                  <LogsByDeviceChart data={logsByDeviceData}/>
-                </Paper>
-              </Grid>
-              
-
-            </Grid>
-          
-          </Grid>
-
-         
-          {/* Alerts Section */}
-          <Grid item xs={12} md={4}>
-            <Paper sx={{ padding: 2, marginBottom: 3 }}>
-              <Typography variant="h6" gutterBottom>Latest Alerts</Typography>
-              <Alert hostname={data.alerts.hostName[0]} message={data.alerts.message[0]} />
-              <Alert hostname={data.alerts.hostName[1]} message={data.alerts.message[1]} />
-              <Alert hostname={data.alerts.hostName[2]} message={data.alerts.message[2]} />
-              <Alert hostname={data.alerts.hostName[3]} message={data.alerts.message[3]} />
-
-              <Typography variant="body2">
-                <Link style={{ width: "100%", display: 'flex', justifyContent: 'right', textDecoration: 'none', color: 'black' }} to="/alerts">
-                  View more &gt;
-                </Link>
-              </Typography>
-            </Paper>
+    const navigate = useNavigate();
+	//Navigat to alerts page
+    const handleViewMoreClick = () => {
+        navigate("/alerts");
+    };
+	//Navigation to investigation detail page
+    const handleCardClick = () => {
+        navigate("/investigations"); 
+    };
+	//Navigation to logs queries page
+    const handleCardClick1 = () => {
+        navigate("/queries");
+    };
 
 
-            {/* System Stats */}
-            <Paper sx={{ padding: 2 }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Typography variant="h6">SIEM Database Server Status</Typography>
-                <MonitorHeartOutlined sx={{ fontSize: 40, color: '#6c757d' }}/>
-              </Box>
-              <SystemStat 
-                dataDisk={data.graphs.diskData} 
-                dataRam={data.graphs.ramData} 
-                dataCpu={data.graphs.cpuData}      
-              />
-            </Paper>
-          </Grid>
-        </Grid>
-      </Box>
-    </div>
-  );
+    if (loading) {
+        return (
+            <Box
+                sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: "100vh",
+                }}
+            >
+                <CircularProgress />
+            </Box>
+        );
+    }
+
+
+	const handleOpenDialog = (alert) => {
+        setSelectedAlert(alert);
+        setOpen(true);
+    };
+
+    const handleCloseDialog = () => {
+        setOpen(false);
+        setSelectedAlert(null);
+    };
+
+    //updated time format
+    const formatDate = (dateString) => {
+	const date = new Date(dateString);
+	const day = String(date.getDate()).padStart(2, '0');
+	const month = String(date.getMonth() + 1).padStart(2, '0');
+	const year = date.getFullYear();
+	const hours = String(date.getHours()).padStart(2, '0');
+	const minutes = String(date.getMinutes()).padStart(2, '0');
+	const seconds = String(date.getSeconds()).padStart(2, '0');
+	
+	return `${day}/${month}/${year}, ${hours}:${minutes}:${seconds}`;
+    };
+
+
+    const AssignedAlertsSection = () => (
+        <Paper
+            elevation={3}
+            sx={{ overflow: "hidden", borderRadius: 2, height: "100%" }}
+        >
+            <Box
+                sx={{
+                    p: 2,
+                    bgcolor: theme.palette.primary.main,
+                    color: "white",
+                    display: "flex",
+                    alignItems: "center",
+                }}
+            >
+                <WarningAmber sx={{ mr: 1 }} />
+                <Typography variant="h5" component="h2" fontWeight="bold">
+                    My Assigned Alerts
+                </Typography>
+            </Box>
+            <Box sx={{ height: isMobile ? 300 : 400, overflowY: "auto" }}>
+                {assignedAlerts.results && assignedAlerts.results.length > 0 ? (
+                    assignedAlerts.results.map((investigation, index) => (
+                        <Box
+                            key={investigation.id}
+                            sx={{
+                                p: 2,
+                                borderBottom:
+                                    index < assignedAlerts.results.length - 1
+                                        ? "1px solid #e0e0e0"
+                                        : "none",
+                                "&:hover": { bgcolor: "#f5f5f5" },
+                                transition: "background-color 0.3s",
+								cursor: "pointer",
+                                
+                            }}
+							onClick= {() => handleOpenDialog(investigation.alert)} //passes alert to popup
+                        >
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                    mb: 1,
+                                }}
+                            >
+                                <Typography variant="subtitle2" fontWeight="medium">
+                                    Device: {investigation.alert.event.hostname}
+                                </Typography>
+                                <Chip
+                                    label={investigation.alert.severity}
+                                    size="small"
+                                    sx={{
+                                        bgcolor: severityColors[investigation.alert.severity],
+                                        color: "white",
+                                        fontWeight: "bold",
+                                    }}
+                                />
+                            </Box>
+                            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                                <strong>{investigation.alert.rule.name}</strong>
+                            </Typography>
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                }}
+                            >
+                                <Typography variant="caption" color="text.secondary">
+                                    {formatDate(investigation.created_at)}
+                                </Typography>
+                                <IconButton
+                                    size="small"
+                                    color="primary"
+                                    aria-label="investigate"
+                                    //onClick={() => handleInvestigation(investigation.id)}
+                                >
+                                    <Search />
+                                </IconButton>
+
+                            </Box>
+                        </Box>
+                    ))
+                ) : (
+                    <Typography sx={{ p: 2 }}>No assigned alerts.</Typography>
+                )}
+            </Box>
+        </Paper>
+    );
+
+    const LatestAlertsSection = () => (
+        <Paper
+            elevation={3}
+            sx={{ overflow: "hidden", borderRadius: 2, height: "100%" }}
+        >
+            <Box
+                sx={{
+                    p: 2,
+                    bgcolor: theme.palette.primary.main,
+                    color: "white",
+                    display: "flex",
+                    alignItems: "center",
+                }}
+            >
+                <WarningAmber sx={{ mr: 1 }} />
+                <Typography variant="h5" component="h2" fontWeight="bold">
+                    Latest Alerts
+                </Typography>
+            </Box>
+            <Box sx={{ height: isMobile ? 300 : 400, overflowY: "auto" }}>
+                {latestAlerts.results &&
+                    latestAlerts.results.map((alert, index) => (
+                        <Box
+                            key={alert.id}
+                            sx={{
+                                p: 2,
+                                borderBottom:
+                                    index < latestAlerts.results.length - 1
+                                        ? "1px solid #e0e0e0"
+                                        : "none",
+                                "&:hover": { bgcolor: "#f5f5f5" },
+                                transition: "background-color 0.3s",
+								cursor: "pointer",
+                            }}
+							onClick= {() => handleOpenDialog(alert)} //passes alert to popup
+                        >
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                    mb: 1,
+                                }}
+                            >
+                                <Typography variant="subtitle2" fontWeight="medium">
+                                    Device: {alert.event.hostname}
+                                </Typography>
+                                <Chip
+                                    label={alert.severity}
+                                    size="small"
+                                    sx={{
+                                        bgcolor: severityColors[alert.severity],
+                                        color: "white",
+                                        fontWeight: "bold",
+                                    }}
+                                />
+                            </Box>
+                            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                                <strong>{alert.rule.name}</strong>
+                            </Typography>
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                }}
+                            >
+                                <Typography variant="caption" color="text.secondary">
+                                    {formatDate(alert.created_at)}
+                                </Typography>
+                                <IconButton
+                                    size="small"
+                                    color="primary"
+                                    aria-label="investigate"
+                                    //onClick={() => handleInvestigation(alert.id)}
+                                >
+                                    <Search />
+                                </IconButton>
+                            </Box>
+                        </Box>
+                    ))}
+            </Box>
+            <Box sx={{ p: 1, textAlign: "right" }}>
+                <Typography
+                    variant="body2"
+                    color="primary"
+                    sx={{ cursor: "pointer" }}
+                    onClick={handleViewMoreClick}
+                >
+                    View more &gt;
+                </Typography>
+            </Box>
+        </Paper>
+    );
+
+    return (
+        <>
+            <SEO title="Dashboard" />
+            <Box sx={{ p: isMobile ? 2 : 4 }}>
+                <Typography
+                    variant="h4"
+                    component="h1"
+                    gutterBottom
+                    sx={{ mb: 4, fontWeight: "bold" }}
+                >
+                    Dashboard
+                </Typography>
+
+                <Grid container spacing={3}>
+                    <Grid item xs={12} lg={8}>
+                        <Grid container spacing={3}>
+                            <InfoCard
+                                title="Total Devices"
+                                value={hostnameCount.total_devices}
+                                icon={Devices}
+                            />
+                            <InfoCard
+                                title="Logs"
+                                value={recordCount + routerLogCount}
+                                icon={Notes}
+                                sx={{ cursor: "pointer" }}
+                                onClick={handleCardClick1}
+                            />
+                            <InfoCard
+                                title="Events per Day"
+                                value={eventsToday.events_today}
+                                icon={EditCalendar}
+                                sx={{ cursor: "pointer" }}
+                                onClick={handleViewMoreClick}
+                            />
+                            <InfoCard
+                                title="Open Investigations"
+                                value={investigationCount.open_count}
+                                icon={Search}
+                                sx={{ cursor: "pointer" }}
+                                onClick={handleCardClick}
+                            />
+                            <InfoCard
+                                title="In Progress Investigations"
+                                value={investigationCount.in_progress_count}
+                                icon={Search}
+                                sx={{ cursor: "pointer" }}
+                                onClick={handleCardClick}
+                            />
+                            <InfoCard
+                                title="Closed Investigations"
+                                value={investigationCount.closed_count}
+                                icon={AssignmentTurnedInOutlined}
+                                sx={{ cursor: "pointer" }}
+                                onClick={handleCardClick}
+                            />
+                            <Grid item xs={12} md={6}>
+                                <Paper sx={{ p: 2, height: "100%" }}>
+                                    <LogsPerHourChart data={logsPerHour} />
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <Paper sx={{ p: 2, height: "100%" }}>
+                                    <LogsByDeviceChart data={logsByDeviceData} />
+                                </Paper>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+
+                    <Grid item xs={12} lg={4}>
+                        <Grid container spacing={3}>
+                            <Grid item xs={12}>
+                                <AssignedAlertsSection />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <LatestAlertsSection />
+                            </Grid>
+                            
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Box>
+			<InvestigationDetails
+                open={open}
+                onClose={handleCloseDialog}
+                alert={selectedAlert} // Pass the selected alert to the modal
+            />
+        </>
+    );
 };
 
+const InfoCard = ({ icon: IconComponent, value, title, onClick, sx }) => (
+    <Grid item xs={12} sm={6} md={4}>
+        <Paper sx={{ p: 2, height: "100%", cursor: "pointer", ...sx}}
+            onClick={onClick}>
+            <Box
+                sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    height: "100%",
+                }}
+            >
+                <Typography variant="subtitle2" color="textSecondary">
+                    {title}
+                </Typography>
+                <Box
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        flexGrow: 1,
+                    }}
+                >
+                    <Typography variant="h4">{value}</Typography>
+                    <IconComponent sx={{ fontSize: 40, color: "primary.main" }} />
+                </Box>
+            </Box>
+        </Paper>
+    </Grid>
+);
+
 export default Dashboard;
-
-
-
-function Title() {
-  return (
-  <div className='title'>
-    <h1>Dashboard</h1>
-  </div>
-  );
-}
-
-
-
-
-function InfoCard(
-  {
-    icon: IconComponent,
-    value,
-    title,
-  }
-){
-  return (
-    <Box
-      sx={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: 2,
-      }}
-    >
-      <Box>
-        <Typography variant="subtitle1">{title}</Typography>
-        <Typography variant="h6">
-          <b>{value}</b>
-        </Typography>
-      </Box>
-      <Box
-        sx={{
-          backgroundColor: 'rgba(0,88,255,0.102)',
-          borderRadius: '50%',
-          padding: 1,
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          minWidth: '2.5rem', // Minimum size
-          minHeight: '2.5rem', // Minimum size
-          width: 'auto', // Responsive width
-          height: 'auto', // Responsive height
-        }}
-      >
-        <IconComponent style={{ fontSize: 30, color: '#0058ff' }} />
-      </Box>
-    </Box>
-  );
-
-}
-
-
-
-
-
-function Alert(
-  {
-    hostname,
-    message,
-  }
-) {
-  return (
-    <Paper sx={{ 
-      padding: 0, 
-      margin: 1.5,
-      borderRadius: 5,
-      backgroundColor: 'rgb(197,217,226)'
-      }}>
-    
-      <Box
-      sx={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: 0,
-      }}>
-    
-        <Box 
-          sx={{
-            paddingLeft: 2.5,
-            paddingTop: .25,
-            paddingBottom: .25,
-          }}>
-        
-            <p><strong>Device: {hostname}</strong></p>
-            <p><strong>{message}</strong></p>
-        
-        </Box>
-
-        <Box
-          sx={{
-            padding: 2,
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-        
-          <Search />
-        
-        </Box>
-
-      </Box>
-    
-    </Paper>
-  );
-
-}
-
-
-
-
-
-function SystemStat({
-  dataCpu,
-  dataDisk,
-  dataRam
-}) {
-  return (
-    <Box sx={{ padding: 2 }}>
-      {/* Disk Usage */}
-      <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2 }}>
-        <SaveOutlined sx={{ fontSize: 40, color: '#6c757d', marginRight: 2 }} />
-        <Box sx={{ flexGrow: 1 }}>
-          <Typography variant="body1" >
-            Disk Used: {dataDisk[5].value}%
-          </Typography>
-        </Box>
-
-        <DiskUsageChart data={dataDisk}/>
-      </Box>
-
-      {/* RAM Usage */}
-      <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2 }}>
-        <MemoryOutlined sx={{ fontSize: 40, color: '#6c757d', marginRight: 2 }} />
-        <Box sx={{ flexGrow: 1 }}>
-          <Typography variant="body1" >
-            RAM Load: {dataRam[5].value}%
-          </Typography>
-        </Box>
-        <RamUsageChart data={dataRam}/>
-      </Box>
-
-      {/* CPU Load */}
-      <Box sx={{ display: 'flex', alignItems: 'center' }}>
-        <DeveloperBoardOutlined sx={{ fontSize: 40, color: '#6c757d', marginRight: 2 }} />
-        <Box sx={{ flexGrow: 1 }}>
-          <Typography variant="body1" >
-            CPU Load: {dataCpu[5].value}%
-
-          </Typography>
-        </Box>
-        <CpuLoadChart data={dataCpu}/>
-
-      </Box>
-    </Box>
-  );
-
-}

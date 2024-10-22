@@ -14,6 +14,7 @@ import os
 from pathlib import Path
 from datetime import timedelta
 from pathlib import Path
+from utils.logging_utils import ensure_log_directory_and_file
 # Celery beat settings
 from celery.schedules import crontab
 
@@ -31,10 +32,12 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-5oyfzuv-2yln#b-v8#t
 DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True' # Set to False in production
 
 # settings.py
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]', '0.0.0.0']
+ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1,[::1]').split(',')
+
+#Ensure Log directory exist
+log_file_path = ensure_log_directory_and_file(BASE_DIR, 'syslogs', 'accounts.log')
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -55,6 +58,7 @@ INSTALLED_APPS = [
     'alerts',
     'logs',
     'reports',
+    
 ]
 
 MIDDLEWARE = [
@@ -68,9 +72,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-]
+CORS_ALLOWED_ORIGINS = os.environ.get('CORS_ALLOWED_ORIGINS', 'http://localhost:3000').split(',')
 
 # Rest Framework settings
 REST_FRAMEWORK = {
@@ -95,8 +97,8 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     # API VERSIONING to allow for future changes
     'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.NamespaceVersioning',
-    'DEFAULT_VERSION': '1.0',
-    'ALLOWED_VERSIONS': ['1.0'],
+    'DEFAULT_VERSION': 'v1',
+    'ALLOWED_VERSIONS': ['v1'],
     'VERSION_PARAM': 'version',
     # DRF-Spectacular settings
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
@@ -105,16 +107,17 @@ REST_FRAMEWORK = {
 SPECTACULAR_SETTINGS = {
     'TITLE': 'SIEM API',
     'DESCRIPTION': 'API for SIEM application',
-    'VERSION': '1.0.0',
+    'VERSION': 'v1',
     'SERVE_INCLUDE_SCHEMA': False,
+    'SCHEMA_PATH_PREFIX': r'/api/v[0-9]',
 }
 
 from datetime import timedelta
 
 # JWT settings
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=int(os.environ.get('JWT_ACCESS_TOKEN_LIFETIME', 1))),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=int(os.environ.get('JWT_REFRESH_TOKEN_LIFETIME', 1))),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
     'UPDATE_LAST_LOGIN': False,
@@ -225,18 +228,61 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    "formatters": {
+        "django.server": {
+            "()": "django.utils.log.ServerFormatter",
+            "format": "[{server_time}] {message}",
+            "style": "{",
+        },
+        "verbose": {
+            "format": "{name} {levelname} {asctime} {module} {process:d} {thread:d} {message}",
+            "style": "{",
+        },
+        "simple": {
+            "format": "{levelname} {message}",
+            "style": "{",
+        },
+    },
     'handlers': {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'debug.log'),
+            'filename': log_file_path,  # Use the path returned by our function
+            'formatter': 'verbose',
+        },
+        "console": {
+            "class": "logging.StreamHandler",
+            'formatter': 'simple',
         },
     },
     'root': {
         'handlers': ['file'],
         'level': 'DEBUG',
     },
+    'loggers': {
+        "django.server": {
+            'handlers': ['file'],
+            "propagate": True,
+            "level": 'DEBUG',
+        },
+        "django.request": {
+            'handlers': ['file'],
+            "propagate": True,
+            "level": 'DEBUG',
+        },
+        "django.security": {
+            'handlers': ['file'],
+            "propagate": True,
+            "level": 'DEBUG',
+        },
+        'accounts': {
+            'handlers': ['file', 'console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
 }
+
 
 AUTH_USER_MODEL = 'accounts.User'
 
@@ -254,10 +300,4 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'logs.tasks.check_and_process_logs',
         'schedule': crontab(minute='*/1'),  # Run every minute
     },
-    
-    ## Don't need this anymore just for testing Log Processing
-    # 'process-logs': {
-    #     'task': 'logs.tasks.process_logs',
-    #     'schedule': crontab(minute='*/1'),  # Run every minute
-    # },
 }

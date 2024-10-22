@@ -1,18 +1,39 @@
+import React from "react";
+import PropTypes from "prop-types";
+import { Button, CircularProgress } from "@mui/material";
+import { GetApp as GetAppIcon } from "@mui/icons-material";
 
-import React from 'react';
-import html2pdf from 'html2pdf.js';
+const ReportExporter = ({ report, onExport, isExporting }) => {
+	const handleExportPDF = () => {
+		if (report && report.id) {
+			onExport(report.id);
+		}
+	};
 
-const ReportExporter = ({ report }) => {
-    const handleExportPDF = () => {
-        const element = document.getElementById('report-content');
-        html2pdf().from(element).save(`${report.name}_Report.pdf`);
-    };
+	return (
+		<Button
+			variant="contained"
+			color="secondary"
+			startIcon={
+				isExporting ? (
+					<CircularProgress size={20} color="inherit" />
+				) : (
+					<GetAppIcon />
+				)
+			}
+			onClick={handleExportPDF}
+			disabled={!report || isExporting}
+			fullWidth
+		>
+			{isExporting ? "Exporting..." : "Export as PDF"}
+		</Button>
+	);
+};
 
-    return (
-        <button onClick={handleExportPDF}>
-            Export as PDF
-        </button>
-    );
+ReportExporter.propTypes = {
+	report: PropTypes.object,
+	onExport: PropTypes.func.isRequired,
+	isExporting: PropTypes.bool,
 };
 
 export default ReportExporter;

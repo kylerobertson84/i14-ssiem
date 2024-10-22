@@ -12,9 +12,8 @@ dist
 
 # Log Processing Pipeline
 ## Setting default that all example log should be in preprocess_log_file
-preprocess_log_file/
-log_file/
-processed_log_file/
+log_files/
+processed_log_files/
 
 # Distribution / packaging
 .Python
@@ -130,7 +129,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-
+.envCF
 .venv
 env/
 venv/
@@ -170,3 +169,6 @@ cython_debug/
 #.idea/
 
 .DS_Store
+data/
+letsencrypt/
+acmedata/
