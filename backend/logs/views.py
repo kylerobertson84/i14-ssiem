@@ -113,12 +113,12 @@ class RouterDataViewSet(viewsets.ReadOnlyModelViewSet, BaseViewThrottleSet):
             end_datetime = parse_datetime(end_time)
             queryset = queryset.filter(date_time__lte=end_datetime)
         
-        # Optimize for recent logs
-        recent_logs = timezone.now() - timezone.timedelta(days=30)
-        queryset = queryset.filter(iso_timestamp__gte=recent_logs)
-        
         if process:
             queryset = queryset.filter(process=process)
+        
+        if queryset.count() > 20000:
+            recent_logs = timezone.now() - timezone.timedelta(days=30)
+            queryset = queryset.filter(date_time__gte=recent_logs)
 
         return queryset
     

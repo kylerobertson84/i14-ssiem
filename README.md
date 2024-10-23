@@ -100,6 +100,25 @@ i14-ssiem/
 
 For more detailed information about the project structure, refer to the `docs/developer_guide.md`.
 
+## Logging into the SIEM
+
+Log in details:
+
+Admin users:
+- email: `admin1@siem.com`
+- password: `abc123`
+
+- email: `admin2@siem.com`
+- password: `abc123`
+
+Analyst users:
+
+- email: `user1@siem.com`
+- password: `abc123`
+
+- email: `user2@siem.com`
+- password: `abc123`
+
 ## Contributing
 
 We welcome contributions to the SIEM project! Please see our [Contributing Guide](CONTRIBUTING.md) for more details on how to get started.
