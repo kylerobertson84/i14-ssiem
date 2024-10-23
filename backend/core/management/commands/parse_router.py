@@ -3,6 +3,7 @@ from django.core.management.base import BaseCommand
 from logs.models import *
 import re
 from datetime import datetime
+import pytz
 
 import logging
 
@@ -18,9 +19,13 @@ DATE_TIME_RE = r'(\w{3}\s+\d{1,2}\s+\d{2}:\d{2}:\d{2})'
 def insert_data(a_dict):
 
     try:
+
+        iso_time_stamp = parse_timestamp_utc(a_dict,'date_time')
+
         RouterData.objects.create(
             severity = a_dict.get('severity', 0),
-            date_time = a_dict.get('date_time', ''),
+            # date_time = a_dict.get('date_time', ''),
+            date_time = iso_time_stamp,
             hostname = a_dict.get('hostname', ''),
             process = a_dict.get('process', ''),
             message = a_dict.get('message', ''),
@@ -35,6 +40,22 @@ def convert_network_dt_into_iso(network_dt):
     dt = dt.replace(year=current_year)
     logger.info(f"Converted datetime: {dt.isoformat()}")
     return dt.isoformat()
+
+def parse_timestamp_utc(dictionary, key):
+
+    timestamp_str = dictionary.get(key, '')
+    timestamp = None
+
+    if timestamp_str:
+        timestamp = datetime.fromisoformat(timestamp_str)
+
+        if timestamp.tzinfo is None:
+            timestamp = pytz.utc.localize(timestamp)
+        
+        else:
+            timestamp = timestamp.astimezone(pytz.utc)
+    
+    return timestamp
 
 def parse_line(line):
 

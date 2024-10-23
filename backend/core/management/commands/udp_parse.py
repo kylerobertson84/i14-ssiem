@@ -225,6 +225,12 @@ def parse_timestamp_utc(dictionary, key):
 
     return timestamp
 
+def convert_network_dt_into_iso(network_dt):
+    dt = datetime.strptime(network_dt, "%b %d %H:%M:%S")
+    current_year = datetime.now().year
+    dt = dt.replace(year=current_year)
+    logger.info(f"Converted datetime: {dt.isoformat()}")
+    return dt.isoformat()
 
 def parse_header_fields(header):
     header_dict = dict()
@@ -312,9 +318,12 @@ def separate_head_body_msg_when_bug_in_log(line, char):
 def insert_router_data(a_dict):
 
     try:
+        iso_time_stamp = parse_timestamp_utc(a_dict,'date_time')
+
         RouterData.objects.create(
             severity = a_dict.get('severity', 0),
-            date_time = a_dict.get('date_time', ''),
+            # date_time = a_dict.get('date_time', ''),
+            date_time = iso_time_stamp,
             hostname = a_dict.get('hostname', ''),
             process = a_dict.get('process', ''),
             message = a_dict.get('message', ''),
@@ -386,11 +395,14 @@ def parse_router_line(line):
             message = " ".join(slice_list)
 
         # place router fields into a dictionary
+
+        network_iso = convert_network_dt_into_iso(date_time)
+        print("network_iso", network_iso)
         
         log_dict = dict()
 
         log_dict["severity"] = int(severity)
-        log_dict["date_time"] = date_time
+        log_dict["date_time"] = network_iso
         log_dict["hostname"] = hostname
         log_dict["process"] = process
         log_dict["message"] = message

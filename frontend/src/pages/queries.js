@@ -150,6 +150,13 @@ const LogQueries = () => {
         orderBy,
         order
       );
+
+      console.log("Active Tab:", activeTab); 
+
+      console.log("Raw Logs Fetched:", response.results);
+
+
+
       setLogs(response.results);
       setTotalResults(response.count);
     } catch (error) {
